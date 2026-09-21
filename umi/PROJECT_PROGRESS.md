@@ -733,3 +733,20 @@ shoulder_pan(ID1)/shoulder_lift(ID2)/elbow_flex(ID3)/wrist_flex(ID4)/wrist_yaw(I
 - 为保证推理与实际部署一致，`TransformerObsEncoder` 中的 RandomCrop/Rotation/ColorJitter 现仅在训练模式使用；`UmiDataset` 的 episode-start pose 噪声保留训练默认值 `0.05`，但离线评估明确设为 `0.0`（真实推理也不添加该噪声）。这两项仅改变评估/推理的随机增强行为，不要求重新训练。
 - 在保留验证划分（11 条中随机保留 1 条 episode）均匀抽 8 个上下文的结果：位置 RMSE median/mean 为 `16.90/17.88 mm`，旋转 MAE median 为 `2.55°`，夹爪 RMSE median 为 `3.72 mm`；单段位置 RMSE 范围 `6.52–30.57 mm`。报告为 `data/outputs/vjaw_v12_011_transformer_12h_20260920_183136/offline_eval_val_final/offline_policy_report.json`，中位样本轨迹图同目录。
 - 结论：策略已能产生有限、连续且大体合理的相对轨迹，姿态预测相对稳定；但较长预测段的平移转弯与夹爪闭合时序仍会出现明显偏差。此 checkpoint 适合作为离线流程/模型基线，**不应直接用于无保护的实机动作**；应先增加多样示教并在后续受监督低速测试前继续筛选。
+
+### 15.14 V12-30 训练启动、推理安全边界与版本控制（2026-09-21）
+
+- 新集合目录为 `data/handheld_demos_vjaw/v12_train30_20260921/`；30 条离线合格会话（031–060）已合并并验证为 `v12_train_030.zarr.zip`，共 **30 episodes / 13,335 frames**。该 ZipStore 是新的训练输入；原始视频、单条处理结果、W&B 和 checkpoint 继续只保存在本机，不进入 Git。
+- 6 GB 级 GPU 的视觉 Transformer 配置是 `+experiment=am_umi_transformer_gpu_6gb`：ViT-Tiny、动作 Transformer `n_emb=256`/4 层/4 头、FP16、batch size 1、梯度累积 8、关闭 EMA，并将 CUDA 可用显存比例限制为 90%。这不是原版 ViT-Base 预训练模型配置。
+- 新增 `scripts/start_vjaw_transformer_12h.sh`，在 `AM_UMI` 环境下启动**全新**训练，使用 12 小时硬上限和最多 160 epochs；每 5 epochs 保存 checkpoint，保留 5 个 top-k。启动与看日志：
+  ```bash
+  conda activate AM_UMI
+  cd ~/AM_UMI/umi
+  bash scripts/start_vjaw_transformer_12h.sh
+
+  C=data/handheld_demos_vjaw/v12_train30_20260921
+  tail -f "$C/latest_transformer_12h.log"
+  ```
+  训练不连接或移动机械臂。12 小时是硬停止条件，160 是最大 epoch 数而非保证完成数。
+- 已明确区分两条执行链路：replay 使用**已知完整** fixed-tip 示教轨迹，经 `right_tcp ↔ fixed-tip` 桥接、离线 constrained-lookahead IK、连续关节支路/限位/裕量检查后才执行；策略推理则按当前相机和机器人状态滚动预测未来短段相对末端动作，模型本身不执行该离线 IK 规划。推理输出仍需转成目标末端位姿并经过 IK/控制器；当前不得把它等同于已验证 replay 的整段安全门禁。实机策略部署前应把预测短轨迹接入同一 TCP 桥接、连续 IK 和限位检查，并先低速、空载、人工监督验证。
+- 项目根目录 `~/AM_UMI` 已初始化为 Git 仓库，远程为 `https://github.com/Zzzuuu111/AM_UMI.git`。标准结构为：`main` 保存初始稳定基线，`am-umi-vjaw-training` 为当前开发分支；当前训练启动脚本提交 `e27365d` 位于开发分支，尚需在具有 GitHub 凭据的终端执行 `git push` 后同步该最新提交。`.gitignore` 已排除数据集、视频、W&B、训练输出、权重和本地标定原始文件；环境说明见 `ENVIRONMENT_AM_UMI.md`。
