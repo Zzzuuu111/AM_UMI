@@ -1,0 +1,1446 @@
+{
+  "schema": "am_umi_visual_slam_readiness_v1",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_translation_sessions/vio_full_validation_v1",
+  "sample_count": 237,
+  "orb_feature_count": {
+    "min": 1500,
+    "median": 1500.0,
+    "p10": 1500.0,
+    "max": 1500,
+    "below_250_ratio": 0.0
+  },
+  "sharpness_laplacian_variance": {
+    "min": 242.85971123309955,
+    "median": 305.4898442247179,
+    "p10": 274.5052763280275,
+    "max": 362.67192955800243,
+    "below_20_ratio": 0.0
+  },
+  "low_feature_periods_s": [],
+  "blur_periods_s": [],
+  "samples": [
+    {
+      "frame": 0,
+      "time_s": 0.0,
+      "orb_features": 1500,
+      "laplacian_variance": 330.4883522469978
+    },
+    {
+      "frame": 15,
+      "time_s": 0.505660913,
+      "orb_features": 1500,
+      "laplacian_variance": 340.4976059340908
+    },
+    {
+      "frame": 30,
+      "time_s": 1.007977308,
+      "orb_features": 1500,
+      "laplacian_variance": 340.4053006229402
+    },
+    {
+      "frame": 45,
+      "time_s": 1.525944251,
+      "orb_features": 1500,
+      "laplacian_variance": 343.02498991277974
+    },
+    {
+      "frame": 60,
+      "time_s": 2.028660387,
+      "orb_features": 1500,
+      "laplacian_variance": 354.252214198945
+    },
+    {
+      "frame": 75,
+      "time_s": 2.543616563,
+      "orb_features": 1500,
+      "laplacian_variance": 340.1026306940993
+    },
+    {
+      "frame": 90,
+      "time_s": 3.0431751,
+      "orb_features": 1500,
+      "laplacian_variance": 335.81481115129515
+    },
+    {
+      "frame": 105,
+      "time_s": 3.562102374,
+      "orb_features": 1500,
+      "laplacian_variance": 333.3453285259808
+    },
+    {
+      "frame": 120,
+      "time_s": 4.061641597,
+      "orb_features": 1500,
+      "laplacian_variance": 346.0962667202465
+    },
+    {
+      "frame": 135,
+      "time_s": 4.572285633,
+      "orb_features": 1500,
+      "laplacian_variance": 336.9653553383035
+    },
+    {
+      "frame": 150,
+      "time_s": 5.079412859,
+      "orb_features": 1500,
+      "laplacian_variance": 343.3701260737238
+    },
+    {
+      "frame": 165,
+      "time_s": 5.592695391,
+      "orb_features": 1500,
+      "laplacian_variance": 340.54435969953477
+    },
+    {
+      "frame": 180,
+      "time_s": 6.094882562,
+      "orb_features": 1500,
+      "laplacian_variance": 319.0595292134481
+    },
+    {
+      "frame": 195,
+      "time_s": 6.606718967,
+      "orb_features": 1500,
+      "laplacian_variance": 295.3941689308412
+    },
+    {
+      "frame": 210,
+      "time_s": 7.115213993,
+      "orb_features": 1500,
+      "laplacian_variance": 303.26063312229934
+    },
+    {
+      "frame": 225,
+      "time_s": 7.625404448,
+      "orb_features": 1500,
+      "laplacian_variance": 304.24950038308987
+    },
+    {
+      "frame": 240,
+      "time_s": 8.134847195,
+      "orb_features": 1500,
+      "laplacian_variance": 288.1738433652542
+    },
+    {
+      "frame": 255,
+      "time_s": 8.638831341,
+      "orb_features": 1500,
+      "laplacian_variance": 262.29491922096696
+    },
+    {
+      "frame": 270,
+      "time_s": 9.145191499,
+      "orb_features": 1500,
+      "laplacian_variance": 325.3385434367103
+    },
+    {
+      "frame": 285,
+      "time_s": 9.655177927,
+      "orb_features": 1500,
+      "laplacian_variance": 330.91926756377643
+    },
+    {
+      "frame": 300,
+      "time_s": 10.161796232,
+      "orb_features": 1500,
+      "laplacian_variance": 303.3002940658423
+    },
+    {
+      "frame": 315,
+      "time_s": 10.686719984,
+      "orb_features": 1500,
+      "laplacian_variance": 287.48992456995757
+    },
+    {
+      "frame": 330,
+      "time_s": 11.177223816,
+      "orb_features": 1500,
+      "laplacian_variance": 306.0440150259197
+    },
+    {
+      "frame": 345,
+      "time_s": 11.691015114,
+      "orb_features": 1500,
+      "laplacian_variance": 300.1702314224053
+    },
+    {
+      "frame": 360,
+      "time_s": 12.199900612,
+      "orb_features": 1500,
+      "laplacian_variance": 276.6036774905097
+    },
+    {
+      "frame": 375,
+      "time_s": 12.710381994,
+      "orb_features": 1500,
+      "laplacian_variance": 291.5116952551618
+    },
+    {
+      "frame": 390,
+      "time_s": 13.215739065,
+      "orb_features": 1500,
+      "laplacian_variance": 343.833781879772
+    },
+    {
+      "frame": 405,
+      "time_s": 13.724390806,
+      "orb_features": 1500,
+      "laplacian_variance": 296.9455230709877
+    },
+    {
+      "frame": 420,
+      "time_s": 14.228645113,
+      "orb_features": 1500,
+      "laplacian_variance": 270.72136392630443
+    },
+    {
+      "frame": 435,
+      "time_s": 14.751916905,
+      "orb_features": 1500,
+      "laplacian_variance": 274.12376087296155
+    },
+    {
+      "frame": 450,
+      "time_s": 15.245516492,
+      "orb_features": 1500,
+      "laplacian_variance": 291.21567294166863
+    },
+    {
+      "frame": 465,
+      "time_s": 15.752826203,
+      "orb_features": 1500,
+      "laplacian_variance": 271.3608833734877
+    },
+    {
+      "frame": 480,
+      "time_s": 16.263899978,
+      "orb_features": 1500,
+      "laplacian_variance": 267.3088233238878
+    },
+    {
+      "frame": 495,
+      "time_s": 16.778988994,
+      "orb_features": 1500,
+      "laplacian_variance": 296.1543395990364
+    },
+    {
+      "frame": 510,
+      "time_s": 17.283405302,
+      "orb_features": 1500,
+      "laplacian_variance": 330.0019282359183
+    },
+    {
+      "frame": 525,
+      "time_s": 17.804752612,
+      "orb_features": 1500,
+      "laplacian_variance": 310.9590522171584
+    },
+    {
+      "frame": 540,
+      "time_s": 18.298048919,
+      "orb_features": 1500,
+      "laplacian_variance": 265.456137389346
+    },
+    {
+      "frame": 555,
+      "time_s": 18.808455305,
+      "orb_features": 1500,
+      "laplacian_variance": 275.4918750931426
+    },
+    {
+      "frame": 570,
+      "time_s": 19.311747432,
+      "orb_features": 1500,
+      "laplacian_variance": 288.1837453938541
+    },
+    {
+      "frame": 585,
+      "time_s": 19.831465639,
+      "orb_features": 1500,
+      "laplacian_variance": 270.5698294813778
+    },
+    {
+      "frame": 600,
+      "time_s": 20.332755128,
+      "orb_features": 1500,
+      "laplacian_variance": 293.64744404792145
+    },
+    {
+      "frame": 615,
+      "time_s": 20.848460459,
+      "orb_features": 1500,
+      "laplacian_variance": 321.0497787931885
+    },
+    {
+      "frame": 630,
+      "time_s": 21.347878157,
+      "orb_features": 1500,
+      "laplacian_variance": 314.81787183641967
+    },
+    {
+      "frame": 645,
+      "time_s": 21.86138316,
+      "orb_features": 1500,
+      "laplacian_variance": 307.94266827618617
+    },
+    {
+      "frame": 660,
+      "time_s": 22.366314571,
+      "orb_features": 1500,
+      "laplacian_variance": 301.0114977193857
+    },
+    {
+      "frame": 675,
+      "time_s": 22.879931404,
+      "orb_features": 1500,
+      "laplacian_variance": 289.90787064005997
+    },
+    {
+      "frame": 690,
+      "time_s": 23.382103438,
+      "orb_features": 1500,
+      "laplacian_variance": 301.62547235841026
+    },
+    {
+      "frame": 705,
+      "time_s": 23.905813832,
+      "orb_features": 1500,
+      "laplacian_variance": 317.8540440838264
+    },
+    {
+      "frame": 720,
+      "time_s": 24.398296353,
+      "orb_features": 1500,
+      "laplacian_variance": 325.0143477360898
+    },
+    {
+      "frame": 735,
+      "time_s": 24.905082576,
+      "orb_features": 1500,
+      "laplacian_variance": 311.22889931731055
+    },
+    {
+      "frame": 750,
+      "time_s": 25.415054299,
+      "orb_features": 1500,
+      "laplacian_variance": 312.28468761234336
+    },
+    {
+      "frame": 765,
+      "time_s": 25.925864463,
+      "orb_features": 1500,
+      "laplacian_variance": 306.60880090386365
+    },
+    {
+      "frame": 780,
+      "time_s": 26.440819395,
+      "orb_features": 1500,
+      "laplacian_variance": 305.76962045779726
+    },
+    {
+      "frame": 795,
+      "time_s": 26.955096866,
+      "orb_features": 1500,
+      "laplacian_variance": 323.27890361724064
+    },
+    {
+      "frame": 810,
+      "time_s": 27.452402751,
+      "orb_features": 1500,
+      "laplacian_variance": 336.8895344035632
+    },
+    {
+      "frame": 825,
+      "time_s": 27.956572605,
+      "orb_features": 1500,
+      "laplacian_variance": 308.6455394417386
+    },
+    {
+      "frame": 840,
+      "time_s": 28.465986358,
+      "orb_features": 1500,
+      "laplacian_variance": 287.57355904917773
+    },
+    {
+      "frame": 855,
+      "time_s": 28.990471966,
+      "orb_features": 1500,
+      "laplacian_variance": 294.3178540337456
+    },
+    {
+      "frame": 870,
+      "time_s": 29.48070119,
+      "orb_features": 1500,
+      "laplacian_variance": 308.6110514381858
+    },
+    {
+      "frame": 885,
+      "time_s": 29.994577998,
+      "orb_features": 1500,
+      "laplacian_variance": 321.796775072338
+    },
+    {
+      "frame": 900,
+      "time_s": 30.504020948,
+      "orb_features": 1500,
+      "laplacian_variance": 344.98034665360626
+    },
+    {
+      "frame": 915,
+      "time_s": 31.012079362,
+      "orb_features": 1500,
+      "laplacian_variance": 310.87599704780365
+    },
+    {
+      "frame": 930,
+      "time_s": 31.518629572,
+      "orb_features": 1500,
+      "laplacian_variance": 320.1604729592954
+    },
+    {
+      "frame": 945,
+      "time_s": 32.031823022,
+      "orb_features": 1500,
+      "laplacian_variance": 311.4377654308932
+    },
+    {
+      "frame": 960,
+      "time_s": 32.53288958,
+      "orb_features": 1500,
+      "laplacian_variance": 303.9822744011095
+    },
+    {
+      "frame": 975,
+      "time_s": 33.056431424,
+      "orb_features": 1500,
+      "laplacian_variance": 319.504025101928
+    },
+    {
+      "frame": 990,
+      "time_s": 33.548871131,
+      "orb_features": 1500,
+      "laplacian_variance": 341.41132499785675
+    },
+    {
+      "frame": 1005,
+      "time_s": 34.058498489,
+      "orb_features": 1500,
+      "laplacian_variance": 328.0688787827692
+    },
+    {
+      "frame": 1020,
+      "time_s": 34.56469453,
+      "orb_features": 1500,
+      "laplacian_variance": 289.35654535108023
+    },
+    {
+      "frame": 1035,
+      "time_s": 35.08305147,
+      "orb_features": 1500,
+      "laplacian_variance": 300.55969317822877
+    },
+    {
+      "frame": 1050,
+      "time_s": 35.584904378,
+      "orb_features": 1500,
+      "laplacian_variance": 310.92827134487516
+    },
+    {
+      "frame": 1065,
+      "time_s": 36.097340696,
+      "orb_features": 1500,
+      "laplacian_variance": 306.16731642052406
+    },
+    {
+      "frame": 1080,
+      "time_s": 36.604342724,
+      "orb_features": 1500,
+      "laplacian_variance": 315.62523298286254
+    },
+    {
+      "frame": 1095,
+      "time_s": 37.111860251,
+      "orb_features": 1500,
+      "laplacian_variance": 308.04799717279127
+    },
+    {
+      "frame": 1110,
+      "time_s": 37.61820052,
+      "orb_features": 1500,
+      "laplacian_variance": 312.0904155976127
+    },
+    {
+      "frame": 1125,
+      "time_s": 38.133840314,
+      "orb_features": 1500,
+      "laplacian_variance": 313.7407420802395
+    },
+    {
+      "frame": 1140,
+      "time_s": 38.633321805,
+      "orb_features": 1500,
+      "laplacian_variance": 322.85558733400967
+    },
+    {
+      "frame": 1155,
+      "time_s": 39.146896545,
+      "orb_features": 1500,
+      "laplacian_variance": 314.5745741383709
+    },
+    {
+      "frame": 1170,
+      "time_s": 39.654432764,
+      "orb_features": 1500,
+      "laplacian_variance": 308.5099990321447
+    },
+    {
+      "frame": 1185,
+      "time_s": 40.165505207,
+      "orb_features": 1500,
+      "laplacian_variance": 308.9819438163098
+    },
+    {
+      "frame": 1200,
+      "time_s": 40.671686921,
+      "orb_features": 1500,
+      "laplacian_variance": 321.25049381105185
+    },
+    {
+      "frame": 1215,
+      "time_s": 41.182024912,
+      "orb_features": 1500,
+      "laplacian_variance": 316.8121721450617
+    },
+    {
+      "frame": 1230,
+      "time_s": 41.685058262,
+      "orb_features": 1500,
+      "laplacian_variance": 314.13111669265095
+    },
+    {
+      "frame": 1245,
+      "time_s": 42.196358217,
+      "orb_features": 1500,
+      "laplacian_variance": 301.91235002262414
+    },
+    {
+      "frame": 1260,
+      "time_s": 42.703253854,
+      "orb_features": 1500,
+      "laplacian_variance": 316.61490048433683
+    },
+    {
+      "frame": 1275,
+      "time_s": 43.220655226,
+      "orb_features": 1500,
+      "laplacian_variance": 312.9645448152285
+    },
+    {
+      "frame": 1290,
+      "time_s": 43.722399208,
+      "orb_features": 1500,
+      "laplacian_variance": 309.48488218583526
+    },
+    {
+      "frame": 1305,
+      "time_s": 44.230584316,
+      "orb_features": 1500,
+      "laplacian_variance": 305.7506783344787
+    },
+    {
+      "frame": 1320,
+      "time_s": 44.743784799,
+      "orb_features": 1500,
+      "laplacian_variance": 313.09610801932934
+    },
+    {
+      "frame": 1335,
+      "time_s": 45.247015753,
+      "orb_features": 1500,
+      "laplacian_variance": 304.7266747307084
+    },
+    {
+      "frame": 1350,
+      "time_s": 45.753184751,
+      "orb_features": 1500,
+      "laplacian_variance": 306.423730509827
+    },
+    {
+      "frame": 1365,
+      "time_s": 46.261089486,
+      "orb_features": 1500,
+      "laplacian_variance": 314.0779557023413
+    },
+    {
+      "frame": 1380,
+      "time_s": 46.768975872,
+      "orb_features": 1500,
+      "laplacian_variance": 315.17098065694773
+    },
+    {
+      "frame": 1395,
+      "time_s": 47.298695996,
+      "orb_features": 1500,
+      "laplacian_variance": 286.62603663720984
+    },
+    {
+      "frame": 1410,
+      "time_s": 47.788945025,
+      "orb_features": 1500,
+      "laplacian_variance": 318.39020286734814
+    },
+    {
+      "frame": 1425,
+      "time_s": 48.29542459,
+      "orb_features": 1500,
+      "laplacian_variance": 309.83971188592733
+    },
+    {
+      "frame": 1440,
+      "time_s": 48.806182816,
+      "orb_features": 1500,
+      "laplacian_variance": 300.25054255221124
+    },
+    {
+      "frame": 1455,
+      "time_s": 49.312635743,
+      "orb_features": 1500,
+      "laplacian_variance": 305.10076920697566
+    },
+    {
+      "frame": 1470,
+      "time_s": 49.826874846,
+      "orb_features": 1500,
+      "laplacian_variance": 320.74789233485507
+    },
+    {
+      "frame": 1485,
+      "time_s": 50.335772244,
+      "orb_features": 1500,
+      "laplacian_variance": 299.6067287070044
+    },
+    {
+      "frame": 1500,
+      "time_s": 50.836637189,
+      "orb_features": 1500,
+      "laplacian_variance": 314.0504627571866
+    },
+    {
+      "frame": 1515,
+      "time_s": 51.344945068,
+      "orb_features": 1500,
+      "laplacian_variance": 305.2362203411339
+    },
+    {
+      "frame": 1530,
+      "time_s": 51.85279835,
+      "orb_features": 1500,
+      "laplacian_variance": 299.53287018698023
+    },
+    {
+      "frame": 1545,
+      "time_s": 52.381546256,
+      "orb_features": 1500,
+      "laplacian_variance": 294.40484388868884
+    },
+    {
+      "frame": 1560,
+      "time_s": 52.8684655,
+      "orb_features": 1500,
+      "laplacian_variance": 295.23312565282407
+    },
+    {
+      "frame": 1575,
+      "time_s": 53.383178138,
+      "orb_features": 1500,
+      "laplacian_variance": 330.6455062861989
+    },
+    {
+      "frame": 1590,
+      "time_s": 53.895462693,
+      "orb_features": 1500,
+      "laplacian_variance": 301.46551940348274
+    },
+    {
+      "frame": 1605,
+      "time_s": 54.402202189,
+      "orb_features": 1500,
+      "laplacian_variance": 303.2386965577251
+    },
+    {
+      "frame": 1620,
+      "time_s": 54.911998254,
+      "orb_features": 1500,
+      "laplacian_variance": 310.5728722908093
+    },
+    {
+      "frame": 1635,
+      "time_s": 55.417714497,
+      "orb_features": 1500,
+      "laplacian_variance": 320.801472300752
+    },
+    {
+      "frame": 1650,
+      "time_s": 55.927317461,
+      "orb_features": 1500,
+      "laplacian_variance": 335.87003856193536
+    },
+    {
+      "frame": 1665,
+      "time_s": 56.447628354,
+      "orb_features": 1500,
+      "laplacian_variance": 300.55252422353897
+    },
+    {
+      "frame": 1680,
+      "time_s": 56.941366721,
+      "orb_features": 1500,
+      "laplacian_variance": 319.5160195094443
+    },
+    {
+      "frame": 1695,
+      "time_s": 57.449401716,
+      "orb_features": 1500,
+      "laplacian_variance": 322.5266413182389
+    },
+    {
+      "frame": 1710,
+      "time_s": 57.958344127,
+      "orb_features": 1500,
+      "laplacian_variance": 348.5487070632662
+    },
+    {
+      "frame": 1725,
+      "time_s": 58.475156009,
+      "orb_features": 1500,
+      "laplacian_variance": 292.00256752614524
+    },
+    {
+      "frame": 1740,
+      "time_s": 58.974435713,
+      "orb_features": 1500,
+      "laplacian_variance": 316.90541881402885
+    },
+    {
+      "frame": 1755,
+      "time_s": 59.48752559,
+      "orb_features": 1500,
+      "laplacian_variance": 309.14023944115434
+    },
+    {
+      "frame": 1770,
+      "time_s": 59.996423165,
+      "orb_features": 1500,
+      "laplacian_variance": 338.6491554438299
+    },
+    {
+      "frame": 1785,
+      "time_s": 60.502898318,
+      "orb_features": 1500,
+      "laplacian_variance": 329.32176311725044
+    },
+    {
+      "frame": 1800,
+      "time_s": 61.005353778,
+      "orb_features": 1500,
+      "laplacian_variance": 285.169034886486
+    },
+    {
+      "frame": 1815,
+      "time_s": 61.531880021,
+      "orb_features": 1500,
+      "laplacian_variance": 314.3683010202332
+    },
+    {
+      "frame": 1830,
+      "time_s": 62.02233708,
+      "orb_features": 1500,
+      "laplacian_variance": 301.50745092803567
+    },
+    {
+      "frame": 1845,
+      "time_s": 62.528907882,
+      "orb_features": 1500,
+      "laplacian_variance": 318.060423332461
+    },
+    {
+      "frame": 1860,
+      "time_s": 63.036857904,
+      "orb_features": 1500,
+      "laplacian_variance": 308.04888271313195
+    },
+    {
+      "frame": 1875,
+      "time_s": 63.555503569,
+      "orb_features": 1500,
+      "laplacian_variance": 321.4725701406602
+    },
+    {
+      "frame": 1890,
+      "time_s": 64.061067206,
+      "orb_features": 1500,
+      "laplacian_variance": 322.4705581172981
+    },
+    {
+      "frame": 1905,
+      "time_s": 64.565050165,
+      "orb_features": 1500,
+      "laplacian_variance": 327.1023266283743
+    },
+    {
+      "frame": 1920,
+      "time_s": 65.081929431,
+      "orb_features": 1500,
+      "laplacian_variance": 337.002224945687
+    },
+    {
+      "frame": 1935,
+      "time_s": 65.596228431,
+      "orb_features": 1500,
+      "laplacian_variance": 318.57263840729064
+    },
+    {
+      "frame": 1950,
+      "time_s": 66.091841604,
+      "orb_features": 1500,
+      "laplacian_variance": 327.8214481022411
+    },
+    {
+      "frame": 1965,
+      "time_s": 66.598236258,
+      "orb_features": 1500,
+      "laplacian_variance": 311.5263339811563
+    },
+    {
+      "frame": 1980,
+      "time_s": 67.105064543,
+      "orb_features": 1500,
+      "laplacian_variance": 305.7260029719255
+    },
+    {
+      "frame": 1995,
+      "time_s": 67.620189619,
+      "orb_features": 1500,
+      "laplacian_variance": 311.77089253399294
+    },
+    {
+      "frame": 2010,
+      "time_s": 68.127911888,
+      "orb_features": 1500,
+      "laplacian_variance": 260.1490642269981
+    },
+    {
+      "frame": 2025,
+      "time_s": 68.63856749,
+      "orb_features": 1500,
+      "laplacian_variance": 327.1730766152466
+    },
+    {
+      "frame": 2040,
+      "time_s": 69.144987967,
+      "orb_features": 1500,
+      "laplacian_variance": 340.12504811260044
+    },
+    {
+      "frame": 2055,
+      "time_s": 69.649249075,
+      "orb_features": 1500,
+      "laplacian_variance": 283.6630227300616
+    },
+    {
+      "frame": 2070,
+      "time_s": 70.157407754,
+      "orb_features": 1500,
+      "laplacian_variance": 300.74652557852124
+    },
+    {
+      "frame": 2085,
+      "time_s": 70.674044238,
+      "orb_features": 1500,
+      "laplacian_variance": 293.572858496224
+    },
+    {
+      "frame": 2100,
+      "time_s": 71.172726148,
+      "orb_features": 1500,
+      "laplacian_variance": 278.81983234229943
+    },
+    {
+      "frame": 2115,
+      "time_s": 71.681659678,
+      "orb_features": 1500,
+      "laplacian_variance": 333.99998954552336
+    },
+    {
+      "frame": 2130,
+      "time_s": 72.189352138,
+      "orb_features": 1500,
+      "laplacian_variance": 265.32362359637193
+    },
+    {
+      "frame": 2145,
+      "time_s": 72.708163929,
+      "orb_features": 1500,
+      "laplacian_variance": 287.5753174755085
+    },
+    {
+      "frame": 2160,
+      "time_s": 73.212361515,
+      "orb_features": 1500,
+      "laplacian_variance": 316.33685521794484
+    },
+    {
+      "frame": 2175,
+      "time_s": 73.720196916,
+      "orb_features": 1500,
+      "laplacian_variance": 252.80066892337297
+    },
+    {
+      "frame": 2190,
+      "time_s": 74.22803736,
+      "orb_features": 1500,
+      "laplacian_variance": 313.35674678065925
+    },
+    {
+      "frame": 2205,
+      "time_s": 74.74331816,
+      "orb_features": 1500,
+      "laplacian_variance": 284.6245470730772
+    },
+    {
+      "frame": 2220,
+      "time_s": 75.241857327,
+      "orb_features": 1500,
+      "laplacian_variance": 265.1723137690958
+    },
+    {
+      "frame": 2235,
+      "time_s": 75.753271151,
+      "orb_features": 1500,
+      "laplacian_variance": 291.07585096115713
+    },
+    {
+      "frame": 2250,
+      "time_s": 76.267770685,
+      "orb_features": 1500,
+      "laplacian_variance": 285.9888483185107
+    },
+    {
+      "frame": 2265,
+      "time_s": 76.766312214,
+      "orb_features": 1500,
+      "laplacian_variance": 320.30150606834763
+    },
+    {
+      "frame": 2280,
+      "time_s": 77.277137785,
+      "orb_features": 1500,
+      "laplacian_variance": 246.85444763565005
+    },
+    {
+      "frame": 2295,
+      "time_s": 77.791923731,
+      "orb_features": 1500,
+      "laplacian_variance": 297.55331775250625
+    },
+    {
+      "frame": 2310,
+      "time_s": 78.299256904,
+      "orb_features": 1500,
+      "laplacian_variance": 267.1596122018031
+    },
+    {
+      "frame": 2325,
+      "time_s": 78.80654403,
+      "orb_features": 1500,
+      "laplacian_variance": 259.011430532243
+    },
+    {
+      "frame": 2340,
+      "time_s": 79.311558566,
+      "orb_features": 1500,
+      "laplacian_variance": 322.4102617262517
+    },
+    {
+      "frame": 2355,
+      "time_s": 79.834293145,
+      "orb_features": 1500,
+      "laplacian_variance": 246.30279354386658
+    },
+    {
+      "frame": 2370,
+      "time_s": 80.331681309,
+      "orb_features": 1500,
+      "laplacian_variance": 299.7075587342248
+    },
+    {
+      "frame": 2385,
+      "time_s": 80.838019018,
+      "orb_features": 1500,
+      "laplacian_variance": 289.7502014970943
+    },
+    {
+      "frame": 2400,
+      "time_s": 81.341672464,
+      "orb_features": 1500,
+      "laplacian_variance": 262.6159122679827
+    },
+    {
+      "frame": 2415,
+      "time_s": 81.865260338,
+      "orb_features": 1500,
+      "laplacian_variance": 331.3594131896219
+    },
+    {
+      "frame": 2430,
+      "time_s": 82.364697398,
+      "orb_features": 1500,
+      "laplacian_variance": 261.84852340445303
+    },
+    {
+      "frame": 2445,
+      "time_s": 82.869214038,
+      "orb_features": 1500,
+      "laplacian_variance": 298.3836837690876
+    },
+    {
+      "frame": 2460,
+      "time_s": 83.384629782,
+      "orb_features": 1500,
+      "laplacian_variance": 307.4596500512022
+    },
+    {
+      "frame": 2475,
+      "time_s": 83.892682795,
+      "orb_features": 1500,
+      "laplacian_variance": 297.86441029007517
+    },
+    {
+      "frame": 2490,
+      "time_s": 84.393366358,
+      "orb_features": 1500,
+      "laplacian_variance": 304.66090031006723
+    },
+    {
+      "frame": 2505,
+      "time_s": 84.915350702,
+      "orb_features": 1500,
+      "laplacian_variance": 275.4309720498018
+    },
+    {
+      "frame": 2520,
+      "time_s": 85.409457256,
+      "orb_features": 1500,
+      "laplacian_variance": 358.75885549731316
+    },
+    {
+      "frame": 2535,
+      "time_s": 85.92452526,
+      "orb_features": 1500,
+      "laplacian_variance": 362.67192955800243
+    },
+    {
+      "frame": 2550,
+      "time_s": 86.42599486,
+      "orb_features": 1500,
+      "laplacian_variance": 287.39837575993556
+    },
+    {
+      "frame": 2565,
+      "time_s": 86.943217636,
+      "orb_features": 1500,
+      "laplacian_variance": 300.99067549010834
+    },
+    {
+      "frame": 2580,
+      "time_s": 87.448650472,
+      "orb_features": 1500,
+      "laplacian_variance": 323.6367204366802
+    },
+    {
+      "frame": 2595,
+      "time_s": 87.956464393,
+      "orb_features": 1500,
+      "laplacian_variance": 266.17543859644104
+    },
+    {
+      "frame": 2610,
+      "time_s": 88.461526078,
+      "orb_features": 1500,
+      "laplacian_variance": 322.717457544522
+    },
+    {
+      "frame": 2625,
+      "time_s": 88.986596522,
+      "orb_features": 1500,
+      "laplacian_variance": 354.1788441561605
+    },
+    {
+      "frame": 2640,
+      "time_s": 89.480409613,
+      "orb_features": 1500,
+      "laplacian_variance": 292.42477870650185
+    },
+    {
+      "frame": 2655,
+      "time_s": 89.988759195,
+      "orb_features": 1500,
+      "laplacian_variance": 311.2277624356958
+    },
+    {
+      "frame": 2670,
+      "time_s": 90.493655269,
+      "orb_features": 1500,
+      "laplacian_variance": 306.31341919742005
+    },
+    {
+      "frame": 2685,
+      "time_s": 91.007679527,
+      "orb_features": 1500,
+      "laplacian_variance": 270.70657001079036
+    },
+    {
+      "frame": 2700,
+      "time_s": 91.520528392,
+      "orb_features": 1500,
+      "laplacian_variance": 344.3074453551288
+    },
+    {
+      "frame": 2715,
+      "time_s": 92.027732614,
+      "orb_features": 1500,
+      "laplacian_variance": 324.93002665099874
+    },
+    {
+      "frame": 2730,
+      "time_s": 92.529258446,
+      "orb_features": 1500,
+      "laplacian_variance": 287.8018908130787
+    },
+    {
+      "frame": 2745,
+      "time_s": 93.072098618,
+      "orb_features": 1500,
+      "laplacian_variance": 301.75280967643795
+    },
+    {
+      "frame": 2760,
+      "time_s": 93.54910798,
+      "orb_features": 1500,
+      "laplacian_variance": 267.0419040719873
+    },
+    {
+      "frame": 2775,
+      "time_s": 94.074926689,
+      "orb_features": 1500,
+      "laplacian_variance": 302.7818826999705
+    },
+    {
+      "frame": 2790,
+      "time_s": 94.561467928,
+      "orb_features": 1500,
+      "laplacian_variance": 351.55874708824825
+    },
+    {
+      "frame": 2805,
+      "time_s": 95.069683054,
+      "orb_features": 1500,
+      "laplacian_variance": 332.88299145604935
+    },
+    {
+      "frame": 2820,
+      "time_s": 95.586989921,
+      "orb_features": 1500,
+      "laplacian_variance": 285.87621772297587
+    },
+    {
+      "frame": 2835,
+      "time_s": 96.108068995,
+      "orb_features": 1500,
+      "laplacian_variance": 308.13450990934837
+    },
+    {
+      "frame": 2850,
+      "time_s": 96.602450158,
+      "orb_features": 1500,
+      "laplacian_variance": 305.4898442247179
+    },
+    {
+      "frame": 2865,
+      "time_s": 97.107101235,
+      "orb_features": 1500,
+      "laplacian_variance": 276.0847375185161
+    },
+    {
+      "frame": 2880,
+      "time_s": 97.615012515,
+      "orb_features": 1500,
+      "laplacian_variance": 272.4572260198723
+    },
+    {
+      "frame": 2895,
+      "time_s": 98.123602014,
+      "orb_features": 1500,
+      "laplacian_variance": 282.3595945180179
+    },
+    {
+      "frame": 2910,
+      "time_s": 98.634141488,
+      "orb_features": 1500,
+      "laplacian_variance": 307.0861387183104
+    },
+    {
+      "frame": 2925,
+      "time_s": 99.137264563,
+      "orb_features": 1500,
+      "laplacian_variance": 319.0108032429697
+    },
+    {
+      "frame": 2940,
+      "time_s": 99.649828167,
+      "orb_features": 1500,
+      "laplacian_variance": 319.1787183900034
+    },
+    {
+      "frame": 2955,
+      "time_s": 100.178231138,
+      "orb_features": 1500,
+      "laplacian_variance": 273.96636942908015
+    },
+    {
+      "frame": 2970,
+      "time_s": 100.666921911,
+      "orb_features": 1500,
+      "laplacian_variance": 297.81508544661403
+    },
+    {
+      "frame": 2985,
+      "time_s": 101.177625817,
+      "orb_features": 1500,
+      "laplacian_variance": 242.85971123309955
+    },
+    {
+      "frame": 3000,
+      "time_s": 101.691919386,
+      "orb_features": 1500,
+      "laplacian_variance": 307.6453735416274
+    },
+    {
+      "frame": 3015,
+      "time_s": 102.200026383,
+      "orb_features": 1500,
+      "laplacian_variance": 301.73193766538014
+    },
+    {
+      "frame": 3030,
+      "time_s": 102.701266217,
+      "orb_features": 1500,
+      "laplacian_variance": 275.95755202703697
+    },
+    {
+      "frame": 3045,
+      "time_s": 103.211622567,
+      "orb_features": 1500,
+      "laplacian_variance": 281.52182135898545
+    },
+    {
+      "frame": 3060,
+      "time_s": 103.715995959,
+      "orb_features": 1500,
+      "laplacian_variance": 274.75961996473814
+    },
+    {
+      "frame": 3075,
+      "time_s": 104.227454601,
+      "orb_features": 1500,
+      "laplacian_variance": 263.62881188020043
+    },
+    {
+      "frame": 3090,
+      "time_s": 104.734007056,
+      "orb_features": 1500,
+      "laplacian_variance": 299.70606324278884
+    },
+    {
+      "frame": 3105,
+      "time_s": 105.238420288,
+      "orb_features": 1500,
+      "laplacian_variance": 294.8795493304385
+    },
+    {
+      "frame": 3120,
+      "time_s": 105.755681926,
+      "orb_features": 1500,
+      "laplacian_variance": 287.36742387396885
+    },
+    {
+      "frame": 3135,
+      "time_s": 106.274046682,
+      "orb_features": 1500,
+      "laplacian_variance": 279.188234335467
+    },
+    {
+      "frame": 3150,
+      "time_s": 106.766573583,
+      "orb_features": 1500,
+      "laplacian_variance": 283.81907515583543
+    },
+    {
+      "frame": 3165,
+      "time_s": 107.276781719,
+      "orb_features": 1500,
+      "laplacian_variance": 279.24990948079426
+    },
+    {
+      "frame": 3180,
+      "time_s": 107.781785502,
+      "orb_features": 1500,
+      "laplacian_variance": 302.32249994278453
+    },
+    {
+      "frame": 3195,
+      "time_s": 108.293257895,
+      "orb_features": 1500,
+      "laplacian_variance": 278.8067086065953
+    },
+    {
+      "frame": 3210,
+      "time_s": 108.798342011,
+      "orb_features": 1500,
+      "laplacian_variance": 295.65717533694834
+    },
+    {
+      "frame": 3225,
+      "time_s": 109.310948683,
+      "orb_features": 1500,
+      "laplacian_variance": 275.86992807784634
+    },
+    {
+      "frame": 3240,
+      "time_s": 109.814127602,
+      "orb_features": 1500,
+      "laplacian_variance": 304.5770964802519
+    },
+    {
+      "frame": 3255,
+      "time_s": 110.330212534,
+      "orb_features": 1500,
+      "laplacian_variance": 300.5750476329076
+    },
+    {
+      "frame": 3270,
+      "time_s": 110.838162648,
+      "orb_features": 1500,
+      "laplacian_variance": 305.47645572201844
+    },
+    {
+      "frame": 3285,
+      "time_s": 111.34600141,
+      "orb_features": 1500,
+      "laplacian_variance": 295.09785005130647
+    },
+    {
+      "frame": 3300,
+      "time_s": 111.853491456,
+      "orb_features": 1500,
+      "laplacian_variance": 315.01116319247603
+    },
+    {
+      "frame": 3315,
+      "time_s": 112.38264771,
+      "orb_features": 1500,
+      "laplacian_variance": 307.83558170187416
+    },
+    {
+      "frame": 3330,
+      "time_s": 112.866925188,
+      "orb_features": 1500,
+      "laplacian_variance": 312.15413886929736
+    },
+    {
+      "frame": 3345,
+      "time_s": 113.378693599,
+      "orb_features": 1500,
+      "laplacian_variance": 303.7459324142803
+    },
+    {
+      "frame": 3360,
+      "time_s": 113.886849067,
+      "orb_features": 1500,
+      "laplacian_variance": 306.15003888835304
+    },
+    {
+      "frame": 3375,
+      "time_s": 114.392741899,
+      "orb_features": 1500,
+      "laplacian_variance": 303.1915556798548
+    },
+    {
+      "frame": 3390,
+      "time_s": 114.910040404,
+      "orb_features": 1500,
+      "laplacian_variance": 309.6348344762136
+    },
+    {
+      "frame": 3405,
+      "time_s": 115.41427592,
+      "orb_features": 1500,
+      "laplacian_variance": 300.6486756172839
+    },
+    {
+      "frame": 3420,
+      "time_s": 115.925114657,
+      "orb_features": 1500,
+      "laplacian_variance": 302.25265491799524
+    },
+    {
+      "frame": 3435,
+      "time_s": 116.427431894,
+      "orb_features": 1500,
+      "laplacian_variance": 294.7517591301226
+    },
+    {
+      "frame": 3450,
+      "time_s": 116.942403363,
+      "orb_features": 1500,
+      "laplacian_variance": 303.40804814761236
+    },
+    {
+      "frame": 3465,
+      "time_s": 117.445405821,
+      "orb_features": 1500,
+      "laplacian_variance": 292.95868015330586
+    },
+    {
+      "frame": 3480,
+      "time_s": 117.953145013,
+      "orb_features": 1500,
+      "laplacian_variance": 293.29398709407013
+    },
+    {
+      "frame": 3495,
+      "time_s": 118.466984689,
+      "orb_features": 1500,
+      "laplacian_variance": 294.75392494140016
+    },
+    {
+      "frame": 3510,
+      "time_s": 118.97079485,
+      "orb_features": 1500,
+      "laplacian_variance": 297.0105106284861
+    },
+    {
+      "frame": 3525,
+      "time_s": 119.481086836,
+      "orb_features": 1500,
+      "laplacian_variance": 293.9635153798211
+    },
+    {
+      "frame": 3540,
+      "time_s": 119.993702611,
+      "orb_features": 1500,
+      "laplacian_variance": 299.557058931982
+    }
+  ],
+  "note": "ORB counts and sharpness alone are diagnostic signals, not a SLAM pass/fail guarantee."
+}

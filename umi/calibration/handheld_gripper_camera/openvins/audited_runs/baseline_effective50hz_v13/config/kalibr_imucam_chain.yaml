@@ -1,0 +1,18 @@
+%YAML:1.0
+# R_ItoC and p_IinC.  Derived from rotation_time_v4_uvc_source.json and
+# translation_noise_v4_uvc_source.json; do not edit by hand.
+cam0:
+  T_cam_imu:
+    - [0.03028243197, -0.99951289635, -0.00754614771, -0.06767503149]
+    - [-0.69678336498, -0.01569652370, -0.71710986706, 0.03470831860]
+    - [0.71664211194, 0.02697386096, -0.69691928817, 0.08238895873]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: []
+  camera_model: pinhole
+  distortion_coeffs: [-0.02045300626, -0.02492582274, 0.01951044886, -0.00565625617]
+  distortion_model: equidistant
+  intrinsics: [418.629359415, 418.629359415, 505.7405814, 286.574774365]
+  resolution: [960, 540]
+  rostopic: /am_umi/camera0/image_raw
+  # Exported IMU timestamps are already in the camera time domain.
+  timeshift_cam_imu: 0.0

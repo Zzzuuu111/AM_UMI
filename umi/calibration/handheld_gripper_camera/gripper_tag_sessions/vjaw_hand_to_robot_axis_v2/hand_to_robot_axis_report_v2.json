@@ -1,0 +1,161 @@
+{
+  "schema": "am_umi_vjaw_hand_to_robot_axis_analysis_v1",
+  "safety": "offline only; no serial port or robot command was used",
+  "trajectory": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_hand_to_robot_axis_v2/camera_trajectory_multi_tag.csv",
+  "geometry": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_ros2_right_tcp_v1_candidate.json",
+  "geometry_status": "candidate",
+  "reference": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/view_references/follow_umi_vjaw_start_v4_basket_moved/reference.json",
+  "model_safe_limits_deg": {
+    "J1 pan": [
+      -127.034,
+      116.063
+    ],
+    "J2 lift": [
+      -184.0,
+      5.0
+    ],
+    "J3 elbow": [
+      -3.75,
+      176.667
+    ],
+    "J4 flex": [
+      -93.801,
+      82.572
+    ],
+    "J5 yaw": [
+      -75.437,
+      77.726
+    ],
+    "J6 roll": [
+      -172.09,
+      177.909
+    ]
+  },
+  "stages": {
+    "forward": {
+      "source_peak_timestamp_s": 15.185231,
+      "hand_relative_translation_in_start_tcp_m": [
+        0.0921425899639236,
+        -0.007506776504049177,
+        -0.03460515355294545
+      ],
+      "hand_relative_distance_m": 0.0987123357598453,
+      "hand_relative_rotation_deg": 4.100164052228029,
+      "selection_constrained_to_near_start": false,
+      "predicted_model_joint_deg": [
+        -51.14729007824746,
+        -71.10906665906211,
+        82.88650934872037,
+        35.93316546764114,
+        -5.192442133844918,
+        0.776254310424922
+      ],
+      "predicted_joint_margin_each_deg": {
+        "J1 pan": 75.88670992175255,
+        "J2 lift": 76.10906665906211,
+        "J3 elbow": 86.63650934872037,
+        "J4 flex": 46.638834532358864,
+        "J5 yaw": 70.24455786615508,
+        "J6 roll": 172.86625431042492
+      },
+      "closest_joint": "J4 flex",
+      "ik_position_error_mm": 6.206335383118183e-14,
+      "ik_rotation_error_deg": 2.660448915074313e-14,
+      "reachable_with_5deg_margin": true
+    },
+    "up": {
+      "source_peak_timestamp_s": 21.727083,
+      "hand_relative_translation_in_start_tcp_m": [
+        -0.06789889380838077,
+        -0.020581384730913338,
+        -0.08805312328735528
+      ],
+      "hand_relative_distance_m": 0.11308052749479827,
+      "hand_relative_rotation_deg": 9.074348930557429,
+      "selection_constrained_to_near_start": false,
+      "predicted_model_joint_deg": [
+        -55.68236068996765,
+        -28.696426035029738,
+        76.37627548401379,
+        59.49521565563193,
+        1.7662614471703648,
+        1.3231485388492248
+      ],
+      "predicted_joint_margin_each_deg": {
+        "J1 pan": 71.35163931003235,
+        "J2 lift": 33.69642603502974,
+        "J3 elbow": 80.12627548401379,
+        "J4 flex": 23.076784344368072,
+        "J5 yaw": 75.95973855282963,
+        "J6 roll": 173.41314853884924
+      },
+      "closest_joint": "J4 flex",
+      "ik_position_error_mm": 0.0,
+      "ik_rotation_error_deg": 2.0964067507271577e-14,
+      "reachable_with_5deg_margin": true
+    },
+    "left": {
+      "source_peak_timestamp_s": 28.336726,
+      "hand_relative_translation_in_start_tcp_m": [
+        -0.06423975455271291,
+        -0.17432235465118445,
+        -0.030852293485087265
+      ],
+      "hand_relative_distance_m": 0.18832656055218575,
+      "hand_relative_rotation_deg": 13.42048662180415,
+      "selection_constrained_to_near_start": false,
+      "predicted_model_joint_deg": [
+        -111.76807264380854,
+        -37.52370877035636,
+        63.9283942815926,
+        42.380533542539936,
+        45.57649213159538,
+        16.780310204137425
+      ],
+      "predicted_joint_margin_each_deg": {
+        "J1 pan": 15.265927356191469,
+        "J2 lift": 42.52370877035636,
+        "J3 elbow": 67.6783942815926,
+        "J4 flex": 40.191466457460066,
+        "J5 yaw": 32.14950786840462,
+        "J6 roll": 161.12868979586256
+      },
+      "closest_joint": "J1 pan",
+      "ik_position_error_mm": 1.3877787807814457e-14,
+      "ik_rotation_error_deg": 2.2963931402154183e-14,
+      "reachable_with_5deg_margin": true
+    },
+    "pitch_down": {
+      "source_peak_timestamp_s": 34.200665,
+      "hand_relative_translation_in_start_tcp_m": [
+        -0.05505355904147813,
+        0.006047204409095265,
+        -0.01806952858486495
+      ],
+      "hand_relative_distance_m": 0.05825779696811536,
+      "hand_relative_rotation_deg": 10.883070713101915,
+      "selection_constrained_to_near_start": true,
+      "predicted_model_joint_deg": [
+        -41.53153995906147,
+        -2.11579126451787,
+        40.27775590917552,
+        48.748110005398374,
+        -11.569530149460846,
+        4.7044698992650495
+      ],
+      "predicted_joint_margin_each_deg": {
+        "J1 pan": 85.50246004093853,
+        "J2 lift": 7.1157912645178705,
+        "J3 elbow": 44.02775590917552,
+        "J4 flex": 33.82388999460163,
+        "J5 yaw": 63.86746985053915,
+        "J6 roll": 173.20453010073493
+      },
+      "closest_joint": "J2 lift",
+      "ik_position_error_mm": 8.777083671441753e-14,
+      "ik_rotation_error_deg": 1.425855691286205e-14,
+      "reachable_with_5deg_margin": true
+    }
+  },
+  "interpretation": "A rejected small axis motion means the candidate hand TCP/right_tcp transform or the robot model/workspace still needs verification; it is not an authority to widen motor limits."
+}

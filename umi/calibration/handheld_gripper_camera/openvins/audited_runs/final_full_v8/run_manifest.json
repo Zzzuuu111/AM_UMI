@@ -1,0 +1,44 @@
+{
+  "arguments": {
+    "max_seconds": 0.0,
+    "speed": 1.0,
+    "without_mask": false,
+    "gripper_envelope": true,
+    "gdb": false
+  },
+  "node_command": [
+    "/workspace/install/ov_msckf/lib/ov_msckf/run_subscribe_msckf",
+    "/output/config/estimator_config.yaml",
+    "--ros-args",
+    "-p",
+    "save_total_state:=true",
+    "-p",
+    "filepath_est:=/output/state_estimate.txt",
+    "-p",
+    "filepath_std:=/output/state_std.txt"
+  ],
+  "replay_command": [
+    "/usr/bin/python3",
+    "/tools/am_umi_replay.py",
+    "--session-dir",
+    "/session",
+    "--speed",
+    "1.0",
+    "--max-seconds",
+    "0.0",
+    "--flush-seconds",
+    "5"
+  ],
+  "sha256": {
+    "/output/config/estimator_config.yaml": "42e21969b4315fb1d2f89ffb70ab503b4a1336ba7e31e90266598d715f102691",
+    "/output/config/mask.png": "41ea81f15d797ca77cb00929b59167f1c8838fe7eadc252e3bafdb564f6bbb23",
+    "/output/config/kalibr_imucam_chain.yaml": "64fcbdd640b304c5f7b78e6918485cbd77266396565b82b6d2b9e1ee17b50c85",
+    "/output/config/kalibr_imu_chain.yaml": "5f9d198de6183c4f77dcaf06503517a90485bc697d5141801a33d5ec909947d5",
+    "/tools/am_umi_replay.py": "a5a630be38a3b20ffb313f76427f068dd4ac71ba0ac712c78cad1e754d816fe6",
+    "/tools/am_umi_offline_trial.py": "94a15ada9ad168d8dd125a518e394732daa2702a93b94ba9530f819131737a84",
+    "/session/frame_timestamps_uvc_source.csv": "f30d7bc904e7980e77e313c825aac0bdfff8bbc5ee282d8fa8f55785bcf97cca",
+    "/session/imu_data_strict_uvc.json": "be4301fda23f6051dc883136060195921ca16070132dc795abfb53ba2524f9bd"
+  },
+  "opencv": "4.5.4",
+  "docker_image_id": "sha256:b0d696734f57126ec83b23d74e6613c8ac40d0722bf8b5ec5eb125092d72b83c"
+}

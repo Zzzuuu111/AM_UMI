@@ -1,0 +1,169 @@
+{
+  "schema": "am_umi_handheld_axis_probe_plan_v1",
+  "safety": "offline only; no serial port or robot command was used",
+  "purpose": "Validate camera/world translation directions against low-speed robot TCP movements.",
+  "reference": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/view_references/follow_umi_task_start_v9_centered_elbow/reference.json",
+  "trajectory": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_axis_validation_v1/camera_trajectory_axis_probe.csv",
+  "world_tag_id": 13,
+  "axis_distance_m": 0.02,
+  "joints_limits_deg": {
+    "J1 pan": [
+      -128.32031249982606,
+      122.25585937506148
+    ],
+    "J2 lift": [
+      -98.0,
+      9.216846009954036
+    ],
+    "J3 elbow": [
+      -4.031299134945605,
+      184.49409149022054
+    ],
+    "J4 flex": [
+      -94.30664062492592,
+      85.0
+    ],
+    "J5 yaw": [
+      -71.36718749982006,
+      68.29101562516368
+    ],
+    "J6 roll": [
+      -180.00000000001185,
+      180.00000000001185
+    ]
+  },
+  "tag_map_crosscheck": {
+    "tag_id": 14,
+    "position_error_mm": 2.0111622646216283,
+    "rotation_error_deg": 0.8669799055336019
+  },
+  "axes": {
+    "forward": {
+      "recorded_peak_camera_translation_world_m": [
+        -0.06916701800000002,
+        0.11181978900000006,
+        -0.0010626360000000057
+      ],
+      "recorded_peak_distance_m": 0.13148715065087294,
+      "normalized_world_direction": [
+        -0.5260363287029738,
+        0.8504236987909639,
+        -0.00808167181918434
+      ],
+      "planned_tcp_delta_base_m": [
+        0.0010108801417917236,
+        -0.007522101755390742,
+        -0.01850394840352941
+      ],
+      "planned_distance_m": 0.02,
+      "target_tcp_pose_base": [
+        0.11645683107919555,
+        -0.06826216850121027,
+        -0.20117927465251395,
+        -1.4227413427575377,
+        2.6987479864529695,
+        0.2078314407885674
+      ],
+      "planned_joints_deg": [
+        -44.81812888650897,
+        -78.84599569975906,
+        35.99824513289454,
+        53.22481967868133,
+        -6.857444612606048,
+        -11.141168111046614
+      ],
+      "ik_position_error_mm": 8.471555297512655e-09,
+      "ik_rotation_error_deg": 2.0615280315932658e-08,
+      "minimum_joint_margin_deg": 19.154004300240942,
+      "accepted_for_low_speed_physical_test": true
+    },
+    "up": {
+      "recorded_peak_camera_translation_world_m": [
+        0.0033584210000000003,
+        -0.03702152399999992,
+        0.10419827199999998
+      ],
+      "recorded_peak_distance_m": 0.11063070151943262,
+      "normalized_world_direction": [
+        0.03035704333313012,
+        -0.33464059697295667,
+        0.941856741111754
+      ],
+      "planned_tcp_delta_base_m": [
+        0.014409468304622048,
+        -0.00854689309185349,
+        0.010923270648231667
+      ],
+      "planned_distance_m": 0.02,
+      "target_tcp_pose_base": [
+        0.12985541924202587,
+        -0.06928695983767302,
+        -0.17175205560075285,
+        -1.4227413427575377,
+        2.6987479864529695,
+        0.2078314407885674
+      ],
+      "planned_joints_deg": [
+        -47.74354093558135,
+        -73.46600900579296,
+        41.22551893581114,
+        63.47432027857961,
+        -7.157901181678007,
+        -8.209316585867532
+      ],
+      "ik_position_error_mm": 4.688552431092884e-09,
+      "ik_rotation_error_deg": 1.2022072316944844e-08,
+      "minimum_joint_margin_deg": 21.52567972142039,
+      "accepted_for_low_speed_physical_test": true
+    },
+    "left": {
+      "recorded_peak_camera_translation_world_m": [
+        -0.146840089,
+        -0.059323939999999964,
+        0.03487700599999999
+      ],
+      "recorded_peak_distance_m": 0.16216580139528666,
+      "normalized_world_direction": [
+        -0.9054935611366695,
+        -0.3658227535619246,
+        0.21507004374483168
+      ],
+      "planned_tcp_delta_base_m": [
+        0.017396749508009676,
+        0.007966102302415264,
+        -0.005821882913887853
+      ],
+      "planned_distance_m": 0.02,
+      "target_tcp_pose_base": [
+        0.1328427004454135,
+        -0.052773964443404264,
+        -0.18849720916287238,
+        -1.4227413427575377,
+        2.6987479864529695,
+        0.2078314407885674
+      ],
+      "planned_joints_deg": [
+        -52.7297431244786,
+        -74.8530043813804,
+        36.77072471464739,
+        56.98808416324606,
+        -7.626803534448683,
+        -3.2035643086761927
+      ],
+      "ik_position_error_mm": 5.179888625639726e-09,
+      "ik_rotation_error_deg": 1.2417380225857474e-08,
+      "minimum_joint_margin_deg": 23.1469956186196,
+      "accepted_for_low_speed_physical_test": true
+    }
+  },
+  "accepted_axes": [
+    "forward",
+    "up",
+    "left"
+  ],
+  "limitations": [
+    "This validates only translation axes while the hand-held camera orientation was approximately constant.",
+    "It does not validate the camera-to-TCP rotation for hand-held pitch/roll motions.",
+    "A PASS is a candidate for a supervised 2 cm physical dry-run, not permission for full replay."
+  ]
+}

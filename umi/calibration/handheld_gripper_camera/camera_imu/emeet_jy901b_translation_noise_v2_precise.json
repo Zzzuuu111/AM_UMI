@@ -1,0 +1,35 @@
+{
+  "schema": "am_umi_camera_imu_translation_noise_v1",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_translation_sessions/vio_translation_noise_v3_precise",
+  "fixed_tag_id": 13,
+  "rotation_time_source": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_rotation_time_v2_precise.json",
+  "translation_name": "r_camera_to_imu_in_camera_m",
+  "translation_definition": "vector from camera optical origin to IMU origin, expressed in camera coordinates",
+  "r_camera_to_imu_in_camera_m": [
+    -0.06328325287133603,
+    0.0015956170941535675,
+    0.09070466947346612
+  ],
+  "estimated_gravity_in_tag_world_mps2": [
+    -0.14164971143621974,
+    -0.19569225062145734,
+    -9.81370456507444
+  ],
+  "gravity_norm_mps2": 9.816677512695737,
+  "fit_rmse_mps2": 0.11402582881675467,
+  "fit_condition_number": 3.231664474614813,
+  "inlier_samples": 1774,
+  "candidate_samples": 3400,
+  "gyro_noise_density_rad_s_sqrt_s": [
+    0.0036473264768217342,
+    0.0021181657373463003,
+    0.0020501317679876324
+  ],
+  "accel_noise_density_mps2_sqrt_s": [
+    0.016029530347570358,
+    0.029913093693161072,
+    0.009131517629876107
+  ],
+  "provisional_plausibility_pass": true,
+  "note": "Provisional estimate from one session; validate on an independent high-excitation session before changing production VIO settings."
+}

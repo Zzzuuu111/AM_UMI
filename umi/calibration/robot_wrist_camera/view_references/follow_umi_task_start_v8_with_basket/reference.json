@@ -1,0 +1,70 @@
+{
+  "created_at": "2026-09-08T17:49:11.136977+08:00",
+  "purpose": "AM2Pro deployment start-view reference",
+  "capture_mode": "free_drive_held",
+  "arm_held": true,
+  "tcp_frame": "right_tcp",
+  "policy_image": {
+    "key": "camera0_rgb",
+    "resolution": [
+      224,
+      224
+    ],
+    "dtype": "uint8_rgb",
+    "preprocessing": "camera crop + RGB conversion + gripper mask"
+  },
+  "raw_camera_image": {
+    "filename": "raw_camera.png",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "purpose": "operator record of the uncropped camera view; not policy input"
+  },
+  "camera_config": {
+    "match_name": "emeet",
+    "device_path": "/dev/v4l/by-id/usb-EMEET_WXSJ_GC02_1080P_SN0001-video-index0",
+    "settings": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30
+    },
+    "crop": {
+      "center": [
+        1009,
+        573
+      ],
+      "size": 1080
+    }
+  },
+  "robot_state": {
+    "ActualTCPPose": [
+      0.184733099970464,
+      -0.17159359365178894,
+      -0.19407668863680588,
+      -0.9160938851016791,
+      2.87028122499576,
+      -0.01713621335527034
+    ],
+    "ActualQ": [
+      -39.56043956043956,
+      -99.07692307692308,
+      65.89010989010988,
+      53.45054945054945,
+      -6.593406593406593,
+      4.351648351648351,
+      94.95213228894691
+    ],
+    "ActualQd": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "gripper_position": 0.074
+  },
+  "reference_timestamp": 1788860951.1370132
+}

@@ -1,0 +1,25 @@
+{
+  "matched_states": 3295,
+  "reference": "fixed Tag PnP; shares camera intrinsics, not independent metrology",
+  "reference_duration_s": 120.057888,
+  "alignment": "one SE3, no scale correction",
+  "position_rmse_m": 0.01671998148191734,
+  "position_p95_m": 0.03528870997411796,
+  "position_max_m": 0.05489239327670389,
+  "rotation_median_deg": 5.627121480611112,
+  "rotation_p95_deg": 6.459369229872451,
+  "diagnostic_sim3_scale_to_reference": 0.8276039171265599,
+  "matched_start_s": 8.134919881820679,
+  "matched_end_s": 120.05788993835449,
+  "estimated_camera_span_m": [
+    0.1547350682332066,
+    0.2941710442962217,
+    0.191833529002917
+  ],
+  "reference_camera_span_m": [
+    0.24516898799999998,
+    0.138537001,
+    0.16205412400000002
+  ],
+  "note": "只报告误差，不以算法正常退出代替精度验收。"
+}

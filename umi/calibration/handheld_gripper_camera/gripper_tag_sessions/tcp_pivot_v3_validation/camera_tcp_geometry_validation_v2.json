@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "geometry": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_camera_to_tcp_v2.json",
+  "input": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_pivot_v3_validation/tag_detection.pkl",
+  "world_tag_id": 13,
+  "world_tcp_median_m": [
+    0.5777741214214792,
+    -0.16519650206812664,
+    0.3665666069540765
+  ],
+  "world_tag_frames": 1329,
+  "inlier_threshold_mm": 8.0,
+  "inlier_frames": 1132,
+  "inlier_ratio": 0.8517682468021068,
+  "inlier_rmse_mm": 4.647150204192776,
+  "residual_p95_mm": 10.704511211532624
+}

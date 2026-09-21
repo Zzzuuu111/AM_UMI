@@ -1,0 +1,28 @@
+# @package _global_
+#
+# Conservative training profile for a 6 GB-class AM_UMI GPU.  It keeps AdamW
+# (unlike the 4 GB smoke-test profile), but uses a smaller image diffusion
+# UNet, FP16, batch size one, and gradient accumulation.  The allocator cap
+# leaves a little driver/desktop headroom so an OOM becomes a recoverable CUDA
+# error instead of exhausting the whole GPU.
+
+policy:
+  down_dims: [256, 512, 1024]
+
+dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+val_dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+training:
+  device: "cuda:0"
+  mixed_precision: "fp16"
+  gradient_accumulate_every: 8
+  use_ema: false
+  resume: false
+  gpu_memory_fraction: 0.90

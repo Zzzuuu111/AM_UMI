@@ -1,0 +1,41 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "accepted",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.0025174369829135197,
+    -0.02208656813215093,
+    0.17870862473799212,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "translation_method": "fixed_world_tag_pivot",
+  "rotation_method": "explicit_assumption",
+  "assumed_rotation_vector_rad": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "world_tag_id": 13,
+  "left_finger_tag_id": 0,
+  "right_finger_tag_id": 1,
+  "input": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_pivot_v2/tag_detection.pkl",
+  "quality": {
+    "world_tag_frames": 1329,
+    "both_finger_tag_frames": 1329,
+    "pivot_inlier_frames": 1121,
+    "pivot_inlier_ratio": 0.8434913468773514,
+    "pivot_residual_rmse_m": 0.0038952662940109264,
+    "pivot_residual_p95_m": 0.007170875887234956,
+    "linear_system_singular_values": [
+      47.247511465775005,
+      47.08429770933223,
+      47.07111702328498,
+      4.72334015080552,
+      4.590088149368282,
+      2.3817347231494668
+    ]
+  },
+  "note": "Translation was estimated with the jaw-centre held at one fixed physical point. Rotation is an explicit mounting assumption and must be verified before formal dataset generation."
+}

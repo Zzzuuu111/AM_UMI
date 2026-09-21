@@ -1,0 +1,16 @@
+{
+  "schema": "am_umi_camera_imu_rotation_validation_v1",
+  "session_dir": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_extrinsic_sessions/session_v11_device_time_rotation_validation",
+  "calibration": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_rotation_time_v3_device_time_candidate.json",
+  "fixed_tag_id": 13,
+  "applied_imu_time_offset_for_camera_s": -0.021999999999999797,
+  "tag_pose_frames": 1319,
+  "camera_angular_velocity_samples": 1084,
+  "weighted_vector_correlation": 0.990942108824741,
+  "weighted_angular_velocity_rmse_rad_s": 0.09844058764466637,
+  "pass_recommendation": true,
+  "thresholds": {
+    "min_correlation": 0.85,
+    "max_rmse_rad_s": 0.2
+  }
+}

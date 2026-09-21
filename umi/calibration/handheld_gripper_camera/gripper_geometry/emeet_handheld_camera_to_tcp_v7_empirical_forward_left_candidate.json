@@ -1,0 +1,41 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "T_camera_tcp; pose_cam_tcp is translation[m] + rotation-vector[rad]",
+  "pose_cam_tcp": [
+    -0.0025174369829135197,
+    -0.02208656813215093,
+    0.17870862473799212,
+    2.24618654922566,
+    0.4152680772799294,
+    -0.4899545943981836
+  ],
+  "translation_method": "accepted fixed-point pivot translation from v2",
+  "rotation_method": "empirical supervised robot axis probes; Kabsch fit of selected direction correspondences",
+  "fit_axes": [
+    "forward",
+    "left"
+  ],
+  "source_translation_geometry": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_camera_to_tcp_v2.json",
+  "source_axis_trajectory": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_axis_validation_v1/camera_trajectory_axis_probe.csv",
+  "source_empirical_axis_map": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/empirical_handheld_to_am2pro_axes_v1.json",
+  "fit_rms_vector_error": 0.11608643040747815,
+  "per_axis_residual_deg": [
+    {
+      "axis": "forward",
+      "used_for_fit": true,
+      "residual_deg": 4.704474250001491
+    },
+    {
+      "axis": "down",
+      "used_for_fit": false,
+      "residual_deg": 94.26646592212538
+    },
+    {
+      "axis": "left",
+      "used_for_fit": true,
+      "residual_deg": 4.704474250001336
+    }
+  ],
+  "note": "Provisional diagnostic candidate only. Must pass offline replayability and supervised physical dry-run before acceptance."
+}

@@ -1,0 +1,53 @@
+%YAML:1.0
+# EMEET 1080P + JY901B, generated from AM_UMI calibration.
+# Input is resized by gopro_slam to 960x540; the patched
+# reader uses per-frame host timestamps exported in imu_data.json/CORI.
+File.version: "1.0"
+Camera.type: "KannalaBrandt8"
+Camera1.fx: 418.629359417
+Camera1.fy: 418.629359417
+Camera1.cx: 505.740581399
+Camera1.cy: 286.574774364
+Camera1.k1: -0.020453006255
+Camera1.k2: -0.024925822741
+Camera1.k3: 0.019510448861
+Camera1.k4: -0.005656256168
+Camera.width: 960
+Camera.height: 540
+Camera.fps: 30
+Camera.RGB: 0
+
+# T_b_c1: camera -> JY901B/body. Rotation comes from the independently
+# validated R_camera_imu. translation/noise source: /home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_translation_noise_v2_precise.json (provisional; validate independently)
+IMU.T_b_c1: !!opencv-matrix
+    rows: 4
+    cols: 4
+    dt: f
+    data: [ 0.027997520, -0.694697380, 0.718757045, -0.062314375, -0.999586322, -0.024191677, 0.015554690, -0.064629356, 0.006582136, -0.718895203, -0.695087305, 0.064611285, 0.000000000, 0.000000000, 0.000000000, 1.000000000 ]
+
+# Static measured noise densities for JY901B at about 200 Hz (or conservative
+# defaults when no translation/noise calibration JSON was supplied).
+IMU.NoiseGyro: 0.002707561
+IMU.NoiseAcc: 0.020290586
+IMU.GyroWalk: 5.0e-5
+IMU.AccWalk: 0.0055
+IMU.Frequency: 200.0
+
+ORBextractor.nFeatures: 1500
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+System.thFarPoints: 20.0
+
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 1.0
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 1.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0
+Viewer.imageViewScale: 1.0

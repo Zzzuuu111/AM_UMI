@@ -1,0 +1,36 @@
+# @package _global_
+#
+# Full visual-Transformer + action-Transformer profile for a 6 GB-class GPU.
+# The upstream UMI Transformer default is a pretrained ViT-Base plus a
+# 768-wide, 7-layer action transformer.  That is both unnecessarily large for
+# eleven demonstrations and likely to exceed this memory budget.  This profile
+# deliberately uses a compact ViT-Tiny and compact action transformer.
+
+n_emb: 256
+
+policy:
+  n_layer: 4
+  n_head: 4
+  obs_encoder:
+    model_name: "vit_tiny_patch16_224"
+    pretrained: false
+    frozen: false
+    feature_aggregation: "cls"
+
+dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+val_dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+training:
+  device: "cuda:0"
+  mixed_precision: "fp16"
+  gradient_accumulate_every: 8
+  use_ema: false
+  resume: false
+  gpu_memory_fraction: 0.90

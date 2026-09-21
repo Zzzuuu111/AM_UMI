@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-09-03T10:57:35.436680+08:00",
+  "kind": "handheld_umi_raw_session",
+  "camera": {
+    "requested_device": "/dev/v4l/by-id/usb-EMEET_WXSJ_GC02_1080P_SN0001-video-index0",
+    "resolved_device": "/dev/video2",
+    "width": 1920,
+    "height": 1080,
+    "requested_fps": 30.0,
+    "pixel_format": "MJPG",
+    "frames": 2628,
+    "measured_receive_fps": 29.184258062797184
+  },
+  "imu": {
+    "port": "/dev/ttyUSB0",
+    "baud": 460800,
+    "accel_samples": 20641,
+    "gyro_samples": 20641,
+    "accel_calibration": "calibration/handheld_gripper_camera/imu/jy901b_accel_v1.json"
+  },
+  "timing": {
+    "clock": "host monotonic",
+    "recording_start_monotonic_ns": 144842287406643,
+    "recording_stop_monotonic_ns": 144932301687436,
+    "imu_tail_seconds": 2.0,
+    "camera_imu_latency_calibrated": false
+  },
+  "files": {
+    "video": "raw_video.mp4",
+    "frame_timestamps": "frame_timestamps.csv",
+    "imu_raw": "imu_raw.npz"
+  },
+  "reference": null
+}

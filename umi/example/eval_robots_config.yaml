@@ -1,0 +1,65 @@
+{
+  # robot configurations, 0->right 1->left
+  # comment out robot #1 if only using 1 arm
+  "robots": [
+    # ---- AM2Pro (AlohaMini2/pro) single arm ----
+    {
+      "robot_type": "am2pro",
+      "robot_usb_port": "/dev/ttyACM0",
+      # Run the AM2Pro controller server in the merged AM_UMI environment.
+      "robot_python": "/home/zzzjh/anaconda3/envs/AM_UMI/bin/python",
+      # IK/FK backend: "ros2_dh" (standard-DH DLS, default) or "placo" (lerobot)
+      "ik_backend": "ros2_dh",
+      # Joints whose physical direction is reversed vs the URDF model
+      # (verified by single-joint jog test: wrist_roll)
+      "joint_flip": ["wrist_roll"],
+      "robot_obs_latency": 0.005, "robot_action_latency": 0.02,
+      # gripper calibration: servo value at fully-closed / fully-open
+      "gripper_servo_closed": 5.3, "gripper_servo_open": 93.6,
+      # New Follow UMI gripper: measured physical jaw travel is 74 mm.
+      "gripper_width_min": 0.0, "gripper_width_max": 0.074
+    }
+    # {
+    #   "robot_type": "ur5e",
+    #   "robot_ip": "192.168.0.8",
+    #   "robot_obs_latency": 0.0001, "robot_action_latency": 0.1, "tcp_offset": 0.235,
+    #   "height_threshold": -0.024,
+    #   "sphere_radius": 0.1, "sphere_center": [0, -0.06, -0.185]
+    # }
+  ],
+  # gripper configurations, 0->right 1->left
+  # NOTE: For AM2Pro robots, gripper is integrated into the arm.
+  "grippers": [
+    {}
+    # {
+    #   "gripper_ip": "192.168.0.18",
+    #   "gripper_port": 1000, "gripper_obs_latency": 0.01, "gripper_action_latency": 0.1
+    # }
+  ],
+
+  # ---- AM2Pro 150-degree wrist camera (dynamic discovery) ----
+  # Option A (recommended): match the stable device name in /dev/v4l/by-id,
+  # independent of the volatile /dev/videoN numbering.
+  "camera_match_name": "emeet",
+  # Option B (fallback): explicit device path; overrides camera_match_name.
+  # "camera_device_path": "/dev/video2",
+  # Capture settings must stay fixed (they define the calibrated intrinsics).
+  "camera_settings": {"width": 1920, "height": 1080, "fps": 30},
+  # Observation adaptation: center-crop a source window around the principal
+  # point then resize to 224x224.  The old 182 px crop was an excessive
+  # ~10x digital zoom and showed only the old short gripper.  Follow UMI v1
+  # uses the largest non-distorting square view (1080 px, full image height);
+  # keep this fixed for all new recording,
+  # training, reference alignment, and deployment.
+  # Center from calibration/robot_wrist_camera/intrinsics/
+  # emeet_wrist_1920x1080_30fps_fisheye_v1.json (cx=1009, cy=573).
+  "camera_crop": {"center": [1009, 573], "size": 1080},
+
+  # transformation right arm's base frame in left arm's base coordinate frame
+  "tx_left_right": [
+    [ 0.99996206,  0.00661996,  0.00566226, -0.01676012],
+    [-0.00663261,  0.99997554,  0.0022186 , -0.60552492],
+    [-0.00564743, -0.00225607,  0.99998151, -0.007277  ],
+    [ 0.        ,  0.        ,  0.        ,  1.        ]
+  ]
+}

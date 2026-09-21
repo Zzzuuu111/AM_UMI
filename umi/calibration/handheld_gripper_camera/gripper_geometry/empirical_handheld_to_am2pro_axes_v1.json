@@ -1,0 +1,40 @@
+{
+  "schema": "am_umi_empirical_handheld_to_am2pro_axes_v1",
+  "status": "provisional_physical_direction_table",
+  "purpose": "Temporary direction aliases established by supervised AM2Pro axis tests; not a replacement for camera-to-TCP hand-eye calibration.",
+  "reference": "calibration/robot_wrist_camera/view_references/follow_umi_task_start_v9_centered_elbow/reference.json",
+  "source_tests": {
+    "observed_axis_plan": "calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_axis_validation_v1/am2pro_axis_probe_plan_v2_4cm.json",
+    "forward_candidate": "calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_axis_validation_v1/am2pro_empirical_forward_candidate_v2_6cm.json"
+  },
+  "semantic_mapping": {
+    "handheld_forward": {
+      "robot_action": "empirical_forward_candidate",
+      "unit_tcp_translation_base": [-0.48451115660218064, 0.800832206666823, -0.3520180618848472],
+      "physical_observation": "approximately forward; slight lift remains"
+    },
+    "handheld_down": {
+      "robot_action": "observed_plan_axis_up",
+      "unit_tcp_translation_base": [0.7204734152311026, -0.4273446545926746, 0.5461635324115836],
+      "physical_observation": "down relative to tabletop"
+    },
+    "handheld_up": {
+      "robot_action": "inverse_of_handheld_down",
+      "physical_observation": "up relative to tabletop"
+    },
+    "handheld_left": {
+      "robot_action": "observed_plan_axis_left",
+      "unit_tcp_translation_base": [0.8698374754004837, 0.39830511512076316, -0.2910941456943926],
+      "physical_observation": "left relative to tabletop"
+    },
+    "handheld_right": {
+      "robot_action": "inverse_of_handheld_left",
+      "physical_observation": "right relative to tabletop"
+    }
+  },
+  "limitations": [
+    "This table comes from a small set of supervised physical probes, not a full rigid-transform calibration.",
+    "Do not silently apply it to full demonstration conversion; each demonstration must still pass IK and a physical dry run.",
+    "The forward candidate has a small observed vertical component and should be refined before precision placement."
+  ]
+}

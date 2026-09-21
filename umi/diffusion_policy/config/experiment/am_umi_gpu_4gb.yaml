@@ -1,0 +1,33 @@
+# @package _global_
+#
+# Conservative AM_UMI validation profile for a machine where only 4 GB of the
+# GPU may be used.  The allocator ceiling is deliberately 45% rather than 50%
+# (about 3.4 GiB on this card) to leave room for the desktop compositor and
+# CUDA driver.
+
+dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+val_dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+training:
+  device: "cuda:0"
+  mixed_precision: "fp16"
+  gradient_accumulate_every: 8
+  use_ema: false
+  resume: false
+  gpu_memory_fraction: 0.45
+
+# AdamW keeps two full-size moment tensors and cannot fit this policy plus its
+# gradients below the enforced 4 GB ceiling.  SGD is intentionally used only
+# to validate the complete data -> FP16 GPU -> backward -> update path.
+optimizer:
+  _target_: diffusion_policy.workspace.train_diffusion_unet_image_workspace.make_stateless_sgd
+  lr: 1.0e-4
+  momentum: 0.0
+  weight_decay: 1.0e-6

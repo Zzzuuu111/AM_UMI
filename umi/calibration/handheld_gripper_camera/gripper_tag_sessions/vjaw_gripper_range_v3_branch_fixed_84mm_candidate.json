@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "gripper_model": "v_jaw_one_moving_tag_pair",
+  "width_measurement": "relative_tag_rotation_deg",
+  "fixed_jaw_tag_id": 0,
+  "moving_jaw_tag_id": 1,
+  "valid_pair_frames": 859,
+  "relative_rotation_percentiles_deg": {
+    "low_percentile": 1.0,
+    "low_value": 11.28399067018316,
+    "high_percentile": 99.0,
+    "high_value": 42.58617362363403
+  },
+  "raw_closed_open": [
+    11.28399067018316,
+    42.58617362363403
+  ],
+  "physical_gripper_range_m": [
+    0.0,
+    0.084
+  ],
+  "min_width": 0.0,
+  "max_width": 0.084,
+  "notes": [
+    "原始量是固定爪 Tag 与活动爪 Tag 的相对转角，不是两 Tag 的水平距离。",
+    "请用一次完整闭合—张开—闭合的视频标定；默认 auto 以首尾静止段判断闭合端。"
+  ]
+}

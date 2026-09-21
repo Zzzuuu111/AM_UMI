@@ -1,0 +1,19 @@
+{
+  "kind": "emeet_uvc_payload_timing_v1",
+  "raw_uvch": "raw_uvc_payload_headers.bin",
+  "frame_timestamps_input": "frame_timestamps.csv",
+  "frame_timestamps_output": "frame_timestamps_uvc_source.csv",
+  "payload_records_with_pts": 377018,
+  "source_frame_events": 1391,
+  "source_events_in_video_window": 1330,
+  "video_frames": 1329,
+  "pts_clock_ns_per_tick": 66.66844755422107,
+  "pts_clock_hz": 14999599.311003989,
+  "source_to_payload_fit_rmse_ms": 1.2112467196700871,
+  "source_minus_decode_receive_median_ms": -10.514843,
+  "source_minus_decode_receive_p95_abs_ms": 24.645601199999998,
+  "associations_over_50ms": 0,
+  "frame_event_matching": "strict_monotonic_one_to_one_global_min_squared_cost_v2",
+  "strictly_increasing_source_timeline": true,
+  "note": "UVC SCR/PTS is source-to-USB timing, not a hardware exposure timestamp. Keep frame_timestamps.csv as the raw host-receive record."
+}

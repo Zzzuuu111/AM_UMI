@@ -1,0 +1,22 @@
+{
+  "schema": "am_umi_jy901b_gyro_bias_v1",
+  "created_at": "2026-09-03T09:40:51.625562+08:00",
+  "port": "/dev/ttyUSB0",
+  "baud": 460800,
+  "duration_seconds": 10.0,
+  "sample_count": 2014,
+  "gyro_scale_deg_s_per_lsb": 0.06103515625,
+  "bias_deg_s": [
+    -0.003030544004468719,
+    0.0029396276843346573,
+    0.0034245147250496523
+  ],
+  "std_deg_s": [
+    0.16315347890326642,
+    0.17009871177345556,
+    0.05046190663291596
+  ],
+  "norm_p99_deg_s": 1.1137870844051916,
+  "correction": "gyro_corrected_deg_s = gyro_raw_deg_s - bias_deg_s",
+  "note": "Measured while the final camera-gripper-IMU rig was stationary."
+}

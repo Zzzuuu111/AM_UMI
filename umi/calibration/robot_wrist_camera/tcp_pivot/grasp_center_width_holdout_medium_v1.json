@@ -1,0 +1,51 @@
+{
+  "schema": "am_umi_vjaw_grasp_center_width_holdout_validation_v1",
+  "status": "rejected",
+  "definition": "Held-out candidate is compared with the linear interpolation of two accepted width-dependent grasp-center candidates. No robot was connected.",
+  "parent_frame": "right_Fixed_Jaw",
+  "endpoint_a": {
+    "path": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp_pivot/grasp_center_small_cylinder_v3plusv4_axis.json",
+    "width_m": 0.02770317851348915,
+    "point_parent_m": [
+      -0.02707837507415118,
+      0.017987897716234102,
+      0.19009167633906593
+    ]
+  },
+  "endpoint_b": {
+    "path": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp_pivot/grasp_center_large_cylinder_v2plusv3_axis.json",
+    "width_m": 0.05481229345670853,
+    "point_parent_m": [
+      0.012237343785996387,
+      -0.030044970279139563,
+      0.19248938694070106
+    ]
+  },
+  "held_out": {
+    "path": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp_pivot/grasp_center_medium_cylinder_v1_axis.json",
+    "width_m": 0.041235955056179774,
+    "point_parent_m": [
+      0.012474054247606932,
+      -0.045183862744033465,
+      0.1919613470835646
+    ]
+  },
+  "interpolation_alpha": 0.4991965459232186,
+  "predicted_point_parent_m": [
+    -0.0074521040186771755,
+    -0.005989944077842344,
+    0.19128860518952567
+  ],
+  "held_out_minus_prediction_m": [
+    0.019926158266284105,
+    -0.039193918666191124,
+    0.0006727418940389307
+  ],
+  "error_mm": 43.97348775479382,
+  "max_error_mm": 5.0,
+  "inside_endpoint_width_interval": true,
+  "limitations": [
+    "This validates only one held-out width; it does not promote right_tcp or modify URDF.",
+    "If accepted, use the resulting width-dependent center only as a replay candidate and verify physically at low speed."
+  ]
+}

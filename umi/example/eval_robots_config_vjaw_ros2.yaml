@@ -1,0 +1,63 @@
+# Dedicated configuration for the official AlohaMini2/pro V-jaw gripper.
+# It intentionally leaves example/eval_robots_config.yaml unchanged.
+robots:
+  - robot_type: am2pro
+    robot_usb_port: /dev/ttyACM0
+    robot_python: /home/zzzjh/anaconda3/envs/AM_UMI/bin/python
+    # Geometry/camera/TCP are copied unchanged from the official mesh-free
+    # ROS2 URDF.  The local copy changes only the J2 upper bound to the
+    # independently EEPROM-verified +5 degrees; it never writes a motor.
+    # Do not use ros2_dh here: its legacy tool offset is for the old long jaw.
+    ik_backend: placo
+    urdf_path: calibration/robot_wrist_camera/alohamini2pro_right_kinematic_j2_eeprom_candidate.urdf
+    # Validated on this physical robot using 26 static Tag-13 observations
+    # plus an independent read-only live check (P95 6.86 mm / 0.53 deg).
+    # Mapping is q_urdf = sign * q_encoder + offset; it is applied only at
+    # the hardware boundary, never by rewriting servo EEPROM calibration.
+    joint_model_candidate: calibration/robot_wrist_camera/hand_eye/vjaw_ros2_joint_model_candidate_v2_wide_offsets.json
+    # Read 2026-09-11 from this physical arm.  Every interval is raw encoder
+    # degrees after retaining 5 degrees at each EEPROM endpoint.  These do
+    # not alter EEPROM; all IK/replay model limits below are derived through
+    # the validated q_model = sign*q_encoder + offset mapping.
+    encoder_safe_limits_deg:
+      shoulder_pan: [-121.549, 121.549]   # EEPROM [-126.549, 126.549]
+      shoulder_lift: [-94.648, 94.648]
+      elbow_flex: [-90.209, 90.209]       # EEPROM [-95.209, 95.209]
+      wrist_flex: [-88.187, 88.187]       # EEPROM [-93.187, 93.187]
+      wrist_yaw: [-76.582, 76.582]        # EEPROM [-81.582, 81.582]
+      wrist_roll: [-175.000, 175.000]     # EEPROM [-180.000, 180.000]
+    # Model-coordinate equivalents.  Keep these explicit so the offline gate,
+    # live monitor and replay never silently fall back to wider CAD limits.
+    model_safe_limits_deg:
+      shoulder_pan: [-127.034, 116.063]
+      shoulder_lift: [-184.000, 5.000]
+      elbow_flex: [-3.750, 176.667]
+      wrist_flex: [-93.801, 82.572]
+      wrist_yaw: [-75.437, 77.726]
+      wrist_roll: [-172.090, 177.909]
+    robot_obs_latency: 0.005
+    robot_action_latency: 0.02
+    # Verified on 2026-09-11: J3 P=36 settles the replay-critical +44.3°
+    # test to -0.83° with no pronounced vibration; P=24 stalled at -1.71°.
+    # This is applied by V-jaw controller sessions, while the legacy config
+    # remains unchanged. It writes the servo's EEPROM P register when a
+    # V-jaw controller session connects.
+    position_p_coefficients: {elbow_flex: 36}
+    # Candidate physical V-jaw mapping, measured empty on 2026-09-15.
+    # J7 is not enabled by default in retarget replay; this table is used only
+    # by an explicit gripper test or a future explicit --enable-gripper mode.
+    # Width is the fixed-jaw-inner-front-tip opening in metres.
+    gripper_servo_closed: 4.0
+    gripper_servo_open: 50.0
+    gripper_width_min: 0.0
+    gripper_width_max: 0.084
+    gripper_width_servo_table:
+      - [0.000, 4.0]
+      - [0.009, 9.0]
+      - [0.028, 20.0]
+      - [0.047, 30.0]
+      - [0.067, 40.0]
+      - [0.084, 50.0]
+camera_match_name: emeet
+camera_settings: {width: 1920, height: 1080, fps: 30}
+camera_crop: {center: [1009, 573], size: 1080}

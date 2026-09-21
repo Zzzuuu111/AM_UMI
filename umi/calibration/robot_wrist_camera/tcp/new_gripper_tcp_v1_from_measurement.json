@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "tool_name": "Follow UMI long gripper",
+  "parent_frame": "right_Fixed_Jaw",
+  "tcp_frame": "right_tcp",
+  "tcp_translation_parent_m": [0.0, 0.0, 0.236],
+  "tcp_rotation_parent_rpy_rad": [0.0, 0.0, 0.0],
+  "definition": "midpoint between closed fingertips",
+  "source": "manual measurement: wrist roll axis center to closed fingertip midpoint, approximately 236 mm",
+  "status": "provisional_v1",
+  "refinement": "Run a visual TCP pivot test after the physical gripper is ready; update only right_tcp_joint translation."
+}

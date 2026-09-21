@@ -1,0 +1,41 @@
+{
+  "source_session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_extrinsic_sessions/session_v13_uvc_source_rotation_validation",
+  "prepared_session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/openvins/prepared_sessions/independent_global_accel_offset_v5",
+  "copied_raw_files": [
+    "raw_video.mp4",
+    "imu_raw.npz",
+    "frame_timestamps.csv",
+    "raw_uvc_payload_headers.bin",
+    "metadata.json"
+  ],
+  "calibration_sources": {
+    "camera_imu": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_rotation_time_v4_uvc_source.json",
+    "accel_time": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_accel_time_translation_v2_global_candidate.json",
+    "accel": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/imu/jy901b_accel_v1.json",
+    "gyro_bias": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/imu/jy901b_gyro_bias_v1.json"
+  },
+  "calibration_files_modified": false,
+  "original_session_modified": false,
+  "timing": {
+    "kind": "emeet_uvc_payload_timing_v1",
+    "raw_uvch": "raw_uvc_payload_headers.bin",
+    "frame_timestamps_input": "frame_timestamps.csv",
+    "frame_timestamps_output": "frame_timestamps_uvc_source.csv",
+    "payload_records_with_pts": 376645,
+    "source_frame_events": 1390,
+    "source_events_in_video_window": 1330,
+    "video_frames": 1328,
+    "pts_clock_ns_per_tick": 66.68535458680967,
+    "pts_clock_hz": 14995796.396316973,
+    "source_to_payload_fit_rmse_ms": 1.217016765286847,
+    "source_minus_decode_receive_median_ms": -10.474829,
+    "source_minus_decode_receive_p95_abs_ms": 28.769827799999998,
+    "associations_over_50ms": 6,
+    "frame_event_matching": "strict_monotonic_one_to_one_global_min_squared_cost_v2",
+    "strictly_increasing_source_timeline": true,
+    "note": "UVC SCR/PTS is source-to-USB timing, not a hardware exposure timestamp. Keep frame_timestamps.csv as the raw host-receive record."
+  },
+  "diagnostic_timing_outliers_allowed": true,
+  "timing_outliers_present": true,
+  "repeated_imu_packets_collapsed": false
+}

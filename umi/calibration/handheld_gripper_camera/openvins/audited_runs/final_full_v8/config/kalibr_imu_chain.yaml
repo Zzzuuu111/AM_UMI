@@ -1,0 +1,38 @@
+%YAML:1.0
+imu0:
+  T_i_b:
+    - [1.0, 0.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  # Conservative dynamic noise candidates from the independent fixed-Tag
+  # translation session, not the artificially low static Allan result.
+  accelerometer_noise_density: 0.0372621
+  accelerometer_random_walk: 0.0003722700
+  gyroscope_noise_density: 0.00337116
+  gyroscope_random_walk: 0.0014081982
+  rostopic: /am_umi/imu0
+  # Camera/IMU delay is configured by cam0.timeshift_cam_imu in the camera
+  # chain, NOT by imu0.time_offset (ignored by this OpenVINS version).
+  update_rate: 201.0
+  model: "kalibr"
+  Tw:
+    - [1.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0]
+    - [0.0, 0.0, 1.0]
+  R_IMUtoGYRO:
+    - [1.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0]
+    - [0.0, 0.0, 1.0]
+  Ta:
+    - [1.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0]
+    - [0.0, 0.0, 1.0]
+  R_IMUtoACC:
+    - [1.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0]
+    - [0.0, 0.0, 1.0]
+  Tg:
+    - [0.0, 0.0, 0.0]
+    - [0.0, 0.0, 0.0]
+    - [0.0, 0.0, 0.0]

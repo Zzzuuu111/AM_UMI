@@ -1,0 +1,147 @@
+{
+  "kind": "handheld_umi_tag_visibility_report",
+  "video": "raw_video.mp4",
+  "timestamp_source": "frame_timestamps.csv",
+  "aruco_dictionary": "DICT_4X4_50",
+  "stride": 1,
+  "recorded_frames": 3542,
+  "analyzed_frames": 3542,
+  "host_duration_s": 120.030550582,
+  "any_tag_visible_frames": 3542,
+  "any_tag_visible_ratio": 1.0,
+  "marker_visible_frames": {
+    "0": 3542,
+    "1": 3542,
+    "13": 3214
+  },
+  "marker_statistics": {
+    "0": {
+      "visible_frames": 3542,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 120.030550582,
+          "duration_s": 120.030550582
+        }
+      ]
+    },
+    "1": {
+      "visible_frames": 3542,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 120.030550582,
+          "duration_s": 120.030550582
+        }
+      ]
+    },
+    "13": {
+      "visible_frames": 3214,
+      "visible_ratio": 0.9073969508752118,
+      "longest_sampled_missing_s": 2.277106863,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 6.773581703,
+          "duration_s": 6.773581703
+        },
+        {
+          "start_s": 6.965704926,
+          "end_s": 7.991472578,
+          "duration_s": 1.0257676519999999
+        },
+        {
+          "start_s": 9.145191499,
+          "end_s": 14.228645113,
+          "duration_s": 5.0834536140000015
+        },
+        {
+          "start_s": 14.373867781,
+          "end_s": 15.793517385,
+          "duration_s": 1.419649604
+        },
+        {
+          "start_s": 16.46471108,
+          "end_s": 18.197425683,
+          "duration_s": 1.732714602999998
+        },
+        {
+          "start_s": 18.438782127,
+          "end_s": 19.690802944,
+          "duration_s": 1.2520208170000018
+        },
+        {
+          "start_s": 20.637241255,
+          "end_s": 20.946024025,
+          "duration_s": 0.30878277000000054
+        },
+        {
+          "start_s": 23.223130888,
+          "end_s": 28.507383492,
+          "duration_s": 5.284252603999999
+        },
+        {
+          "start_s": 29.414909657,
+          "end_s": 32.395825289,
+          "duration_s": 2.980915632000002
+        },
+        {
+          "start_s": 32.509880184,
+          "end_s": 34.70174225,
+          "duration_s": 2.191862066000006
+        },
+        {
+          "start_s": 35.176653061,
+          "end_s": 35.293887241,
+          "duration_s": 0.11723417999999697
+        },
+        {
+          "start_s": 35.787710272,
+          "end_s": 52.124627393,
+          "duration_s": 16.336917121
+        },
+        {
+          "start_s": 52.905604401,
+          "end_s": 54.501435256,
+          "duration_s": 1.5958308550000027
+        },
+        {
+          "start_s": 55.006437499,
+          "end_s": 59.784524714,
+          "duration_s": 4.778087214999999
+        },
+        {
+          "start_s": 60.700280162,
+          "end_s": 62.193910389,
+          "duration_s": 1.4936302270000041
+        },
+        {
+          "start_s": 63.141714184,
+          "end_s": 98.197590258,
+          "duration_s": 35.055876074000004
+        },
+        {
+          "start_s": 98.277524661,
+          "end_s": 98.395195843,
+          "duration_s": 0.11767118199999516
+        },
+        {
+          "start_s": 98.634141488,
+          "end_s": 101.670767719,
+          "duration_s": 3.0366262309999996
+        },
+        {
+          "start_s": 101.691919386,
+          "end_s": 120.030550582,
+          "duration_s": 18.33863119600001
+        }
+      ]
+    }
+  },
+  "longest_sampled_no_tag_s": 0.0,
+  "note": "可见率按原始画面检测；相机-IMU 外参求解还需要后续的角速度/视觉旋转对齐。"
+}

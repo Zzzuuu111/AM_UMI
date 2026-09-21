@@ -1,0 +1,73 @@
+{
+  "schema": "am_umi_camera_imu_rotation_time_v1",
+  "session_dir": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/openvins/prepared_sessions/rotation_fit_global_v1",
+  "fixed_tag_id": 13,
+  "fixed_tag_size_m": 0.16,
+  "intrinsics_source": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/intrinsics/emeet_handheld_1920x1080_30fps_fisheye_20260831.json",
+  "gyro_bias_source": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/imu/jy901b_gyro_bias_v1.json",
+  "camera_convention": "OpenCV: +X image right, +Y image down, +Z forward through lens",
+  "rotation_name": "R_camera_imu",
+  "rotation_definition": "omega_camera_rad_s ~= R_camera_imu @ omega_imu_rad_s",
+  "R_camera_imu": [
+    [
+      0.02902453100677764,
+      -0.9995326782686467,
+      -0.009591750254390852
+    ],
+    [
+      -0.6961752629408535,
+      -0.013327928184258944,
+      -0.7177481240655028
+    ],
+    [
+      0.717284866610937,
+      0.02750984193740924,
+      -0.6962367619764909
+    ]
+  ],
+  "euler_xyz_deg": [
+    177.7372950823679,
+    -45.83076657430592,
+    -87.61264051868402
+  ],
+  "imu_time_offset_for_camera_s": -0.005999999999999783,
+  "time_offset_definition": "for camera host time t, compare IMU at t + imu_time_offset_for_camera_s",
+  "pair_seconds": 0.2,
+  "tag_pose_frames": 2650,
+  "camera_angular_velocity_samples": 2114,
+  "weighted_angular_velocity_rmse_rad_s": 0.06135667825442919,
+  "weighted_vector_correlation": 0.9811085389557144,
+  "offset_search": {
+    "min_s": -0.25,
+    "max_s": 0.25,
+    "step_s": 0.002,
+    "best_five": [
+      {
+        "rmse_rad_s": 0.06135667825442919,
+        "correlation": 0.9811085389557144,
+        "offset_s": -0.005999999999999783
+      },
+      {
+        "rmse_rad_s": 0.06150496331736235,
+        "correlation": 0.9810000664538872,
+        "offset_s": -0.007999999999999785
+      },
+      {
+        "rmse_rad_s": 0.06155418330102153,
+        "correlation": 0.9810106338611835,
+        "offset_s": -0.0039999999999997815
+      },
+      {
+        "rmse_rad_s": 0.0618093086240073,
+        "correlation": 0.9808828085078599,
+        "offset_s": -0.0019999999999997797
+      },
+      {
+        "rmse_rad_s": 0.06196991995767522,
+        "correlation": 0.9806837592209336,
+        "offset_s": -0.009999999999999787
+      }
+    ]
+  },
+  "note": "Preliminary rotational extrinsic/time estimate from one fixed Tag. Validate on an independent session before using it for formal SLAM."
+}

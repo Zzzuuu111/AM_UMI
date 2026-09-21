@@ -1,0 +1,40 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.018130559949778358,
+    0.027876163230595497,
+    0.10278674139096547,
+    1.90853780178238,
+    0.03964492488423493,
+    -0.033462659009914776
+  ],
+  "tcp_definition": "fixed_jaw_inner_front_tip",
+  "tcp_axes_definition": "axes of fixed_jaw_tag_0",
+  "translation_method": "fixed_world_tag_pivot",
+  "rotation_method": "measured_fixed_jaw_tag_axes",
+  "world_tag_id": 13,
+  "fixed_jaw_tag_id": 0,
+  "moving_jaw_tag_id": 1,
+  "input": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_tcp_pivot_v1_retry/tag_detection.pkl",
+  "quality": {
+    "world_and_fixed_jaw_tag_frames": 1329,
+    "fixed_and_moving_jaw_tag_frames": 1329,
+    "pivot_inlier_frames": 1053,
+    "pivot_inlier_ratio": 0.7923250564334086,
+    "pivot_residual_rmse_mm": 4.297548350285626,
+    "pivot_residual_p95_mm": 7.203900340704307,
+    "fixed_tag_tcp_translation_spread_p95_mm": 0.3292519651867258,
+    "fixed_tag_rotation_deviation_p95_deg": 0.5057061768271436,
+    "linear_system_singular_values": [
+      45.79332597571903,
+      45.74026000850502,
+      45.728205921141424,
+      3.3062339956034363,
+      3.1350620973686305,
+      2.229640348024285
+    ]
+  },
+  "next_required_step": "Use an independent fixed-point pivot recording to validate translation before marking this geometry accepted for formal demo conversion."
+}

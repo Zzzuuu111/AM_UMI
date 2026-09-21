@@ -1,0 +1,22 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.0025174369829135197,
+    -0.02208656813215093,
+    0.17870862473799212,
+    0.7948513627685736,
+    0.06192198335852157,
+    -0.05474989109980888
+  ],
+  "translation_method": "fixed_world_tag_pivot (copied from v2)",
+  "rotation_method": "robot_wrist_hand_eye_rotation_transfer",
+  "rotation_source": "calibration/robot_wrist_camera/hand_eye/new_gripper_camera_v4_hand_eye.json / tx_camera2fixed_jaw",
+  "rotation_consistency_source": {
+    "mean_rotation_deg": 0.633496945585141,
+    "max_rotation_deg": 1.2763726205776964
+  },
+  "source_geometry_translation": "emeet_handheld_camera_to_tcp_v2.json",
+  "note": "Provisional diagnostic candidate. It combines the hand-held pivot translation with the independently measured wrist-camera-to-fixed-jaw rotation. It must pass offline IK and a short low-speed physical validation before formal use."
+}

@@ -1,0 +1,24 @@
+{
+  "node_exit": 0,
+  "replay_exit": 0,
+  "states": 3299,
+  "input_timing_associations_over_50ms": 2,
+  "input_timing_matching": "strict_monotonic_one_to_one_global_min_squared_cost_v2",
+  "elapsed_wall_s": 263.4759344049962,
+  "mask_enabled": true,
+  "gripper_envelope": true,
+  "status": "REQUIRES_TRAJECTORY_VALIDATION",
+  "finite": true,
+  "expected_post_init_camera_frames": 3299,
+  "matched_post_init_camera_frames": 3299,
+  "post_init_coverage": 1.0,
+  "state_duration_s": 111.78737998008728,
+  "position_span_m": [
+    0.13737,
+    0.287635,
+    0.183967
+  ],
+  "max_displacement_m": 0.22026890309119898,
+  "max_speed_mps": 0.2038710080467549,
+  "lifecycle_status": "CLEAN_EXIT"
+}

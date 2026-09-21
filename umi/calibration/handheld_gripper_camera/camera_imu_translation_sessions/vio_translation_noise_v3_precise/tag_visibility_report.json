@@ -1,0 +1,72 @@
+{
+  "kind": "handheld_umi_tag_visibility_report",
+  "video": "raw_video.mp4",
+  "timestamp_source": "frame_timestamps.csv",
+  "aruco_dictionary": "DICT_4X4_50",
+  "stride": 1,
+  "recorded_frames": 3542,
+  "analyzed_frames": 3542,
+  "host_duration_s": 120.040958314,
+  "any_tag_visible_frames": 3542,
+  "any_tag_visible_ratio": 1.0,
+  "marker_visible_frames": {
+    "0": 3542,
+    "1": 3542,
+    "13": 3524
+  },
+  "marker_statistics": {
+    "0": {
+      "visible_frames": 3542,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 120.040958314,
+          "duration_s": 120.040958314
+        }
+      ]
+    },
+    "1": {
+      "visible_frames": 3542,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 120.040958314,
+          "duration_s": 120.040958314
+        }
+      ]
+    },
+    "13": {
+      "visible_frames": 3524,
+      "visible_ratio": 0.9949181253529079,
+      "longest_sampled_missing_s": 0.22891814400000499,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 23.767360383,
+          "duration_s": 23.767360383
+        },
+        {
+          "start_s": 23.965626625,
+          "end_s": 30.641614241,
+          "duration_s": 6.6759876160000005
+        },
+        {
+          "start_s": 30.812841175,
+          "end_s": 52.747102418,
+          "duration_s": 21.934261242999998
+        },
+        {
+          "start_s": 52.976020562,
+          "end_s": 120.040958314,
+          "duration_s": 67.06493775199999
+        }
+      ]
+    }
+  },
+  "longest_sampled_no_tag_s": 0.0,
+  "note": "可见率按原始画面检测；相机-IMU 外参求解还需要后续的角速度/视觉旋转对齐。"
+}

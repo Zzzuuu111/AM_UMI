@@ -1,0 +1,110 @@
+{
+  "schema": "am_umi_world_tag_map_v1",
+  "purpose": "fixed tabletop Tags for multi-Tag visual trajectory recovery",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/shared_tags/world_map_sessions/table_tags_v1",
+  "world_tag_id": 13,
+  "tag_ids": [
+    13,
+    14,
+    15
+  ],
+  "aruco_dictionary": "DICT_4X4_50",
+  "tags": {
+    "13": {
+      "size_m": 0.16,
+      "T_world_tag": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pair_frames": 508
+    },
+    "14": {
+      "size_m": 0.16,
+      "T_world_tag": [
+        [
+          0.014873400716568341,
+          -0.9998438887961358,
+          0.00953834305021898,
+          -0.2746650635773438
+        ],
+        [
+          0.9998811142067492,
+          0.014833801188036955,
+          -0.004209013540283299,
+          -0.26754949153769775
+        ],
+        [
+          0.004066866581642205,
+          0.009599811421745257,
+          0.9999456506315094,
+          -0.0002883623116581067
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pair_frames": 508,
+      "median_translation_residual_mm": 0.6711293340113766,
+      "median_rotation_residual_deg": 0.12040722132495645
+    },
+    "15": {
+      "size_m": 0.16,
+      "T_world_tag": [
+        [
+          0.9996566355550365,
+          0.015565650736707229,
+          -0.021078935170633473,
+          0.4327149576841705
+        ],
+        [
+          -0.01572648992769338,
+          0.9998483058814226,
+          -0.00748616995555528,
+          0.037668481682087314
+        ],
+        [
+          0.020959210513258407,
+          0.007815097132611058,
+          0.9997497865723547,
+          0.027901221892745517
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pair_frames": 508,
+      "median_translation_residual_mm": 0.7187078175978687,
+      "median_rotation_residual_deg": 0.1235504493848899
+    }
+  },
+  "decoded_frames": 508,
+  "warning": "Do not move any mapped Tag after this file is created. Rebuild the map if a Tag moves."
+}

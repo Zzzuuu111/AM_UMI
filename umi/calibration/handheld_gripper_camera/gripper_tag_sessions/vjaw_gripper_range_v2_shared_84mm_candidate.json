@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "gripper_model": "v_jaw_one_moving_tag_pair",
+  "width_measurement": "relative_tag_rotation_deg",
+  "fixed_jaw_tag_id": 0,
+  "moving_jaw_tag_id": 1,
+  "valid_pair_frames": 859,
+  "raw_closed_open": [
+    11.283996148151221,
+    42.58616325767188
+  ],
+  "physical_gripper_range_m": [
+    0.0,
+    0.084
+  ],
+  "min_width": 0.0,
+  "max_width": 0.084,
+  "notes": [
+    "Uses the same V-jaw physical opening convention as the robot: fixed-jaw-inner-front-tip gap.",
+    "84 mm maximum was measured on the robot V-jaw on 2026-09-15; the hand-held jaw is mechanically identical.",
+    "This first revision rescales the existing relative-rotation endpoint calibration only. It is suitable for a continuous empty replay check, but intermediate-width accuracy remains candidate until checked against a ruler."
+  ]
+}

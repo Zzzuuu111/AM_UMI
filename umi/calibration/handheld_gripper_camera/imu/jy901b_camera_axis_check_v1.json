@@ -1,0 +1,47 @@
+{
+  "schema": "am_umi_camera_imu_axis_check_v1",
+  "created_at": "2026-09-03T09:46:46.809236+08:00",
+  "port": "/dev/ttyUSB0",
+  "baud": 460800,
+  "gyro_bias_source": "calibration/handheld_gripper_camera/imu/jy901b_gyro_bias_v1.json",
+  "seconds_per_axis": 2.0,
+  "camera_convention": "+X image-right, +Y image-down, +Z forward through lens",
+  "measurements": [
+    {
+      "camera_axis": "相机 +X（画面向右）方向的旋转",
+      "median_gyro_deg_s": [
+        0.12510085650446873,
+        4.361074044190666,
+        -1.7124088897250496
+      ],
+      "dominant_imu_axis": "Y",
+      "dominant_sign": "+",
+      "dominant_speed_deg_s": 4.361074044190666
+    },
+    {
+      "camera_axis": "相机 +Y（画面向下）方向的旋转",
+      "median_gyro_deg_s": [
+        0.06406570025446871,
+        1.3398338098156652,
+        -12.14942060847505
+      ],
+      "dominant_imu_axis": "Z",
+      "dominant_sign": "-",
+      "dominant_speed_deg_s": 12.14942060847505
+    },
+    {
+      "camera_axis": "相机 +Z（沿镜头前方）方向的旋转",
+      "median_gyro_deg_s": [
+        20.571878200254467,
+        -0.7353615026843346,
+        -2.4448307647250496
+      ],
+      "dominant_imu_axis": "X",
+      "dominant_sign": "+",
+      "dominant_speed_deg_s": 20.571878200254467
+    }
+  ],
+  "passed_distinct_axes": true,
+  "passed_min_speed": false,
+  "note": "Coarse signed-axis check only; perform visual-IMU extrinsic calibration later."
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "am_umi_vjaw_taskspace_retarget_plan_v1",
+  "safety": "offline candidate only; gripper is not represented. Execute only as an empty-workspace physical direction diagnostic with a visible TCP ruler/marker.",
+  "status": "candidate",
+  "kind": "handheld_axis_probe_fixed_orientation",
+  "dataset": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_hand_to_robot_axis_v2/camera_trajectory_multi_tag.csv",
+  "episode": 0,
+  "reference": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/view_references/follow_umi_vjaw_start_v4_basket_moved/reference.json",
+  "reference_created_at": "2026-09-11T09:36:40.436594+08:00",
+  "tcp_frame": "right_tcp",
+  "model_safe_limits_deg": {
+    "J1 pan": [
+      -127.034,
+      116.063
+    ],
+    "J2 lift": [
+      -184.0,
+      5.0
+    ],
+    "J3 elbow": [
+      -3.75,
+      176.667
+    ],
+    "J4 flex": [
+      -93.801,
+      82.572
+    ],
+    "J5 yaw": [
+      -75.437,
+      77.726
+    ],
+    "J6 roll": [
+      -172.09,
+      177.909
+    ]
+  },
+  "parameters": {
+    "fps": 1.0,
+    "axis_distance_m": 0.04,
+    "camera_tcp_geometry": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_ros2_right_tcp_v1_candidate.json",
+    "geometry_status": "candidate",
+    "hand_start_window_s": [
+      3.0,
+      7.5
+    ],
+    "tool_orientation": "fixed_at_robot_reference",
+    "stage_order": [
+      "left"
+    ]
+  },
+  "probe_results": [
+    {
+      "label": "left",
+      "hand_peak_timestamp_s": 28.336726,
+      "measured_hand_relative_translation_in_start_tcp_m": [
+        -0.06423975455271291,
+        -0.17432235465118445,
+        -0.030852293485087265
+      ],
+      "measured_hand_peak_distance_m": 0.18832656055218575,
+      "requested_tcp_delta_in_start_tcp_m": [
+        -0.013644332347887152,
+        -0.037025548417612464,
+        -0.0065529351557478315
+      ],
+      "expected_tcp_delta_in_robot_base_m": [
+        0.012951876918046501,
+        0.035488814283057585,
+        0.013145073034503157
+      ],
+      "target_joint_model_deg": [
+        -63.85269026987041,
+        -23.92567317700313,
+        50.1347393467351,
+        46.903155622873015,
+        8.157450095705412,
+        6.781280577879583
+      ],
+      "max_joint_delta_from_reference_deg": 16.125809832970546,
+      "ik_position_error_mm": 0.0,
+      "ik_rotation_error_deg": 1.0853351586999929e-14,
+      "minimum_joint_margin_deg": 28.92567317700313,
+      "closest_joint": "J2 lift"
+    }
+  ],
+  "position_error_mm": {
+    "median": 0.0,
+    "max": 0.0
+  },
+  "orientation_deviation_deg": {
+    "median": 0.0,
+    "max": 0.0
+  },
+  "minimum_joint_margin_deg": 28.92567317700313,
+  "max_joint_step_deg": 16.125809832970546,
+  "joint_path_model_deg": [
+    [
+      -47.72688043689986,
+      -25.673035167016195,
+      46.810292697251455,
+      41.77059143184973,
+      -6.943322775897644,
+      1.106892591651938
+    ],
+    [
+      -63.85269026987041,
+      -23.92567317700313,
+      50.1347393467351,
+      46.903155622873015,
+      8.157450095705412,
+      6.781280577879583
+    ],
+    [
+      -47.72688043689986,
+      -25.673035167016195,
+      46.810292697251455,
+      41.77059143184973,
+      -6.943322775897644,
+      1.106892591651938
+    ]
+  ],
+  "limitations": [
+    "This plan validates direction visually or with an external TCP marker; it does not automatically measure real TCP position.",
+    "Each translation is derived from the guided hand trajectory but reduced to a fixed 2 cm pulse.",
+    "Do not infer contact-task accuracy from this no-contact diagnostic."
+  ]
+}

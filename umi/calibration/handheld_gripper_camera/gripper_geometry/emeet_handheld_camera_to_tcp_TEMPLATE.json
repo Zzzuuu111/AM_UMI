@@ -1,0 +1,11 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "pose_cam_tcp": null,
+  "status": "template_only_do_not_use",
+  "units": {
+    "translation": "m",
+    "rotation_vector": "rad"
+  },
+  "transform_direction": "camera_to_tcp",
+  "note": "相机和手持夹爪在现场时完成标定后，复制为带版本号的新文件并填写 6D pose。"
+}

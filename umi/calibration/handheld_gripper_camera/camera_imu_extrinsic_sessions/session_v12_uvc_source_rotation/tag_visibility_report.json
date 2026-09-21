@@ -1,0 +1,80 @@
+{
+  "kind": "handheld_umi_tag_visibility_report",
+  "video": "raw_video.mp4",
+  "timestamp_source": "frame_timestamps.csv",
+  "aruco_dictionary": "DICT_4X4_50",
+  "stride": 1,
+  "recorded_frames": 2657,
+  "analyzed_frames": 2657,
+  "host_duration_s": 90.017696394,
+  "any_tag_visible_frames": 2657,
+  "any_tag_visible_ratio": 1.0,
+  "marker_visible_frames": {
+    "0": 2657,
+    "1": 2657,
+    "13": 2650,
+    "17": 1
+  },
+  "marker_statistics": {
+    "0": {
+      "visible_frames": 2657,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 90.017696394,
+          "duration_s": 90.017696394
+        }
+      ]
+    },
+    "1": {
+      "visible_frames": 2657,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 90.017696394,
+          "duration_s": 90.017696394
+        }
+      ]
+    },
+    "13": {
+      "visible_frames": 2650,
+      "visible_ratio": 0.9973654497553632,
+      "longest_sampled_missing_s": 0.21360342100000196,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 70.220768542,
+          "duration_s": 70.220768542
+        },
+        {
+          "start_s": 70.434371963,
+          "end_s": 85.783362394,
+          "duration_s": 15.34899043099999
+        },
+        {
+          "start_s": 85.812848076,
+          "end_s": 90.017696394,
+          "duration_s": 4.204848318000003
+        }
+      ]
+    },
+    "17": {
+      "visible_frames": 1,
+      "visible_ratio": 0.0003763643206624012,
+      "longest_sampled_missing_s": 60.87596816999999,
+      "visible_intervals_s": [
+        {
+          "start_s": 29.114521661,
+          "end_s": 29.141728224,
+          "duration_s": 0.027206563000000017
+        }
+      ]
+    }
+  },
+  "longest_sampled_no_tag_s": 0.0,
+  "note": "可见率按原始画面检测；相机-IMU 外参求解还需要后续的角速度/视觉旋转对齐。"
+}

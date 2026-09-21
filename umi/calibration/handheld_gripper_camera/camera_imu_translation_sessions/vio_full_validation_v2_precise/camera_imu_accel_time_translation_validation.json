@@ -1,0 +1,24 @@
+{
+  "schema": "am_umi_camera_imu_translation_validation_v1",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_translation_sessions/vio_full_validation_v2_precise",
+  "translation_calibration": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_translation_noise_v2_precise.json",
+  "rotation_time_calibration": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_rotation_time_v2_precise.json",
+  "accel_time_calibration": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu/emeet_jy901b_accel_time_translation_v1.json",
+  "accel_time_offset_for_camera_s": -0.027999999999999914,
+  "r_camera_to_imu_in_camera_m": [
+    -0.06796524580723483,
+    0.002101694692369982,
+    0.08929550201551617
+  ],
+  "gravity_in_tag_world_mps2": [
+    -0.14532767582109038,
+    -0.2044065524978258,
+    -9.8185682424739
+  ],
+  "gravity_norm_mps2": 9.821770945414102,
+  "fit_rmse_mps2": 0.11248209209020447,
+  "inlier_samples": 1792,
+  "candidate_samples": 3436,
+  "pass_recommendation": true,
+  "note": "Independent fixed-translation validation; a pass supports but does not guarantee full VIO stability."
+}

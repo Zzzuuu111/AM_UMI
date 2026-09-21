@@ -1,0 +1,12 @@
+{
+  "schema": "am_umi_fixed_tag_camera_trajectory_v1",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_translation_sessions/vio_full_validation_v4_uvc_source",
+  "trajectory": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/camera_imu_translation_sessions/vio_full_validation_v4_uvc_source/camera_trajectory_fixed_tag_openvins_reference.csv",
+  "world_frame": "ArUco Tag 13",
+  "tag_size_m": 0.16,
+  "frame_count": 3542,
+  "visible_frame_count": 3534,
+  "visible_ratio": 0.9977413890457368,
+  "meets_min_visible_ratio": true,
+  "note": "Direct metric PnP trajectory. It is valid only where the fixed table Tag is visible; it is not a generic SLAM map."
+}

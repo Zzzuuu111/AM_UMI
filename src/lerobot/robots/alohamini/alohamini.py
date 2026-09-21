@@ -1,0 +1,967 @@
+#!/usr/bin/env python
+
+# Copyright 2024 The HuggingFace Inc. team. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import inspect
+import logging
+import os
+import time
+from functools import cached_property
+from itertools import chain
+from typing import Any
+import sys
+
+import numpy as np
+
+from lerobot.cameras.utils import make_cameras_from_configs
+from lerobot.processor import RobotAction, RobotObservation
+from lerobot.utils.decorators import check_if_already_connected, check_if_not_connected
+from lerobot.motors import Motor, MotorCalibration, MotorNormMode
+from lerobot.motors.feetech import (
+    FeetechMotorsBus,
+    OperatingMode,
+)
+
+from ..robot import Robot
+from ..utils import ensure_safe_goal_position
+from .config_alohamini import AlohaMiniConfig
+from .model_specs import arm_state_keys_for_robot_model, validate_robot_model
+
+logger = logging.getLogger(__name__)
+
+from .lift_axis import LiftAxis, LiftAxisConfig
+
+
+# Per-arm hardware profiles. Keep the profile name about the arm itself:
+# role, DOF, and motor class. Whole-robot SKUs are mapped separately below.
+_ARM_PROFILES: dict[str, tuple[tuple[str, int, str, MotorNormMode | None], ...]] = {
+    "so-arm-5dof": (
+        ("shoulder_pan", 1, "sts3215", None),
+        ("shoulder_lift", 2, "sts3215", None),
+        ("elbow_flex", 3, "sts3215", None),
+        ("wrist_flex", 4, "sts3215", None),
+        ("wrist_roll", 5, "sts3215", None),
+        ("gripper", 6, "sts3215", MotorNormMode.RANGE_0_100),
+    ),
+    "am-leader-6dof": (
+        ("shoulder_pan", 1, "sts3215", None),
+        ("shoulder_lift", 2, "sts3215", None),
+        ("elbow_flex", 3, "sts3215", None),
+        ("wrist_flex", 4, "sts3215", None),
+        ("wrist_yaw", 5, "sts3215", None),
+        ("wrist_roll", 6, "sts3215", None),
+        ("gripper", 7, "sts3215", MotorNormMode.RANGE_0_100),
+    ),
+    "am-follower-6dof": (
+        ("shoulder_pan", 1, "sts3095", None),
+        ("shoulder_lift", 2, "sts3095", None),
+        ("elbow_flex", 3, "sts3095", None),
+        ("wrist_flex", 4, "sts3215", None),
+        ("wrist_yaw", 5, "sts3215", None),
+        ("wrist_roll", 6, "sts3215", None),
+        ("gripper", 7, "sts3215", MotorNormMode.RANGE_0_100),
+    ),
+    "am-follower-6dof-hd": (
+        ("shoulder_pan", 1, "sts3250", None),
+        ("shoulder_lift", 2, "sts3095", None),
+        ("elbow_flex", 3, "sts3095", None),
+        ("wrist_flex", 4, "sts3250", None),
+        ("wrist_yaw", 5, "sts3250", None),
+        ("wrist_roll", 6, "sts3250", None),
+        ("gripper", 7, "sts3250", MotorNormMode.RANGE_0_100),
+    ),
+}
+
+
+def _make_arm_motors(
+    prefix: str, arm_profile: str, norm_mode_body: MotorNormMode
+) -> dict[str, Motor]:
+    if arm_profile not in _ARM_PROFILES:
+        raise ValueError(
+            f"Unknown arm_profile '{arm_profile}'. Expected one of: {list(_ARM_PROFILES.keys())}."
+        )
+
+    return {
+        f"{prefix}_{joint}": Motor(motor_id, model, norm_mode or norm_mode_body)
+        for joint, motor_id, model, norm_mode in _ARM_PROFILES[arm_profile]
+    }
+
+
+class AlohaMini(Robot):
+    """
+    The robot includes a three omniwheel mobile base and a remote follower arm.
+    The leader arm is connected locally (on the laptop) and its joint positions are recorded and then
+    forwarded to the remote follower arm (after applying a safety clamp).
+    In parallel, keyboard teleoperation is used to generate raw velocity commands for the wheels.
+    """
+
+    config_class = AlohaMiniConfig
+    name = "alohamini"
+
+    def __init__(self, config: AlohaMiniConfig):
+        super().__init__(config)
+        self.config = config
+        self.logs: dict[str, Any] = {}
+        norm_mode_body = MotorNormMode.DEGREES if config.use_degrees else MotorNormMode.RANGE_M100_100
+
+        specs = validate_robot_model(config.robot_model)
+        arm_profile = specs["arm_profile"]
+        bm = specs["base_motor"]
+        lm = specs["lift_motor"]
+        self.wheel_radius = specs["wheel_radius"]
+        self.base_radius = specs["base_radius"]
+
+        left_arm_motors_cfg = _make_arm_motors("arm_left", arm_profile, norm_mode_body)
+        right_arm_motors_cfg = _make_arm_motors("arm_right", arm_profile, norm_mode_body)
+        self._left_arm_state_keys, self._right_arm_state_keys = arm_state_keys_for_robot_model(
+            config.robot_model
+        )
+
+        left_bus_motors = {
+            **(left_arm_motors_cfg if not config.no_follower else {}),
+            # base
+            "base_left_wheel": Motor(8, bm, MotorNormMode.RANGE_M100_100),
+            "base_back_wheel": Motor(9, bm, MotorNormMode.RANGE_M100_100),
+            "base_right_wheel": Motor(10, bm, MotorNormMode.RANGE_M100_100),
+            "lift_axis": Motor(11, lm, MotorNormMode.DEGREES),
+        }
+        left_bus_calibration = {
+            name: calibration
+            for name, calibration in self.calibration.items()
+            if name in left_bus_motors
+        }
+        self.left_bus = FeetechMotorsBus(
+            port=self.config.left_port,
+            motors=left_bus_motors,
+            calibration=left_bus_calibration,
+        )
+
+        if not config.no_follower:
+            right_bus_calibration = {
+                name: calibration
+                for name, calibration in self.calibration.items()
+                if name in right_arm_motors_cfg
+            }
+            self.right_bus = FeetechMotorsBus(
+                port=self.config.right_port,
+                motors=right_arm_motors_cfg,
+                calibration=right_bus_calibration,
+            )
+        else:
+            self.right_bus = None
+
+        if config.no_follower:
+            self.left_arm_motors = []
+            self.right_arm_motors = []
+            self._left_arm_state_keys = ()
+            self._right_arm_state_keys = ()
+        else:
+            self.left_arm_motors  = [m for m in self.left_bus.motors        if m.startswith("arm_left_")]
+            self.right_arm_motors = [m for m in self.right_bus.motors if m.startswith("arm_right_")]
+
+        self.base_motors = [m for m in self.left_bus.motors if m.startswith("base_")]
+
+        # self.arm_motors = [motor for motor in self.left_bus.motors if motor.startswith("arm")]
+        # self.base_motors = [motor for motor in self.left_bus.motors if motor.startswith("base")]
+
+        self.cameras = make_cameras_from_configs(config.cameras)
+
+
+        self.lift = LiftAxis(
+            LiftAxisConfig(lead_mm_per_rev=specs["lead_mm_per_rev"], motor_model=lm),
+            bus_left=self.left_bus,
+            bus_right=self.right_bus,
+        )
+        # Overcurrent debounce: require N consecutive over-limit reads
+        self._overcurrent_count: dict[str, int] = {}
+        self._overcurrent_trip_n = 20
+        self._last_currents_log_t = 0.0
+        self._gripper_current_limit_ma = 500.0
+        # Nudge the held position slightly further closed than present, so the gripper
+        # keeps a bit of squeeze (a small resting current) instead of fully relaxing to 0mA.
+        self._gripper_hold_close_step = 3
+        # How far the caller's own goal must move past the held position, in the open
+        # direction, before we treat it as "the user wants to open" and let go.
+        self._gripper_release_margin = 1.0
+        # Fixed by mechanical installation, not measured at runtime: +1.0 means increasing
+        # raw position opens the gripper. Flip a motor's sign here if it holds/releases
+        # the wrong way.
+        self._gripper_open_direction: dict[str, float] = {
+            "arm_left_gripper": 1.0,
+            "arm_right_gripper": 1.0,
+        }
+        self._gripper_hold_goal: dict[str, float] = {}
+        self._gripper_hold_direction: dict[str, float] = {}
+
+        # Same idea as the gripper protection above, applied to the rest of the arm
+        # joints (shoulder/elbow/wrist, in degrees). Unlike the gripper there's no fixed
+        # "open direction" -- a joint can be pushed into an obstacle from either side
+        # depending on the motion, so the retreat direction is inferred per contact
+        # episode instead of configured. And unlike the gripper, we don't want to keep
+        # nudging force into whatever it hit -- this is collision protection, not grip
+        # force, so it just freezes at the held position.
+        self._joint_current_limit_ma = 1800.0
+        self._joint_release_margin = 1.0
+        self._joint_hold_goal: dict[str, float] = {}
+        self._joint_hold_direction: dict[str, float] = {}
+
+
+    @property
+    def _state_ft(self) -> dict[str, type]:
+        return dict.fromkeys(
+            (
+                *self._left_arm_state_keys,
+                *self._right_arm_state_keys,
+                "x.vel",
+                "y.vel",
+                "theta.vel",
+                "lift_axis.height_mm",   # new
+                #"lift_axis.vel",         # new (optional, for debugging)
+            ),
+            float,
+        )
+
+    @property
+    def _cameras_ft(self) -> dict[str, tuple]:
+        return {
+            cam: (self.config.cameras[cam].height, self.config.cameras[cam].width, 3) for cam in self.cameras
+        }
+
+    @cached_property
+    def observation_features(self) -> dict[str, type | tuple]:
+        return {**self._state_ft, **self._cameras_ft}
+
+    @cached_property
+    def action_features(self) -> dict[str, type]:
+        return self._state_ft
+
+    # @property
+    # def is_connected(self) -> bool:
+    #     return self.left_bus.is_connected and all(cam.is_connected for cam in self.cameras.values())
+    
+    @property
+    def is_connected(self) -> bool:
+        cams_ok = all(cam.is_connected for cam in self.cameras.values())
+        return self.left_bus.is_connected and (self.right_bus.is_connected if self.right_bus else True) and cams_ok
+
+
+    @check_if_already_connected
+    def connect(self, calibrate: bool = True) -> None:
+        self.left_bus.connect()
+        if self.right_bus:
+            self.right_bus.connect()
+        if not self.is_calibrated and calibrate:
+            logger.info(
+                "Mismatch between calibration values in the motor and the calibration file or no calibration file found"
+            )
+            self.calibrate()
+
+        for cam in self.cameras.values():
+            cam.connect()
+
+        self.configure()
+        logger.info(f"{self} connected.")
+
+        if self.is_calibrated:
+            self.lift.home()
+            print("Lift axis homed to 0mm.")
+        else:
+            logger.info("Skipping lift homing because AlohaMini is not calibrated.")
+
+        
+
+    @property
+    def is_calibrated(self) -> bool:
+        return self.left_bus.is_calibrated and (
+            self.right_bus.is_calibrated if self.right_bus else True
+        )
+
+    def calibrate(self) -> None:
+        """
+        Dual-arm calibration (left arm + chassis on self.left_bus, right arm on self.right_bus):
+        - Left arm: position mode → half-turn homing → collect ROM
+        - Chassis: no homing; ROM fixed to 0–4095
+        - Right arm (if present): position mode → half-turn homing → collect ROM
+        - Merge into a single self.calibration, split by bus, write back to both buses, and save
+        """
+        # If a calibration file already exists: load it and write back, filtering for each bus separately
+        if self.calibration:
+            user_input = input(
+                f"Press ENTER to use provided calibration file associated with the id {self.id}, "
+                f"or type 'c' and press ENTER to run calibration: "
+            )
+            if user_input.strip().lower() != "c":
+                logger.info("Writing existing calibration to both buses (trim per-bus caches)")
+
+                calib_left = {k: v for k, v in self.calibration.items() if k in self.left_bus.motors}
+                self.left_bus.write_calibration(calib_left, cache=False)
+                self.left_bus.calibration = calib_left
+
+                if getattr(self, "right_bus", None):
+                    calib_right = {k: v for k, v in self.calibration.items() if k in self.right_bus.motors}
+                    self.right_bus.write_calibration(calib_right, cache=False)
+                    self.right_bus.calibration = calib_right
+
+                return
+
+        logger.info(f"\nRunning calibration of {self} (dual-bus if right_bus present)")
+
+        if self.config.no_follower:
+            logger.info("no_follower mode: writing default base/lift calibration.")
+            self.calibration = {}
+            for name, motor in self.left_bus.motors.items():
+                self.calibration[name] = MotorCalibration(
+                    id=motor.id,
+                    drive_mode=0,
+                    homing_offset=0,
+                    range_min=0,
+                    range_max=4095,
+                )
+
+            calib_left = {k: v for k, v in self.calibration.items() if k in self.left_bus.motors}
+            self.left_bus.write_calibration(calib_left, cache=False)
+            self.left_bus.calibration = calib_left
+            self._save_calibration()
+            print("Calibration saved to", self.calibration_fpath)
+            return
+
+        if not getattr(self, "left_arm_motors", None):
+            raise RuntimeError("left_arm_motors is empty; expected names starting with 'left_arm_'")
+
+        self.left_bus.disable_torque(self.left_arm_motors)
+        for name in self.left_arm_motors:
+            self.left_bus.write("Operating_Mode", name, OperatingMode.POSITION.value)
+
+        input("Move LEFT arm to the middle of its range of motion, then press ENTER...")
+        left_homing = self.left_bus.set_half_turn_homings(self.left_arm_motors)  # left arm only
+
+        for wheel in self.base_motors:
+            left_homing[wheel] = 0
+
+        motors_left_all = self.left_arm_motors + self.base_motors
+        left_full_turn_motor = "arm_left_wrist_roll"
+        full_turn_left = [m for m in motors_left_all if m.startswith("base_")]  # three base wheels
+        if left_full_turn_motor in motors_left_all:
+            full_turn_left.append(left_full_turn_motor)
+        unknown_left = [m for m in motors_left_all if m not in full_turn_left]
+
+        print(
+            f"Move LEFT arm joints sequentially through full ROM (except '{left_full_turn_motor}'). "
+            "Press ENTER to stop..."
+        )
+        l_mins, l_maxs = self.left_bus.record_ranges_of_motion(unknown_left)
+        for m in full_turn_left:
+            l_mins[m] = 0
+            l_maxs[m] = 4095
+
+        right_homing = {}
+        r_mins, r_maxs = {}, {}
+
+        if getattr(self, "right_bus", None) and getattr(self, "right_arm_motors", None):
+            self.right_bus.disable_torque(self.right_arm_motors)
+            for name in self.right_arm_motors:
+                self.right_bus.write("Operating_Mode", name, OperatingMode.POSITION.value)
+
+            input("Move RIGHT arm to the middle of its range of motion, then press ENTER...")
+            right_homing = self.right_bus.set_half_turn_homings(self.right_arm_motors)
+
+            right_full_turn_motor = "arm_right_wrist_roll"
+            full_turn_right = [right_full_turn_motor] if right_full_turn_motor in self.right_arm_motors else []
+            unknown_right = [m for m in self.right_arm_motors if m not in full_turn_right]
+
+            print(
+                f"Move RIGHT arm joints sequentially through full ROM (except '{right_full_turn_motor}'). "
+                "Press ENTER to stop..."
+            )
+            r_mins, r_maxs = self.right_bus.record_ranges_of_motion(unknown_right)
+            for m in full_turn_right:
+                r_mins[m] = 0
+                r_maxs[m] = 4095
+
+        # Merge → filter by bus and write back → save as a single file
+        self.calibration = {}
+
+        for name, motor in self.left_bus.motors.items():
+            self.calibration[name] = MotorCalibration(
+                id=motor.id,
+                drive_mode=0,
+                homing_offset=left_homing.get(name, 0),
+                range_min=l_mins.get(name, 0),
+                range_max=l_maxs.get(name, 4095),
+            )
+
+        if getattr(self, "right_bus", None):
+            for name, motor in self.right_bus.motors.items():
+                self.calibration[name] = MotorCalibration(
+                    id=motor.id,
+                    drive_mode=0,
+                    homing_offset=right_homing.get(name, 0),
+                    range_min=r_mins.get(name, 0),
+                    range_max=r_maxs.get(name, 4095),
+                )
+
+        # Write back: each bus only writes its own entries to avoid KeyError
+        calib_left = {k: v for k, v in self.calibration.items() if k in self.left_bus.motors}
+        self.left_bus.write_calibration(calib_left, cache=False)
+        self.left_bus.calibration = calib_left
+
+        if getattr(self, "right_bus", None):
+            calib_right = {k: v for k, v in self.calibration.items() if k in self.right_bus.motors}
+            self.right_bus.write_calibration(calib_right, cache=False)
+            self.right_bus.calibration = calib_right
+
+        self._save_calibration()
+        print("Calibration saved to", self.calibration_fpath)
+
+
+
+
+
+    def configure(self):
+        # Set-up arm actuators (position mode)
+        # We assume that at connection time, arm is in a rest position,
+        # and torque can be safely disabled to run calibration.
+        self.left_bus.disable_torque()
+        self.left_bus.configure_motors()
+        for name in self.left_arm_motors:
+            self.left_bus.write("Operating_Mode", name, OperatingMode.POSITION.value)
+            # Set P_Coefficient to lower value to avoid shakiness (Default is 32)
+            self.left_bus.write("P_Coefficient", name, 16)
+            # Set I_Coefficient and D_Coefficient to default value 0 and 32
+            self.left_bus.write("I_Coefficient", name, 0)
+            self.left_bus.write("D_Coefficient", name, 32)
+
+        for name in self.base_motors:
+            self.left_bus.write("Operating_Mode", name, OperatingMode.VELOCITY.value)
+
+        #self.left_bus.enable_torque()
+
+        if self.right_bus:
+            self.right_bus.disable_torque()
+            self.right_bus.configure_motors()
+            for name in self.right_arm_motors:
+                self.right_bus.write("Operating_Mode", name, OperatingMode.POSITION.value)
+                self.right_bus.write("P_Coefficient", name, 16)
+                self.right_bus.write("I_Coefficient", name, 0)
+                self.right_bus.write("D_Coefficient", name, 32)
+            #self.right_bus.enable_torque()
+
+        #self.lift.configure()
+
+
+
+
+    def setup_motors(self) -> None:
+        for motor in chain(reversed(self.arm_motors), reversed(self.base_motors)):
+            input(f"Connect the controller board to the '{motor}' motor only and press enter.")
+            self.left_bus.setup_motor(motor)
+            print(f"'{motor}' motor id set to {self.left_bus.motors[motor].id}")
+
+    @staticmethod
+    def _degps_to_raw(degps: float) -> int:
+        steps_per_deg = 4096.0 / 360.0
+        speed_in_steps = degps * steps_per_deg
+        speed_int = int(round(speed_in_steps))
+        # Cap the value to fit within signed 16-bit range (-32768 to 32767)
+        if speed_int > 0x7FFF:
+            speed_int = 0x7FFF  # 32767 -> maximum positive value
+        elif speed_int < -0x8000:
+            speed_int = -0x8000  # -32768 -> minimum negative value
+        return speed_int
+
+    @staticmethod
+    def _raw_to_degps(raw_speed: int) -> float:
+        steps_per_deg = 4096.0 / 360.0
+        magnitude = raw_speed
+        degps = magnitude / steps_per_deg
+        return degps
+
+    def _body_to_wheel_raw(
+        self,
+        x: float,
+        y: float,
+        theta: float,
+        wheel_radius: float | None = None,
+        base_radius: float | None = None,
+        max_raw: int = 3000,
+    ) -> dict:
+        """
+        Convert desired body-frame velocities into wheel raw commands.
+
+        Parameters:
+          x_cmd      : Linear velocity in x (m/s).
+          y_cmd      : Linear velocity in y (m/s).
+          theta_cmd  : Rotational velocity (deg/s).
+          wheel_radius: Radius of each wheel (meters).
+          base_radius : Distance from the center of rotation to each wheel (meters).
+          max_raw    : Maximum allowed raw command (ticks) per wheel.
+
+        Returns:
+          A dictionary with wheel raw commands:
+             {"base_left_wheel": value, "base_back_wheel": value, "base_right_wheel": value}.
+
+        Notes:
+          - Internally, the method converts theta_cmd to rad/s for the kinematics.
+          - The raw command is computed from the wheels angular speed in deg/s
+            using _degps_to_raw(). If any command exceeds max_raw, all commands
+            are scaled down proportionally.
+        """
+        wheel_radius = self.wheel_radius if wheel_radius is None else wheel_radius
+        base_radius = self.base_radius if base_radius is None else base_radius
+
+        # Convert rotational velocity from deg/s to rad/s.
+        theta_rad = theta * (np.pi / 180.0)
+        # Create the body velocity vector [x, y, theta_rad].
+        velocity_vector = np.array([-x, -y, theta_rad])
+
+        # Define the wheel mounting angles with a -90° offset.
+        angles = np.radians(np.array([240, 0, 120]) - 90)
+        # Build the kinematic matrix: each row maps body velocities to a wheel’s linear speed.
+        # The third column (base_radius) accounts for the effect of rotation.
+        m = np.array([[np.cos(a), np.sin(a), base_radius] for a in angles])
+
+        # Compute each wheel’s linear speed (m/s) and then its angular speed (rad/s).
+        wheel_linear_speeds = m.dot(velocity_vector)
+        wheel_angular_speeds = wheel_linear_speeds / wheel_radius
+
+        # Convert wheel angular speeds from rad/s to deg/s.
+        wheel_degps = wheel_angular_speeds * (180.0 / np.pi)
+
+        # Scaling
+        steps_per_deg = 4096.0 / 360.0
+        raw_floats = [abs(degps) * steps_per_deg for degps in wheel_degps]
+        max_raw_computed = max(raw_floats)
+        if max_raw_computed > max_raw:
+            scale = max_raw / max_raw_computed
+            wheel_degps = wheel_degps * scale
+
+        # Convert each wheel’s angular speed (deg/s) to a raw integer.
+        wheel_raw = [self._degps_to_raw(deg) for deg in wheel_degps]
+
+        return {
+            "base_left_wheel": wheel_raw[0],
+            "base_back_wheel": wheel_raw[1],
+            "base_right_wheel": wheel_raw[2],
+        }
+
+    def _wheel_raw_to_body(
+        self,
+        left_wheel_speed,
+        back_wheel_speed,
+        right_wheel_speed,
+        wheel_radius: float | None = None,
+        base_radius: float | None = None,
+    ) -> dict[str, Any]:
+        """
+        Convert wheel raw command feedback back into body-frame velocities.
+
+        Parameters:
+          wheel_raw   : Vector with raw wheel commands ("base_left_wheel", "base_back_wheel", "base_right_wheel").
+          wheel_radius: Radius of each wheel (meters).
+          base_radius : Distance from the robot center to each wheel (meters).
+
+        Returns:
+          A dict (x.vel, y.vel, theta.vel) all in m/s
+        """
+        wheel_radius = self.wheel_radius if wheel_radius is None else wheel_radius
+        base_radius = self.base_radius if base_radius is None else base_radius
+
+        # Convert each raw command back to an angular speed in deg/s.
+        wheel_degps = np.array(
+            [
+                self._raw_to_degps(left_wheel_speed),
+                self._raw_to_degps(back_wheel_speed),
+                self._raw_to_degps(right_wheel_speed),
+            ]
+        )
+
+        # Convert from deg/s to rad/s.
+        wheel_radps = wheel_degps * (np.pi / 180.0)
+        # Compute each wheel’s linear speed (m/s) from its angular speed.
+        wheel_linear_speeds = wheel_radps * wheel_radius
+
+        # Define the wheel mounting angles with a -90° offset.
+        angles = np.radians(np.array([240, 0, 120]) - 90)
+        m = np.array([[np.cos(a), np.sin(a), base_radius] for a in angles])
+
+        # Solve the inverse kinematics: body_velocity = M⁻¹ · wheel_linear_speeds.
+        m_inv = np.linalg.inv(m)
+        velocity_vector = m_inv.dot(wheel_linear_speeds)
+        x, y, theta_rad = velocity_vector
+        
+        theta = theta_rad * (180.0 / np.pi)
+        return {
+            "x.vel": -x,
+            "y.vel": -y,
+            "theta.vel": theta,
+        }  # m/s and deg/s
+    
+    def _raw_to_ma(raw):
+        try:
+            return float(raw) * 6.5
+        except Exception:
+            return 0.0
+        
+    @check_if_not_connected
+    def get_observation(self) -> RobotObservation:
+        # Read actuators position for arm and vel for base
+        observation_start_t = time.perf_counter()
+        # arm_pos = self.left_bus.sync_read("Present_Position", self.arm_motors)
+
+        #print(f"Left arm motors: {self.left_arm_motors}, Right arm motors: {self.right_arm_motors}")  # debug
+        left_pos = (
+            self.left_bus.sync_read("Present_Position", self.left_arm_motors)
+            if self.left_arm_motors
+            else {}
+        )
+        left_arm_done_t = time.perf_counter()
+
+
+        base_wheel_vel = self.left_bus.sync_read("Present_Velocity", self.base_motors)
+
+        base_vel = self._wheel_raw_to_body(
+            base_wheel_vel["base_left_wheel"],
+            base_wheel_vel["base_back_wheel"],
+            base_wheel_vel["base_right_wheel"],
+        )
+        base_done_t = time.perf_counter()
+
+        right_pos = (
+            self.right_bus.sync_read("Present_Position", self.right_arm_motors)
+            if self.right_bus and self.right_arm_motors
+            else {}
+        )
+        right_arm_done_t = time.perf_counter()
+
+        left_arm_state = {f"{k}.pos": v for k, v in left_pos.items()}
+        right_arm_state = {f"{k}.pos": v for k, v in right_pos.items()}
+
+        obs_dict = {**left_arm_state, **right_arm_state,**base_vel}
+        self.lift.contribute_observation(obs_dict)
+        lift_done_t = time.perf_counter()
+        #print(f"Observation dict so far: {obs_dict}")  # debug
+
+        dt_ms = (lift_done_t - observation_start_t) * 1e3
+        logger.debug(f"{self} read state: {dt_ms:.1f}ms")
+
+        # currents protection
+        self.read_and_check_currents(limit_ma=2000, print_currents=True)
+        currents_done_t = time.perf_counter()
+
+        # Capture images from cameras
+        camera_timings_ms = {}
+        for cam_key, cam in self.cameras.items():
+            camera_start_t = time.perf_counter()
+            obs_dict[cam_key] = cam.async_read()
+            camera_done_t = time.perf_counter()
+            dt_ms = (camera_done_t - camera_start_t) * 1e3
+            camera_timings_ms[f"camera_{cam_key}"] = dt_ms
+            logger.debug(f"{self} read {cam_key}: {dt_ms:.1f}ms")
+
+        observation_done_t = time.perf_counter()
+        self.logs["observation_timing_ms"] = {
+            "left_arm": (left_arm_done_t - observation_start_t) * 1e3,
+            "base": (base_done_t - left_arm_done_t) * 1e3,
+            "right_arm": (right_arm_done_t - base_done_t) * 1e3,
+            "lift": (lift_done_t - right_arm_done_t) * 1e3,
+            "currents": (currents_done_t - lift_done_t) * 1e3,
+            **camera_timings_ms,
+            "robot_observation_total": (observation_done_t - observation_start_t) * 1e3,
+        }
+
+        return obs_dict
+
+    @check_if_not_connected
+    def send_action(self, action: RobotAction) -> RobotAction:
+        """Command AlohaMini to move to a target joint configuration.
+
+        The relative action magnitude may be clipped depending on the configuration parameter
+        `max_relative_target`. In this case, the action sent differs from original action.
+        Thus, this function always returns the action actually sent.
+
+        Raises:
+            RobotDeviceNotConnectedError: if robot is not connected.
+
+        Returns:
+            np.ndarray: the action sent to the motors, potentially clipped.
+        """
+        action_start_t = time.perf_counter()
+        # arm_goal_pos = {k: v for k, v in action.items() if k.endswith(".pos")}
+        left_pos  = {k: v for k, v in action.items() if k.endswith(".pos") and k.startswith("arm_left_") and k.replace(".pos", "") in self.left_bus.motors}
+        right_pos = {k: v for k, v in action.items() if k.endswith(".pos") and k.startswith("arm_right_") and self.right_bus is not None and k.replace(".pos", "") in self.right_bus.motors}
+
+
+        base_goal_vel = {k: v for k, v in action.items() if k.endswith(".vel")}
+
+        base_wheel_goal_vel = self._body_to_wheel_raw(
+            base_goal_vel["x.vel"], base_goal_vel["y.vel"], base_goal_vel["theta.vel"]
+        )
+        prepare_done_t = time.perf_counter()
+
+        # Cap goal position when too far away from present position.
+        # /!\ Slower fps expected due to reading from the follower.
+        # if self.config.max_relative_target is not None:
+        #     present_pos = self.left_bus.sync_read("Present_Position", self.arm_motors)
+        #     goal_present_pos = {key: (g_pos, present_pos[key]) for key, g_pos in arm_goal_pos.items()}
+        #     arm_safe_goal_pos = ensure_safe_goal_position(goal_present_pos, self.config.max_relative_target)
+        #     arm_goal_pos = arm_safe_goal_pos
+
+        self.lift.apply_action(action)
+        lift_action_done_t = time.perf_counter()
+
+        if left_pos and self.config.max_relative_target is not None:
+            present_left = self.left_bus.sync_read("Present_Position", self.left_arm_motors)  # left_arm_*
+            gp_left = {k: (v, present_left[k.replace(".pos", "")]) for k, v in left_pos.items()}
+            left_pos = ensure_safe_goal_position(gp_left, self.config.max_relative_target)
+
+        if self.right_bus and right_pos and self.config.max_relative_target is not None:
+            present_right = self.right_bus.sync_read("Present_Position", self.right_arm_motors)
+            gp_right = {k: (v, present_right[k.replace(".pos", "")]) for k, v in right_pos.items()}
+            right_pos = ensure_safe_goal_position(gp_right, self.config.max_relative_target)
+        relative_limit_done_t = time.perf_counter()
+
+        left_pos = self._limit_gripper_goal_by_current(self.left_bus, left_pos)
+        left_gripper_limit_done_t = time.perf_counter()
+        left_pos = self._limit_joint_goal_by_current(self.left_bus, left_pos)
+        left_joint_limit_done_t = time.perf_counter()
+        if self.right_bus and right_pos:
+            right_pos = self._limit_gripper_goal_by_current(self.right_bus, right_pos)
+        right_gripper_limit_done_t = time.perf_counter()
+        if self.right_bus and right_pos:
+            right_pos = self._limit_joint_goal_by_current(self.right_bus, right_pos)
+        right_joint_limit_done_t = time.perf_counter()
+
+        # Send goal position to the actuators
+        # arm_goal_pos_raw = {k.replace(".pos", ""): v for k, v in arm_goal_pos.items()}
+        # self.left_bus.sync_write("Goal_Position", arm_goal_pos_raw)
+        # self.left_bus.sync_write("Goal_Velocity", base_wheel_goal_vel)
+
+        # return {**arm_goal_pos, **base_goal_vel}
+
+        #print(f"[{filename}:{lineno}]Sending left_pos:{left_pos}, right_pos:{right_pos}, base_wheel_goal_vel:{base_wheel_goal_vel}")  # debug
+    
+        if left_pos:
+            self.left_bus.sync_write("Goal_Position", {k.replace(".pos", ""): v for k, v in left_pos.items()})
+        left_write_done_t = time.perf_counter()
+        if self.right_bus and right_pos:
+            self.right_bus.sync_write("Goal_Position", {k.replace(".pos", ""): v for k, v in right_pos.items()})
+        right_write_done_t = time.perf_counter()
+        self.left_bus.sync_write("Goal_Velocity", base_wheel_goal_vel)
+        base_write_done_t = time.perf_counter()
+
+        self.logs["action_timing_ms"] = {
+            "action_prepare": (prepare_done_t - action_start_t) * 1e3,
+            "action_lift": (lift_action_done_t - prepare_done_t) * 1e3,
+            "action_relative_limit": (relative_limit_done_t - lift_action_done_t) * 1e3,
+            "action_left_gripper_limit": (left_gripper_limit_done_t - relative_limit_done_t) * 1e3,
+            "action_left_joint_limit": (left_joint_limit_done_t - left_gripper_limit_done_t) * 1e3,
+            "action_right_gripper_limit": (right_gripper_limit_done_t - left_joint_limit_done_t) * 1e3,
+            "action_right_joint_limit": (right_joint_limit_done_t - right_gripper_limit_done_t) * 1e3,
+            "action_left_write": (left_write_done_t - right_joint_limit_done_t) * 1e3,
+            "action_right_write": (right_write_done_t - left_write_done_t) * 1e3,
+            "action_base_write": (base_write_done_t - right_write_done_t) * 1e3,
+            "action_total": (base_write_done_t - action_start_t) * 1e3,
+        }
+
+        lift_sent = {k: v for k, v in action.items() if k.startswith("lift_axis.")}
+        return {**left_pos, **right_pos, **base_goal_vel, **lift_sent}
+
+    def _limit_gripper_goal_by_current(self, bus, goal_pos: dict[str, float]) -> dict[str, float]:
+        """Stop pushing a gripper harder once its measured current exceeds the force limit."""
+        return self._limit_goal_by_current(
+            bus,
+            goal_pos,
+            is_target_motor=lambda key: key.endswith("_gripper.pos"),
+            current_limit_ma=self._gripper_current_limit_ma,
+            release_margin=self._gripper_release_margin,
+            hold_goal_state=self._gripper_hold_goal,
+            hold_direction_state=self._gripper_hold_direction,
+            fixed_direction=self._gripper_open_direction,
+            hold_close_step=self._gripper_hold_close_step,
+            log_tag="GripperCurrentLimit",
+        )
+
+    def _limit_joint_goal_by_current(self, bus, goal_pos: dict[str, float]) -> dict[str, float]:
+        """Freeze an arm joint (not the gripper) once its measured current exceeds the limit."""
+        return self._limit_goal_by_current(
+            bus,
+            goal_pos,
+            is_target_motor=lambda key: not key.endswith("_gripper.pos"),
+            current_limit_ma=self._joint_current_limit_ma,
+            release_margin=self._joint_release_margin,
+            hold_goal_state=self._joint_hold_goal,
+            hold_direction_state=self._joint_hold_direction,
+            fixed_direction=None,
+            hold_close_step=0.0,
+            log_tag="JointCurrentLimit",
+        )
+
+    def _limit_goal_by_current(
+        self,
+        bus,
+        goal_pos: dict[str, float],
+        *,
+        is_target_motor,
+        current_limit_ma: float,
+        release_margin: float,
+        hold_goal_state: dict[str, float],
+        hold_direction_state: dict[str, float],
+        fixed_direction: dict[str, float] | None,
+        hold_close_step: float,
+        log_tag: str,
+    ) -> dict[str, float]:
+        """Freeze a motor's goal once its current exceeds the limit, holding there until the
+        caller's own goal asks to move back past the held position.
+
+        fixed_direction is a per-motor mechanical constant (e.g. the gripper's open/close
+        sense, fixed at install time). Pass None for joints that can be pushed into an
+        obstacle from either side -- the retreat direction is then inferred per contact
+        episode from which way the caller was commanding it to move.
+        """
+        target_keys = [key for key in goal_pos if is_target_motor(key) and key.replace(".pos", "") in bus.motors]
+        if not target_keys:
+            return goal_pos
+
+        target_motors = [key.replace(".pos", "") for key in target_keys]
+        try:
+            currents_raw = bus.sync_read("Present_Current", target_motors)
+            present_pos = bus.sync_read("Present_Position", target_motors)
+        except Exception as e:
+            logger.warning("Failed to read %s current/position for force limiting: %s", log_tag, e)
+            return goal_pos
+
+        limited_goal_pos = dict(goal_pos)
+        for goal_key in target_keys:
+            motor = goal_key.replace(".pos", "")
+            goal = float(limited_goal_pos[goal_key])
+            present = float(present_pos[motor])
+            current_ma = abs(float(currents_raw.get(motor, 0.0)) * 6.5)
+
+            if motor not in hold_goal_state:
+                if current_ma < current_limit_ma:
+                    continue
+                if fixed_direction is not None:
+                    # Nudge a small step further in the "closing" sense so a bit of
+                    # position error -- and thus a bit of squeeze current -- remains,
+                    # instead of fully relaxing to 0mA.
+                    direction = fixed_direction.get(motor, 1.0)
+                    hold_goal = min(100.0, max(0.0, present - direction * hold_close_step))
+                else:
+                    # No fixed mechanical sense: infer which way it was being pushed and
+                    # hold back away from that direction instead.
+                    command_delta = goal - present
+                    direction = -1.0 if command_delta > 0 else 1.0
+                    hold_goal = present
+                hold_goal_state[motor] = hold_goal
+                hold_direction_state[motor] = direction
+                print(
+                    f"[{log_tag}] {motor}: {current_ma:.1f} mA >= {current_limit_ma:.1f} mA; "
+                    f"holding at position {hold_goal:.2f} (present={present:.2f})"
+                )
+
+            hold_goal = hold_goal_state[motor]
+            direction = hold_direction_state[motor]
+
+            # Only hand control back once the caller's own goal asks to move past where
+            # we're holding, in the direction away from what triggered the hold. Current
+            # alone can't signal "let go": holding at/near present already drops the
+            # current toward ~0 regardless of whether the object/obstacle is still there.
+            if (goal - hold_goal) * direction >= release_margin:
+                hold_goal_state.pop(motor, None)
+                hold_direction_state.pop(motor, None)
+                print(
+                    f"[{log_tag}] {motor}: goal {goal:.2f} past held position {hold_goal:.2f}; releasing hold."
+                )
+                continue
+
+            limited_goal_pos[goal_key] = hold_goal
+
+        return limited_goal_pos
+
+
+    def stop_base(self):
+        self.left_bus.sync_write("Goal_Velocity", dict.fromkeys(self.base_motors, 0), num_retry=0)
+        logger.info("Base motors stopped")
+
+    def stop_lift(self):
+        self.lift.stop()
+        logger.info("Lift motor stopped")
+
+    def stop_motion(self):
+        self.stop_base()
+        self.stop_lift()
+
+    def read_and_check_currents(self, limit_ma, print_currents):
+        """Read left/right bus currents (mA), print them, and enforce overcurrent protection"""
+        scale = 6.5  # sts3215 current unit conversion factor
+        left_curr_raw = {}
+        left_curr_raw = self.left_bus.sync_read("Present_Current", list(self.left_bus.motors.keys()))
+        right_curr_raw = {}
+        if getattr(self, "right_bus", None):
+            right_curr_raw = self.right_bus.sync_read("Present_Current", list(self.right_bus.motors.keys()))
+
+        now = time.monotonic()
+        if print_currents and (now - self._last_currents_log_t >= 1.0):
+            left_arr = [int(float(raw) * scale) for raw in left_curr_raw.values()]
+            print(f"[Currents][left_bus] {left_arr}")
+            if right_curr_raw:
+                right_arr = [int(float(raw) * scale) for raw in right_curr_raw.values()]
+                print(f"[Currents][right_bus] {right_arr}")
+            self._last_currents_log_t = now
+
+        tripped = None
+        for name, raw in {**left_curr_raw, **right_curr_raw}.items():
+            current_ma = float(raw) * scale
+
+            if current_ma > limit_ma:
+                self._overcurrent_count[name] = self._overcurrent_count.get(name, 0) + 1
+                print(f"[Overcurrent] {name}: {current_ma:.1f} mA > {limit_ma:.1f} mA ")
+            else:
+                # reset when it goes back to normal -> "consecutive" semantics
+                self._overcurrent_count[name] = 0
+
+            if self._overcurrent_count[name] >= self._overcurrent_trip_n:
+                tripped = (name, current_ma, self._overcurrent_count[name])
+                break
+
+        if tripped is not None:
+            name, current_ma, n = tripped
+            print(
+                f"[Overcurrent] {name}: {current_ma:.1f} mA > {limit_ma:.1f} mA "
+                f"for {n} consecutive reads, disconnecting!"
+            )
+            try:
+                self.stop_motion()
+            except Exception:
+                pass
+            try:
+                self.disconnect()
+            except Exception as e:
+                print(f"[Overcurrent] disconnect error: {e}")
+            sys.exit(1)
+
+
+        return {k: round(v * scale, 1) for k, v in {**left_curr_raw, **right_curr_raw}.items()}
+
+    @check_if_not_connected
+    def disconnect(self):
+        self.stop_motion()
+        self.left_bus.disconnect(self.config.disable_torque_on_disconnect)
+        if self.right_bus:
+            self.right_bus.disconnect(self.config.disable_torque_on_disconnect)
+        for cam in self.cameras.values():
+            cam.disconnect()
+
+        logger.info(f"{self} disconnected.")

@@ -1,0 +1,24 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.0025174369829135197,
+    -0.02208656813215093,
+    0.17870862473799212,
+    1.2091995761561452,
+    1.2091995761561452,
+    -1.2091995761561452
+  ],
+  "translation_method": "fixed_world_tag_pivot (copied from v2)",
+  "rotation_method": "offline_ik_axis_candidate",
+  "rotation_matrix_camera_tcp": [
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, -1.0],
+    [-1.0, 0.0, 0.0]
+  ],
+  "axis_mapping": "tcp_x=-cam_z, tcp_y=+cam_x, tcp_z=-cam_y",
+  "source_geometry": "emeet_handheld_camera_to_tcp_v2.json",
+  "source_diagnostic": "data/handheld_demos/demo_v9_008_tcp_rotation_finalists.json; candidate 18",
+  "note": "Provisional diagnostic candidate only. It improved bounded offline IK but has not received a physical low-speed validation. Do not use for formal dataset generation without explicit --allow-provisional-camera-tcp-geometry."
+}

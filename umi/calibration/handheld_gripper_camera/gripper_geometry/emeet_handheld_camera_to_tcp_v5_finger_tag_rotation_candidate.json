@@ -1,0 +1,29 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.0025174369829135197,
+    -0.02208656813215093,
+    0.17870862473799212,
+    0.7974618424646114,
+    0.04835454517441242,
+    0.0010618600125161311
+  ],
+  "translation_method": "fixed_world_tag_pivot (copied from v2)",
+  "rotation_method": "two_finger_tag_rigid_frame_plus_ik_axis_selection",
+  "rotation_matrix_camera_tcp": [
+    [0.998891260378619, 0.0173240407691915, 0.04377359421661959],
+    [0.019228939351940623, 0.6985840891193075, -0.7152695424249146],
+    [-0.042970895157225554, 0.7153182145316689, 0.6974764183315533]
+  ],
+  "finger_tag_source": "data/handheld_demos/demo_v9_008/tag_detection.pkl",
+  "finger_tag_ids": [0, 1],
+  "pair_frame_stability": {
+    "median_angular_deviation_deg": 0.37536860823162027,
+    "p95_angular_deviation_deg": 0.5234353411488833
+  },
+  "axis_mapping_from_measured_pair_frame": "tcp_x=+pair_x, tcp_y=-pair_z, tcp_z=+pair_y",
+  "source_geometry_translation": "emeet_handheld_camera_to_tcp_v2.json",
+  "note": "Provisional diagnostic candidate. Rotation comes from the rigid two-finger Tag frame and a bounded offline IK axis selection. It requires a short low-speed physical validation before any formal dataset use."
+}

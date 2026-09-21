@@ -1,0 +1,103 @@
+{
+  "tx_fixed_jaw2camera": [
+    [
+      0.9783823647583844,
+      0.20610413375714387,
+      0.01700101108783992,
+      -0.048051575438361666
+    ],
+    [
+      -0.17118675827663865,
+      0.7610125495730351,
+      0.6257435522505097,
+      -0.15640771597383823
+    ],
+    [
+      0.11603034999743445,
+      -0.6151268043587175,
+      0.7798435563873791,
+      0.041035374066630353
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "tx_camera2fixed_jaw": [
+    [
+      0.9783823647583847,
+      -0.17118675827664023,
+      0.11603034999743222,
+      0.015476535325508682
+    ],
+    [
+      0.20610413375714381,
+      0.7610125495730357,
+      -0.6151268043587141,
+      0.1541738215528062
+    ],
+    [
+      0.017001011087837668,
+      0.6257435522505056,
+      0.7798435563873687,
+      0.06668687310986633
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "diagnostics": {
+    "tag_id": 13,
+    "sample_indices_1based": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "method": "cv2.CALIB_HAND_EYE_PARK",
+    "static_tag_consistency_mean_translation_mm": 56.34815589028555,
+    "static_tag_consistency_max_translation_mm": 84.70541912357099,
+    "static_tag_consistency_mean_rotation_deg": 6.898463310558957,
+    "static_tag_consistency_max_rotation_deg": 10.259349200753478,
+    "urdf_use_recommendation": "NO",
+    "per_sample": [
+      {
+        "sample_index_1based": 1,
+        "translation_mm": 5.003707553108401e-14,
+        "rotation_deg": 3.387102146024968e-15
+      },
+      {
+        "sample_index_1based": 2,
+        "translation_mm": 54.66605596841212,
+        "rotation_deg": 7.114062571695613
+      },
+      {
+        "sample_index_1based": 3,
+        "translation_mm": 74.23779130505045,
+        "rotation_deg": 7.884565512885323
+      },
+      {
+        "sample_index_1based": 4,
+        "translation_mm": 55.407813292802885,
+        "rotation_deg": 7.652085385411915
+      },
+      {
+        "sample_index_1based": 5,
+        "translation_mm": 84.70541912357099,
+        "rotation_deg": 10.259349200753478
+      },
+      {
+        "sample_index_1based": 6,
+        "translation_mm": 69.0718556518768,
+        "rotation_deg": 8.480717192607411
+      }
+    ]
+  }
+}

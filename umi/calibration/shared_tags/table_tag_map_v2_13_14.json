@@ -1,0 +1,77 @@
+{
+  "schema": "am_umi_world_tag_map_v1",
+  "purpose": "fixed tabletop Tags for multi-Tag visual trajectory recovery",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/shared_tags/world_map_sessions/table_tags_v2_13_14_retry",
+  "world_tag_id": 13,
+  "tag_ids": [
+    13,
+    14
+  ],
+  "aruco_dictionary": "DICT_4X4_50",
+  "tags": {
+    "13": {
+      "size_m": 0.16,
+      "T_world_tag": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pair_frames": 591
+    },
+    "14": {
+      "size_m": 0.16,
+      "T_world_tag": [
+        [
+          0.012438991604596272,
+          -0.9998904193097962,
+          0.008026260669810836,
+          -0.27447630669864403
+        ],
+        [
+          0.9999079144556764,
+          0.012481959552831157,
+          0.005325720103445683,
+          -0.2670046811134968
+        ],
+        [
+          -0.005425319968401976,
+          0.007959274979572986,
+          0.9999536068463573,
+          -0.00045700866158790714
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pair_frames": 590,
+      "median_translation_residual_mm": 0.8119710168706487,
+      "median_rotation_residual_deg": 0.14180478598002524
+    }
+  },
+  "decoded_frames": 591,
+  "warning": "Do not move any mapped Tag after this file is created. Rebuild the map if a Tag moves."
+}

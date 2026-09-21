@@ -1,0 +1,90 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+# Osmo Action 4 (DJI AC203), Wide FOV, 2.7K 4:3 2688x2016 -> SLAM at 960x720 (same 4:3 aspect)
+# Intrinsics from scripts/calibrate_fisheye_intrinsics.py (osmo4_intrinsics_wide.json):
+#   f=1054.20, cx=1344.19, cy=990.63, k1..k4 = 0.17367, 0.07852, 0.00182, -0.04352
+# Scaled to 960x720 by factor 720/2016 = 0.357142857
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+Camera.type: "KannalaBrandt8"
+
+Camera1.fx: 376.500000
+Camera1.fy: 376.500000
+Camera1.cx: 480.067857
+Camera1.cy: 353.796429
+
+Camera1.k1: 0.173670
+Camera1.k2: 0.078519
+Camera1.k3: 0.001815
+Camera1.k4: -0.043516
+
+# Camera resolution (SLAM processes at 720p)
+Camera.width: 960
+Camera.height: 720
+
+# Camera frames per second
+Camera.fps: 60
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 1
+
+#--------------------------------------------------------------------------------------------
+# IMU (body frame). TODO: calibrate T_b_c1 for Osmo Action 4!
+#   - T_b_c1: IMU -> camera transform. Placeholder identity; must be replaced
+#     with a calibrated value (Kalibr / adapted openicc).
+#   - Noise values: GoPro defaults as a starting point; calibrate if possible.
+#--------------------------------------------------------------------------------------------
+IMU.T_b_c1: !!opencv-matrix
+    rows: 4
+    cols: 4
+    dt: f
+    data: [ 1., 0., 0., 0.,
+            0., 1., 0., 0.,
+            0., 0., 1., 0.,
+            0., 0., 0., 1. ]
+
+IMU.NoiseGyro: 0.0015
+IMU.NoiseAcc: 0.017
+IMU.GyroWalk: 5.0e-5
+IMU.AccWalk: 0.0055
+IMU.Frequency: 200.0
+
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1250
+
+# ORB Extractor: Scale factor between levels in the scale pyramid
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid
+ORBextractor.nLevels: 8
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+System.thFarPoints: 20.0 # meters
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0
+Viewer.imageViewScale: 1.0

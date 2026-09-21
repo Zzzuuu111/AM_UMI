@@ -1,0 +1,22 @@
+# @package _global_
+#
+# Resource-conscious profile for AM_UMI on an 8 GB laptop GPU. It preserves
+# the policy architecture and uses gradient accumulation for an effective
+# batch size of eight without allocating a batch of eight images at once.
+
+dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+val_dataloader:
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+
+training:
+  device: "cuda:0"
+  mixed_precision: "fp16"
+  gradient_accumulate_every: 8
+  use_ema: false
+  resume: false

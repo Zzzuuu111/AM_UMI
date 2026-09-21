@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "width_measurement": "dual_tag_abs_camera_x_m",
+  "gripper_id": 0,
+  "left_finger_tag_id": 0,
+  "right_finger_tag_id": 1,
+  "nominal_tag_depth_m": 0.082,
+  "valid_dual_tag_frames": 977,
+  "raw_tag_separation_percentiles_m": {
+    "low_percentile": 1.0,
+    "low_value": 0.04716998545394757,
+    "high_percentile": 99.0,
+    "high_value": 0.124543504148837
+  },
+  "aruco_measured_width": [
+    0.04716998545394757,
+    0.124543504148837
+  ],
+  "aruco_actual_width": [
+    0.0,
+    0.07737351869488943
+  ],
+  "min_width": 0.0,
+  "max_width": 0.07737351869488943
+}

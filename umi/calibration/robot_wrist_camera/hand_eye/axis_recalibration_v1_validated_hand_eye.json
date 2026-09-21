@@ -1,0 +1,121 @@
+{
+  "tx_fixed_jaw2camera": [
+    [
+      -0.940808440826056,
+      0.305661451092861,
+      -0.1464600798383353,
+      -0.06360570356958245
+    ],
+    [
+      -0.18348667641450267,
+      -0.8226262091036576,
+      -0.538162391545618,
+      0.28090013344848996
+    ],
+    [
+      -0.28497739778586517,
+      -0.4794342472243054,
+      0.8300184849385275,
+      -0.001897830133767528
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "tx_camera2fixed_jaw": [
+    [
+      -0.9408084408260561,
+      -0.18348667641450608,
+      -0.2849773977858694,
+      -0.00884018960504922
+    ],
+    [
+      0.30566145109286225,
+      -0.8226262091036677,
+      -0.4794342472243197,
+      0.2496077388047642
+    ],
+    [
+      -0.14646007983833584,
+      -0.5381623915456125,
+      0.8300184849385318,
+      0.14342942527144692
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "diagnostics": {
+    "tag_id": 13,
+    "sample_indices_1based": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "method": "cv2.CALIB_HAND_EYE_PARK",
+    "static_tag_consistency_mean_translation_mm": 216.69296148800606,
+    "static_tag_consistency_max_translation_mm": 450.46301266949365,
+    "static_tag_consistency_mean_rotation_deg": 20.33175043257652,
+    "static_tag_consistency_max_rotation_deg": 42.41294551225587,
+    "urdf_use_recommendation": "NO",
+    "per_sample": [
+      {
+        "sample_index_1based": 1,
+        "translation_mm": 5.551115123125783e-14,
+        "rotation_deg": 1.5719050406682737e-15
+      },
+      {
+        "sample_index_1based": 2,
+        "translation_mm": 92.84766160110783,
+        "rotation_deg": 9.958312545990625
+      },
+      {
+        "sample_index_1based": 3,
+        "translation_mm": 305.4832238156552,
+        "rotation_deg": 25.708315249039703
+      },
+      {
+        "sample_index_1based": 4,
+        "translation_mm": 450.46301266949365,
+        "rotation_deg": 42.41294551225587
+      },
+      {
+        "sample_index_1based": 5,
+        "translation_mm": 120.79783389731745,
+        "rotation_deg": 11.220321401231397
+      },
+      {
+        "sample_index_1based": 6,
+        "translation_mm": 192.85727491311215,
+        "rotation_deg": 17.6377555023333
+      },
+      {
+        "sample_index_1based": 7,
+        "translation_mm": 383.06168443920643,
+        "rotation_deg": 34.81312360812761
+      },
+      {
+        "sample_index_1based": 8,
+        "translation_mm": 204.86075099883828,
+        "rotation_deg": 15.80916673670624
+      },
+      {
+        "sample_index_1based": 9,
+        "translation_mm": 199.8652110573237,
+        "rotation_deg": 25.425813337503904
+      }
+    ]
+  }
+}

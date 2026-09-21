@@ -1,0 +1,61 @@
+{
+  "created_at": "2026-09-04T11:38:28.076190+08:00",
+  "kind": "handheld_umi_raw_session",
+  "camera": {
+    "requested_device": "/dev/v4l/by-id/usb-EMEET_WXSJ_GC02_1080P_SN0001-video-index0",
+    "resolved_device": "/dev/video2",
+    "width": 1920,
+    "height": 1080,
+    "requested_fps": 30.0,
+    "pixel_format": "MJPG",
+    "frames": 1328,
+    "measured_receive_fps": 29.48519109472422
+  },
+  "imu": {
+    "port": "/dev/ttyUSB0",
+    "baud": 460800,
+    "accel_samples": 10885,
+    "gyro_samples": 10885,
+    "read_timeout_ms": 2.0,
+    "timestamp_method": "jy901b_0x50_device_clock_mapped_to_host_v1",
+    "accel_calibration": "calibration/handheld_gripper_camera/imu/jy901b_accel_v1.json"
+  },
+  "timing": {
+    "clock": "host monotonic",
+    "recording_start_monotonic_ns": 233739545345383,
+    "recording_stop_monotonic_ns": 233784550988919,
+    "imu_tail_seconds": 2.0,
+    "camera_imu_latency_calibrated": false,
+    "uvc_payload_timing": {
+      "captured": true,
+      "returncode": -15,
+      "bytes": 8286208,
+      "raw_path": "raw_uvc_payload_headers.bin",
+      "log_path": "uvc_metadata_capture.log",
+      "timing_alignment": {
+        "kind": "emeet_uvc_payload_timing_v1",
+        "raw_uvch": "raw_uvc_payload_headers.bin",
+        "frame_timestamps_input": "frame_timestamps.csv",
+        "frame_timestamps_output": "frame_timestamps_uvc_source.csv",
+        "payload_records_with_pts": 376645,
+        "source_frame_events": 1390,
+        "video_frames": 1328,
+        "pts_clock_ns_per_tick": 66.68535458680967,
+        "pts_clock_hz": 14995796.396316973,
+        "source_to_payload_fit_rmse_ms": 1.217016765286847,
+        "source_minus_decode_receive_median_ms": -7.914875,
+        "source_minus_decode_receive_p95_abs_ms": 16.003001349999998,
+        "associations_over_50ms": 0,
+        "note": "UVC SCR/PTS is source-to-USB timing, not a hardware exposure timestamp. Keep frame_timestamps.csv as the raw host-receive record."
+      }
+    }
+  },
+  "files": {
+    "video": "raw_video.mp4",
+    "frame_timestamps": "frame_timestamps.csv",
+    "imu_raw": "imu_raw.npz",
+    "uvc_payload_headers": "raw_uvc_payload_headers.bin",
+    "uvc_source_frame_timestamps": "frame_timestamps_uvc_source.csv"
+  },
+  "reference": null
+}

@@ -1,0 +1,149 @@
+{
+  "schema": "am_umi_vjaw_taskspace_retarget_plan_v1",
+  "status": "candidate",
+  "kind": "fixed_tip_real_arm_pivot_probe",
+  "safety": "offline-generated low-speed empty-workspace diagnostic only; place a paper cross under the real fixed-jaw inner-front tip and supervise execution",
+  "reference": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/view_references/follow_umi_vjaw_start_v6_safe_midpoint/reference.json",
+  "reference_created_at": "2026-09-14T15:51:03.263205+08:00",
+  "tcp_frame": "right_tcp",
+  "demonstrated_tcp_frame": "fixed_jaw_inner_front_tip",
+  "right_tcp_to_demonstrated_tcp": {
+    "path": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp/vjaw_right_tcp_to_fixed_jaw_inner_front_tip_v1_candidate.json",
+    "status": "candidate",
+    "pose_parent_child": [
+      -0.022923652,
+      -0.011619429,
+      -0.00389474,
+      2.1199798659999995,
+      2.2153983069999996,
+      0.100166596
+    ]
+  },
+  "parameters": {
+    "fps": 1.0,
+    "axes": [
+      "y"
+    ],
+    "tilt_deg": 10.0,
+    "ik_steps": 100,
+    "random_restarts": 4
+  },
+  "model_safe_limits_deg": {
+    "J1 pan": [
+      -127.034,
+      116.063
+    ],
+    "J2 lift": [
+      -184.0,
+      5.0
+    ],
+    "J3 elbow": [
+      -3.75,
+      176.667
+    ],
+    "J4 flex": [
+      -93.801,
+      82.572
+    ],
+    "J5 yaw": [
+      -75.437,
+      77.726
+    ],
+    "J6 roll": [
+      -172.09,
+      177.909
+    ]
+  },
+  "probe_results": [
+    {
+      "label": "local_y_plus",
+      "right_tcp_rotation_delta_deg": 10.0,
+      "target_joint_model_deg": [
+        -24.543929452854385,
+        -13.627401938810605,
+        32.712882066864545,
+        39.1277920184285,
+        3.0692398947783275,
+        1.8459996719050922
+      ],
+      "ik_position_error_mm": 4.8074067159589095e-14,
+      "ik_rotation_error_deg": 2.906405873536346e-14,
+      "model_fixed_tip_point_error_mm": 6.798699777552591e-14,
+      "minimum_joint_margin_deg": 18.627401938810607,
+      "closest_joint": "J2 lift"
+    },
+    {
+      "label": "local_y_minus",
+      "right_tcp_rotation_delta_deg": -10.0,
+      "target_joint_model_deg": [
+        -23.77922387495298,
+        -36.973938092669215,
+        58.038952540168076,
+        61.095787660011936,
+        1.6675234365100213,
+        2.292141737506574
+      ],
+      "ik_position_error_mm": 3.925231146709438e-14,
+      "ik_rotation_error_deg": 1.7511112756730826e-14,
+      "model_fixed_tip_point_error_mm": 5.003707553108401e-14,
+      "minimum_joint_margin_deg": 21.476212339988066,
+      "closest_joint": "J4 flex"
+    }
+  ],
+  "position_error_mm": {
+    "median": 4.3663189313341737e-14,
+    "max": 4.8074067159589095e-14
+  },
+  "orientation_deviation_deg": {
+    "median": 0.0,
+    "max": 0.0
+  },
+  "minimum_joint_margin_deg": 18.627401938810607,
+  "max_joint_step_deg": 12.811077425334204,
+  "joint_path_model_deg": [
+    [
+      -24.166440876460303,
+      -25.233474727455757,
+      45.22787511483387,
+      50.03432769558599,
+      2.3753585427836743,
+      2.161837646596993
+    ],
+    [
+      -24.543929452854385,
+      -13.627401938810605,
+      32.712882066864545,
+      39.1277920184285,
+      3.0692398947783275,
+      1.8459996719050922
+    ],
+    [
+      -24.166440876460303,
+      -25.233474727455757,
+      45.22787511483387,
+      50.03432769558599,
+      2.3753585427836743,
+      2.161837646596993
+    ],
+    [
+      -23.77922387495298,
+      -36.973938092669215,
+      58.038952540168076,
+      61.095787660011936,
+      1.6675234365100213,
+      2.292141737506574
+    ],
+    [
+      -24.166440876460303,
+      -25.233474727455757,
+      45.22787511483387,
+      50.03432769558599,
+      2.3753585427836743,
+      2.161837646596993
+    ]
+  ],
+  "limitations": [
+    "A pass only establishes that the model plan is safe; use a physical paper cross/ruler to judge the real tip drift.",
+    "This relative pivot test does not replace an independent global hand-eye or workspace calibration."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "am_umi_camera_tcp_geometry_v1",
+  "status": "candidate",
+  "transform_direction": "camera_to_tcp",
+  "pose_cam_tcp": [
+    -0.00651113132165192,
+    0.021717361714406552,
+    0.12520842650348207,
+    -0.8820565138859799,
+    -0.8820565138884409,
+    -1.3845977733242245
+  ],
+  "tcp_definition": "ROS2 URDF link right_tcp",
+  "tcp_axes_definition": "ROS2 URDF axes of right_tcp",
+  "translation_method": "matching_ros2_urdf_camera_to_tcp",
+  "rotation_method": "matching_ros2_urdf_camera_to_tcp",
+  "source": {
+    "measured_fixed_jaw_geometry": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_fixed_tcp_v1_accepted.json",
+    "urdf": "/home/zzzjh/alohamini_ros2/src/alohamini_description/urdf/alohamini2pro_right_kinematic.urdf",
+    "camera_link": "right_camera",
+    "tcp_link": "right_tcp",
+    "measured_tcp_to_ros2_right_tcp": [
+      0.010577106654347959,
+      0.023685742356799933,
+      -0.0016686356326729782,
+      -2.1199798659873386,
+      -2.2153983067298078,
+      -0.10016659553527771
+    ],
+    "measured_tcp_to_ros2_translation_mm": 25.99372849448082,
+    "measured_tcp_to_ros2_rotation_deg": 175.7807775657028
+  },
+  "limitations": [
+    "候选仅在手持装置与该 ROS2 URDF 的相机安装座、夹爪型号和镜头朝向完全相同时成立。",
+    "保留 measured-geometry 作为固定爪 pivot 的原始测量；本文件不覆盖它。",
+    "必须经离线 IK 筛选，随后再进行低速实机验证，才可升级为 accepted。"
+  ]
+}

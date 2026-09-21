@@ -1,0 +1,10 @@
+{
+  "node_exit": -11,
+  "replay_exit": 0,
+  "states": 0,
+  "elapsed_wall_s": 23.64200442202855,
+  "mask_enabled": true,
+  "gripper_envelope": true,
+  "status": "NO_STATE",
+  "lifecycle_status": "NODE_EXIT_ERROR"
+}

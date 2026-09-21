@@ -1,0 +1,170 @@
+{
+  "tx_base2world": [
+    [
+      -0.7265592465687998,
+      -0.6825197861438156,
+      -0.07923637263011137,
+      0.2560918563401479
+    ],
+    [
+      -0.5116733121122512,
+      0.614411844000883,
+      -0.6005734822846523,
+      -0.34183415615574037
+    ],
+    [
+      0.4585870505121754,
+      -0.395809079574528,
+      -0.7956337660185799,
+      0.2787987617238924
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "tx_gripper2camera": [
+    [
+      0.8643346901279467,
+      -0.16873096027028822,
+      0.4737672492772085,
+      0.01005391788451581
+    ],
+    [
+      0.4848950094790798,
+      0.5295224260822957,
+      -0.6960480084435288,
+      0.12628000915025514
+    ],
+    [
+      -0.1334255343767049,
+      0.8313458145213615,
+      0.5395014026433153,
+      0.05124301971791755
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "diagnostics": {
+    "tag_id": 13,
+    "input_samples": 14,
+    "tag_valid_samples": 14,
+    "inlier_original_sample_indices_1based": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      14
+    ],
+    "outlier_original_sample_indices_1based": [
+      8,
+      13
+    ],
+    "preliminary_inlier_threshold_translation_mm": 379.9746914990204,
+    "preliminary_inlier_threshold_rotation_deg": 32.26335446837605,
+    "inlier_mean_translation_mm": 109.29984065226104,
+    "inlier_max_translation_mm": 234.43125519615793,
+    "inlier_mean_rotation_deg": 10.702709148986004,
+    "inlier_max_rotation_deg": 22.859018549893314,
+    "per_original_sample": [
+      {
+        "sample_index_1based": 1,
+        "translation_error_mm": 24.874774850445366,
+        "rotation_error_deg": 2.806594100259979,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 2,
+        "translation_error_mm": 82.82638888509892,
+        "rotation_error_deg": 8.70310319361375,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 3,
+        "translation_error_mm": 101.37311248863006,
+        "rotation_error_deg": 10.578640117729996,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 4,
+        "translation_error_mm": 234.43125519615793,
+        "rotation_error_deg": 22.859018549893314,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 5,
+        "translation_error_mm": 208.17046381594832,
+        "rotation_error_deg": 22.069869471663115,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 6,
+        "translation_error_mm": 87.22401514048353,
+        "rotation_error_deg": 8.051444546699514,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 7,
+        "translation_error_mm": 198.32089879583043,
+        "rotation_error_deg": 17.354019917478475,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 8,
+        "translation_error_mm": 301.96638655842673,
+        "rotation_error_deg": 27.895945294403045,
+        "inlier": false
+      },
+      {
+        "sample_index_1based": 9,
+        "translation_error_mm": 8.26613002849316,
+        "rotation_error_deg": 3.5783831869232436,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 10,
+        "translation_error_mm": 59.74484338004552,
+        "rotation_error_deg": 5.789774703833793,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 11,
+        "translation_error_mm": 103.99214465196762,
+        "rotation_error_deg": 10.173419394737753,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 12,
+        "translation_error_mm": 145.83336038629844,
+        "rotation_error_deg": 11.093716480511855,
+        "inlier": true
+      },
+      {
+        "sample_index_1based": 13,
+        "translation_error_mm": 461.6848583643262,
+        "rotation_error_deg": 44.722090221846635,
+        "inlier": false
+      },
+      {
+        "sample_index_1based": 14,
+        "translation_error_mm": 56.5407002077332,
+        "rotation_error_deg": 5.374526124487284,
+        "inlier": true
+      }
+    ],
+    "urdf_use_recommendation": "NO"
+  }
+}

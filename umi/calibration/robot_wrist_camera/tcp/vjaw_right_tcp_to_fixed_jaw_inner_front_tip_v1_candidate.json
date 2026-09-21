@@ -1,0 +1,22 @@
+{
+  "schema": "am_umi_tcp_frame_transform_v1",
+  "status": "candidate",
+  "parent_frame": "right_tcp",
+  "child_frame": "fixed_jaw_inner_front_tip",
+  "pose_parent_child": [
+    -0.022923652,
+    -0.011619429,
+    -0.00389474,
+    2.119979866,
+    2.215398307,
+    0.100166596
+  ],
+  "translation_method": "compose_camera_to_right_tcp_candidate_and_camera_to_fixed_tip_accepted",
+  "rotation_method": "fixed_tip_uses_fixed_jaw_tag_axes; right_tcp_uses_ros2_urdf_axes",
+  "source_geometries": {
+    "camera_to_right_tcp": "calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_ros2_right_tcp_v1_candidate.json",
+    "camera_to_fixed_jaw_inner_front_tip": "calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_fixed_tcp_v1_accepted.json"
+  },
+  "quality_note": "Translation magnitude is 25.994 mm. The approximately 175.781 degree orientation difference is an axis-convention change, not a physical wrist rotation.",
+  "next_required_step": "Validate this transform with a low-speed real-arm fixed-jaw-tip ruler/point test before marking accepted or using it in formal training data."
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "am_umi_fixed_tag_camera_trajectory_v1",
+  "pipeline_route": "fixed_multi_tag_direct_formal_candidate",
+  "session": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_hand_to_robot_axis_v2",
+  "trajectory": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_hand_to_robot_axis_v2/camera_trajectory_multi_tag.csv",
+  "world_frame": "multi-Tag tabletop map (root Tag 13)",
+  "tag_map": "/home/zzzjh/AM_UMI/umi/calibration/shared_tags/table_tag_map_v2_13_14.json",
+  "visible_by_tag": {
+    "13": 1402,
+    "14": 1228
+  },
+  "multi_tag_frames": 1228,
+  "max_multi_tag_translation_spread_mm": 11.844780306398864,
+  "max_multi_tag_rotation_spread_deg": 0.7410928207429032,
+  "total_tag_pose_candidates": 2630,
+  "rejected_tag_pose_candidates": 6,
+  "rejected_tag_pose_ratio": 0.0022813688212927757,
+  "frame_count": 1417,
+  "visible_frame_count": 1402,
+  "visible_ratio": 0.9894142554693014,
+  "meets_min_visible_ratio": true,
+  "note": "Direct metric PnP trajectory. It is valid only where the fixed table Tag is visible; it is not a generic SLAM map."
+}

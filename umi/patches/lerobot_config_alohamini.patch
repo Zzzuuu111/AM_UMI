@@ -1,0 +1,35 @@
+diff --git a/src/lerobot/robots/alohamini/config_alohamini.py b/src/lerobot/robots/alohamini/config_alohamini.py
+index 344ed493..576d6831 100644
+--- a/src/lerobot/robots/alohamini/config_alohamini.py
++++ b/src/lerobot/robots/alohamini/config_alohamini.py
+@@ -22,21 +22,21 @@ from ..config import RobotConfig
+ 
+ def alohamini_cameras_config() -> dict[str, CameraConfig]:
+     return {
+-        "forward": OpenCVCameraConfig(
+-            index_or_path="/dev/am_camera_forward", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
+-        ),
++        # "forward": OpenCVCameraConfig(
++        #   index_or_path="/dev/am_camera_forward", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
++        #),
+         # "backward": OpenCVCameraConfig(
+         #     index_or_path="/dev/am_camera_backward", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
+         # ),
+-        # "chest": OpenCVCameraConfig(
+-        #     index_or_path="/dev/am_camera_chest", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
+-        # ),
++        "chest": OpenCVCameraConfig(
++             index_or_path="/dev/am_camera_chest", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
++         ),
+         # "wrist_left": OpenCVCameraConfig(
+         #     index_or_path="/dev/am_camera_wrist_left", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
+         # ),
+-        "wrist_right": OpenCVCameraConfig(
+-            index_or_path="/dev/am_camera_wrist_right", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
+-        ),
++        #"wrist_right": OpenCVCameraConfig(
++        #    index_or_path="/dev/am_camera_wrist_right", fps=30, width=640, height=480, rotation=Cv2Rotation.NO_ROTATION
++        #),
+     }
+ 
+ 

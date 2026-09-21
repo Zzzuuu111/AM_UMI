@@ -1,0 +1,18 @@
+{
+  "node_exit": -11,
+  "replay_exit": 0,
+  "states": 203,
+  "elapsed_wall_s": 55.27277908998076,
+  "mask_enabled": true,
+  "gripper_envelope": true,
+  "status": "REQUIRES_TRAJECTORY_VALIDATION",
+  "finite": true,
+  "state_duration_s": 6.846890211105347,
+  "position_span_m": [
+    0.04296,
+    0.21417,
+    0.027405
+  ],
+  "max_displacement_m": 0.12823510177014716,
+  "max_speed_mps": 0.17991715554943613
+}

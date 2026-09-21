@@ -1,0 +1,70 @@
+{
+  "schema": "am_umi_vjaw_grasp_center_cylinder_axis_v1",
+  "status": "rejected_insufficient_axis_consensus",
+  "parent_frame": "right_Fixed_Jaw",
+  "tcp_frame": "grasp_center_at_sampled_width",
+  "definition": "Point rigidly attached to the fixed jaw whose world XY projection lies on the fitted vertical cylinder axis. Cylinder-axis height is intentionally free.",
+  "grasp_center_translation_parent_m": [
+    0.013269416675597213,
+    0.012251486482788843,
+    0.18310797406636362
+  ],
+  "fitted_cylinder_axis_world_xy_m": [
+    -0.0012984824170109571,
+    -0.2324583743497335
+  ],
+  "input": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp_pivot/grasp_center_large_cylinder_v2.pkl",
+  "inputs": [
+    "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/tcp_pivot/grasp_center_large_cylinder_v2.pkl"
+  ],
+  "hand_eye": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/hand_eye/new_gripper_camera_v4_hand_eye.json",
+  "parameters": {
+    "tag_id": 13,
+    "inlier_threshold_mm": 4.0,
+    "min_inliers": 6,
+    "ransac_seed_sample_indices_1based": [
+      3,
+      5,
+      6
+    ]
+  },
+  "j7": {
+    "inlier_servo_median_0_100": 35.029742233972236,
+    "inlier_servo_span_0_100": 2.9081295439524055,
+    "inlier_width_m_median": 0.057059484467944475,
+    "inlier_width_m_span": 0.005816259087904813
+  },
+  "diagnostics": {
+    "visible_tag_samples": 6,
+    "missing_tag_raw_indices_1based": [],
+    "linear_system_rank": 5,
+    "singular_values": [
+      2.356780984695748,
+      2.3458691672348038,
+      0.674250116128183,
+      0.6633693327393893,
+      0.2186530349106815
+    ],
+    "inlier_raw_indices_1based": [
+      3,
+      5,
+      6
+    ],
+    "inlier_count": 3,
+    "inlier_transverse_residual_mm_mean": 0.011156600487929371,
+    "inlier_transverse_residual_mm_max": 0.01665445176437271,
+    "all_transverse_residual_mm": [
+      11.578392793095984,
+      15.09504529138399,
+      0.0009530250374041686,
+      17.486464928405496,
+      0.015862324662011228,
+      0.01665445176437271
+    ]
+  },
+  "limitations": [
+    "This calibrates a grasp-center point at the sampled J7 width, not a universal fixed right_tcp.",
+    "The fitted axis assumes the cylinder is vertical and stationary during one input recording.",
+    "Use at least two accepted widths and a third independent cylinder before fitting grasp_center(width)."
+  ]
+}

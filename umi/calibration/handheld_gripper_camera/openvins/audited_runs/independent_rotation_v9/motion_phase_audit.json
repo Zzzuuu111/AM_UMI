@@ -1,0 +1,88 @@
+{
+  "run_dir": "calibration/handheld_gripper_camera/openvins/audited_runs/independent_rotation_v9",
+  "reference": "calibration/handheld_gripper_camera/openvins/prepared_sessions/session_v13_global_diagnostic_v3/reference_fixed_tag.csv",
+  "guide": "rotation",
+  "phases": [
+    {
+      "planned_phase": "静止",
+      "interval_s": [
+        0,
+        3
+      ],
+      "samples": 0
+    },
+    {
+      "planned_phase": "点头",
+      "interval_s": [
+        3,
+        15
+      ],
+      "samples": 281,
+      "position_rmse_using_global_se3_m": 0.024521249089684727,
+      "position_p95_using_global_se3_m": 0.030102143269945723,
+      "diagnostic_local_sim3_scale": 1.2261193817060425,
+      "estimated_position_rms_radius_m": 0.01652573552617665,
+      "reference_position_rms_radius_m": 0.022379675737969562,
+      "accel_bias_median_mps2": [
+        -0.001098,
+        -0.001589,
+        0.006886
+      ]
+    },
+    {
+      "planned_phase": "摇头",
+      "interval_s": [
+        15,
+        27
+      ],
+      "samples": 354,
+      "position_rmse_using_global_se3_m": 0.015811458315480646,
+      "position_p95_using_global_se3_m": 0.025278880480431212,
+      "diagnostic_local_sim3_scale": 1.4112357441778018,
+      "estimated_position_rms_radius_m": 0.029135977640685096,
+      "reference_position_rms_radius_m": 0.0422860362714393,
+      "accel_bias_median_mps2": [
+        0.011465,
+        -0.0048185,
+        0.0131805
+      ]
+    },
+    {
+      "planned_phase": "滚转",
+      "interval_s": [
+        27,
+        39
+      ],
+      "samples": 354,
+      "position_rmse_using_global_se3_m": 0.016988389659418138,
+      "position_p95_using_global_se3_m": 0.028933268148285864,
+      "diagnostic_local_sim3_scale": 1.4516256928329438,
+      "estimated_position_rms_radius_m": 0.02325518758323943,
+      "reference_position_rms_radius_m": 0.03463078934425418,
+      "accel_bias_median_mps2": [
+        0.0248215,
+        -0.009846500000000001,
+        0.018615
+      ]
+    },
+    {
+      "planned_phase": "静止尾部",
+      "interval_s": [
+        39,
+        46
+      ],
+      "samples": 174,
+      "position_rmse_using_global_se3_m": 0.023055937545156863,
+      "position_p95_using_global_se3_m": 0.0327710374047985,
+      "diagnostic_local_sim3_scale": 1.6557032951235182,
+      "estimated_position_rms_radius_m": 0.014219196294164084,
+      "reference_position_rms_radius_m": 0.02483459976632622,
+      "accel_bias_median_mps2": [
+        0.024498,
+        -0.0044905,
+        0.0184665
+      ]
+    }
+  ],
+  "note": "时间段来自录制提示，不保证实际动作相符。位置误差始终用整段 SE3 对齐，未缩放。局部尺度仅诊断；静止/小位移段数值不稳定，不能用作标定。"
+}

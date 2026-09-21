@@ -1,0 +1,64 @@
+{
+  "created_at": "2026-09-08T11:41:22.736956+08:00",
+  "kind": "handheld_umi_raw_session",
+  "camera": {
+    "requested_device": "/dev/v4l/by-id/usb-EMEET_WXSJ_GC02_1080P_SN0001-video-index0",
+    "resolved_device": "/dev/video0",
+    "width": 1920,
+    "height": 1080,
+    "requested_fps": 30.0,
+    "pixel_format": "MJPG",
+    "frames": 508,
+    "measured_receive_fps": 25.30874536067373
+  },
+  "imu": {
+    "port": "/dev/ttyUSB0",
+    "baud": 460800,
+    "accel_samples": 9809,
+    "gyro_samples": 9809,
+    "read_timeout_ms": 2.0,
+    "timestamp_method": "jy901b_0x50_device_clock_mapped_to_host_v1",
+    "accel_calibration": "calibration/handheld_gripper_camera/imu/jy901b_accel_v1.json"
+  },
+  "timing": {
+    "clock": "host monotonic",
+    "recording_start_monotonic_ns": 93636424106853,
+    "recording_stop_monotonic_ns": 93656456707947,
+    "imu_tail_seconds": 2.0,
+    "camera_imu_latency_calibrated": false,
+    "uvc_payload_timing": {
+      "captured": true,
+      "returncode": -15,
+      "bytes": 3571712,
+      "raw_path": "raw_uvc_payload_headers.bin",
+      "log_path": "uvc_metadata_capture.log",
+      "timing_alignment": {
+        "kind": "emeet_uvc_payload_timing_v1",
+        "raw_uvch": "raw_uvc_payload_headers.bin",
+        "frame_timestamps_input": "frame_timestamps.csv",
+        "frame_timestamps_output": "frame_timestamps_uvc_source.csv",
+        "payload_records_with_pts": 162350,
+        "source_frame_events": 599,
+        "source_events_in_video_window": 538,
+        "video_frames": 508,
+        "pts_clock_ns_per_tick": 66.66764091460155,
+        "pts_clock_hz": 14999780.797418017,
+        "source_to_payload_fit_rmse_ms": 1.2336207570462747,
+        "source_minus_decode_receive_median_ms": 6.6304435,
+        "source_minus_decode_receive_p95_abs_ms": 26.518949899999992,
+        "associations_over_50ms": 0,
+        "frame_event_matching": "strict_monotonic_one_to_one_global_min_squared_cost_v2",
+        "strictly_increasing_source_timeline": true,
+        "note": "UVC SCR/PTS is source-to-USB timing, not a hardware exposure timestamp. Keep frame_timestamps.csv as the raw host-receive record."
+      }
+    }
+  },
+  "files": {
+    "video": "raw_video.mp4",
+    "frame_timestamps": "frame_timestamps.csv",
+    "imu_raw": "imu_raw.npz",
+    "uvc_payload_headers": "raw_uvc_payload_headers.bin",
+    "uvc_source_frame_timestamps": "frame_timestamps_uvc_source.csv"
+  },
+  "reference": null
+}

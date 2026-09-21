@@ -1,0 +1,43 @@
+{
+  "schema": "am_umi_am2pro_empirical_forward_axis_v1",
+  "safety": "offline only; no serial port or robot command was used",
+  "reference": "/home/zzzjh/AM_UMI/umi/calibration/robot_wrist_camera/view_references/follow_umi_task_start_v9_centered_elbow/reference.json",
+  "source_observed_plan": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/tcp_axis_validation_v1/am2pro_axis_probe_plan_v2_4cm.json",
+  "basis_observation": {
+    "up_was_plan_axis": "forward",
+    "left_was_plan_axis": "left",
+    "forward_construction": "normalized(left cross up)"
+  },
+  "axis_distance_m": 0.04,
+  "axes": {
+    "forward": {
+      "planned_tcp_delta_base_m": [
+        -0.019380446264087227,
+        0.03203328826667293,
+        -0.014080722475393888
+      ],
+      "planned_distance_m": 0.04,
+      "target_tcp_pose_base": [
+        0.09606550467331659,
+        -0.0287067784791466,
+        -0.1967560487243784
+      ],
+      "planned_joints_deg": [
+        -51.238986681028045,
+        -57.5975295916968,
+        17.97210743015975,
+        55.64217513058513,
+        -7.492549769783337,
+        -4.701310020957633
+      ],
+      "ik_position_error_mm": 0.00017081951185578162,
+      "ik_rotation_error_deg": 0.00019890124386093047,
+      "minimum_joint_margin_deg": 22.003406565105355,
+      "accepted_for_low_speed_physical_test": true
+    }
+  },
+  "limitations": [
+    "The sign of this forward candidate is empirically inferred; if it moves backward, use its exact inverse.",
+    "This candidate only calibrates a table-forward direction and is not a complete hand-held-to-robot transform."
+  ]
+}

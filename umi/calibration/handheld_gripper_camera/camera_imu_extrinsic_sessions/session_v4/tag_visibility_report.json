@@ -1,0 +1,248 @@
+{
+  "kind": "handheld_umi_tag_visibility_report",
+  "video": "raw_video.mp4",
+  "timestamp_source": "frame_timestamps.csv",
+  "aruco_dictionary": "DICT_4X4_50",
+  "stride": 1,
+  "recorded_frames": 2628,
+  "analyzed_frames": 2628,
+  "host_duration_s": 90.014280793,
+  "any_tag_visible_frames": 2628,
+  "any_tag_visible_ratio": 1.0,
+  "marker_visible_frames": {
+    "0": 2628,
+    "1": 2628,
+    "13": 1289,
+    "17": 1,
+    "37": 1
+  },
+  "marker_statistics": {
+    "0": {
+      "visible_frames": 2628,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 90.014280793,
+          "duration_s": 90.014280793
+        }
+      ]
+    },
+    "1": {
+      "visible_frames": 2628,
+      "visible_ratio": 1.0,
+      "longest_sampled_missing_s": 0.0,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 90.014280793,
+          "duration_s": 90.014280793
+        }
+      ]
+    },
+    "13": {
+      "visible_frames": 1289,
+      "visible_ratio": 0.4904870624048706,
+      "longest_sampled_missing_s": 8.844954975999997,
+      "visible_intervals_s": [
+        {
+          "start_s": 0.0,
+          "end_s": 6.432390253,
+          "duration_s": 6.432390253
+        },
+        {
+          "start_s": 7.048728911,
+          "end_s": 8.600443274,
+          "duration_s": 1.5517143629999994
+        },
+        {
+          "start_s": 8.740914503,
+          "end_s": 10.639029999,
+          "duration_s": 1.898115495999999
+        },
+        {
+          "start_s": 11.175990123,
+          "end_s": 12.67917968,
+          "duration_s": 1.5031895570000007
+        },
+        {
+          "start_s": 13.176162942,
+          "end_s": 14.913349144,
+          "duration_s": 1.7371862020000002
+        },
+        {
+          "start_s": 14.971747099,
+          "end_s": 16.532165721,
+          "duration_s": 1.5604186219999985
+        },
+        {
+          "start_s": 18.347471565,
+          "end_s": 19.888346183,
+          "duration_s": 1.5408746180000001
+        },
+        {
+          "start_s": 22.142363481,
+          "end_s": 23.550842975,
+          "duration_s": 1.408479493999998
+        },
+        {
+          "start_s": 25.914146712,
+          "end_s": 26.837505182,
+          "duration_s": 0.9233584700000002
+        },
+        {
+          "start_s": 26.874350045,
+          "end_s": 27.221262883,
+          "duration_s": 0.3469128380000015
+        },
+        {
+          "start_s": 28.768585885,
+          "end_s": 30.698643466,
+          "duration_s": 1.9300575809999998
+        },
+        {
+          "start_s": 33.178580849,
+          "end_s": 34.767726762,
+          "duration_s": 1.589145913000003
+        },
+        {
+          "start_s": 37.48570684,
+          "end_s": 39.31547185,
+          "duration_s": 1.8297650100000027
+        },
+        {
+          "start_s": 42.628777244,
+          "end_s": 43.785924785,
+          "duration_s": 1.1571475410000005
+        },
+        {
+          "start_s": 45.388509174,
+          "end_s": 46.768554555,
+          "duration_s": 1.3800453810000022
+        },
+        {
+          "start_s": 48.835197309,
+          "end_s": 50.548290861,
+          "duration_s": 1.7130935519999966
+        },
+        {
+          "start_s": 53.335033069,
+          "end_s": 54.495467464,
+          "duration_s": 1.160434395000003
+        },
+        {
+          "start_s": 56.99746158,
+          "end_s": 57.417356406,
+          "duration_s": 0.4198948260000037
+        },
+        {
+          "start_s": 57.799496169,
+          "end_s": 58.175285143,
+          "duration_s": 0.37578897400000244
+        },
+        {
+          "start_s": 59.156931027,
+          "end_s": 59.185577459,
+          "duration_s": 0.028646432000002164
+        },
+        {
+          "start_s": 60.729336751,
+          "end_s": 61.839698786,
+          "duration_s": 1.1103620350000014
+        },
+        {
+          "start_s": 63.053637673,
+          "end_s": 63.92980668,
+          "duration_s": 0.8761690070000014
+        },
+        {
+          "start_s": 64.149800747,
+          "end_s": 64.262062765,
+          "duration_s": 0.11226201799999558
+        },
+        {
+          "start_s": 64.320926612,
+          "end_s": 64.515879164,
+          "duration_s": 0.19495255200000372
+        },
+        {
+          "start_s": 73.36083414,
+          "end_s": 73.414826276,
+          "duration_s": 0.053992136000005075
+        },
+        {
+          "start_s": 73.694453042,
+          "end_s": 73.780162116,
+          "duration_s": 0.08570907399999328
+        },
+        {
+          "start_s": 73.830881498,
+          "end_s": 73.889853763,
+          "duration_s": 0.058972265000008406
+        },
+        {
+          "start_s": 77.540740399,
+          "end_s": 78.142164177,
+          "duration_s": 0.6014237779999974
+        },
+        {
+          "start_s": 78.707630408,
+          "end_s": 78.735663717,
+          "duration_s": 0.028033308999994233
+        },
+        {
+          "start_s": 79.033991327,
+          "end_s": 82.707643496,
+          "duration_s": 3.6736521690000075
+        },
+        {
+          "start_s": 82.737486868,
+          "end_s": 82.763551986,
+          "duration_s": 0.026065117999991116
+        },
+        {
+          "start_s": 82.808189248,
+          "end_s": 82.833314901,
+          "duration_s": 0.025125652999989256
+        },
+        {
+          "start_s": 82.861668825,
+          "end_s": 83.29581774,
+          "duration_s": 0.43414891500000863
+        },
+        {
+          "start_s": 84.053258529,
+          "end_s": 90.014280793,
+          "duration_s": 5.961022263999993
+        }
+      ]
+    },
+    "17": {
+      "visible_frames": 1,
+      "visible_ratio": 0.000380517503805175,
+      "longest_sampled_missing_s": 60.67030674,
+      "visible_intervals_s": [
+        {
+          "start_s": 60.67030674,
+          "end_s": 60.701513006,
+          "duration_s": 0.031206265999998095
+        }
+      ]
+    },
+    "37": {
+      "visible_frames": 1,
+      "visible_ratio": 0.000380517503805175,
+      "longest_sampled_missing_s": 68.688040345,
+      "visible_intervals_s": [
+        {
+          "start_s": 68.688040345,
+          "end_s": 68.716047785,
+          "duration_s": 0.02800743999999611
+        }
+      ]
+    }
+  },
+  "longest_sampled_no_tag_s": 0.0,
+  "note": "可见率按原始画面检测；相机-IMU 外参求解还需要后续的角速度/视觉旋转对齐。"
+}

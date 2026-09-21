@@ -1,0 +1,35 @@
+# UMI additions for the AM_UMI Conda environment.
+#
+# Install with:
+#   conda run -n AM_UMI python -m pip install -r requirements-am-umi.txt
+#
+# Do not add torch, torchvision, numpy, diffusers, accelerate, timm, zarr,
+# numcodecs, opencv, or wandb here.  AM_UMI intentionally retains the tested
+# versions supplied by lerobot_alohamini.
+# Ray otherwise selects protobuf 7.x, which conflicts with LeRobot's installed
+# optional hardware tools.  This is the version from lerobot_alohamini.
+protobuf==6.32.0
+
+# UMI data, training, and video pipeline
+gym==0.26.2
+scikit-video
+lmdb
+scikit-fda
+boto3
+aiofiles
+PyExifTool
+atomics
+fastcrc
+dcor
+
+# UMI camera and robot interfaces
+v4l2py
+ur-rtde
+zerorpc
+
+# The copied UMI sources do not import Ray. Do not install current
+# ``ray[default]`` in this environment: it requires protobuf >=6.33.5, while
+# the retained LeRobot hardware extras require protobuf <=6.32.0.
+# Install it only in a separate environment if a future UMI workflow needs it.
+pybullet
+GPy

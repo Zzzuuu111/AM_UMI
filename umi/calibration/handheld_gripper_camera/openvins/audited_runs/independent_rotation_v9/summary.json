@@ -1,0 +1,22 @@
+{
+  "node_exit": 0,
+  "replay_exit": 0,
+  "states": 1174,
+  "elapsed_wall_s": 107.80583145801211,
+  "mask_enabled": true,
+  "gripper_envelope": true,
+  "status": "REQUIRES_TRAJECTORY_VALIDATION",
+  "finite": true,
+  "expected_post_init_camera_frames": 1174,
+  "matched_post_init_camera_frames": 1174,
+  "post_init_coverage": 1.0,
+  "state_duration_s": 39.80444002151489,
+  "position_span_m": [
+    0.061559,
+    0.094516,
+    0.043258
+  ],
+  "max_displacement_m": 0.09172529250430331,
+  "max_speed_mps": 0.11336447546740558,
+  "lifecycle_status": "CLEAN_EXIT"
+}
