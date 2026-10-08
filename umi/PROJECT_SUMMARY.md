@@ -1,6 +1,6 @@
 # AM_UMI 项目摘要
 
-> 更新：2026-09-24。这里是当前结论的短版；实验过程、历史踩坑、配置与证据统一保存在 [PROJECT_PROGRESS.md](https://github.com/Zzzuuu111/AM_UMI/blob/am-umi-docs/umi/PROJECT_PROGRESS.md)。两份文档如有出入，以详细档案中日期较新的实测记录为准。
+> 更新：2026-10-08。这里是当前结论的短版；实验过程、历史踩坑、配置与证据统一保存在 [PROJECT_PROGRESS.md](https://github.com/Zzzuuu111/AM_UMI/blob/am-umi-docs/umi/PROJECT_PROGRESS.md)。两份文档如有出入，以详细档案中日期较新的实测记录为准。
 
 ## 项目在做什么
 
@@ -24,6 +24,7 @@
 1. **验证集部分窗口预测明显不对。** demo 054 的 sample 475：标签在约 1.5 秒内最大移动 13.64 mm、夹爪保持张开，模型却预测较大移动和闭合。不同 checkpoint 和扩散种子下仍有较大误差。画面及标签对照保存在本机 `data/outputs/vjaw_original30_pretrained_20260923_151807/review_val_demo054_epoch140/observation_context_475_503.png`；训练输出未上传 GitHub。
 2. **训练覆盖与动作一致性更值得优先处理。** 与 sample 475 类似的“张开且短时间近静止”目标，在 11,117 个训练窗口中只有 20 个重叠窗口，来自 4 条示教；相近画面有时又对应移动并闭合的后续动作。单看当前画面，模型不一定能判断下一步意图。检查过程见 [详细档案第 16.14 节](https://github.com/Zzzuuu111/AM_UMI/blob/am-umi-docs/umi/PROJECT_PROGRESS.md)。
 3. **单纯延长这批数据的训练，收益目前不明显。** epoch 100–140 的验证位置误差基本持平；开头缺少历史图像也无法单独解释后续窗口的大误差。数据标签的绝对精度和时间同步仍需继续核查，不能把根因定为某一项。对照结果见 [详细档案第 16.12–16.13 节](https://github.com/Zzzuuu111/AM_UMI/blob/am-umi-docs/umi/PROJECT_PROGRESS.md)。
+4. **模型会运动，但部分状态下选错动作。** 在相同的 32 个验证窗口，位置 RMSE 中位数为模型 `13.53 mm`、保持当前 TCP 不动的简单基线 `31.91 mm`；sample 475 则是模型 `59.25 mm`、静止基线 `6.12 mm`。夹爪验证误差中位数与保持当前开口的基线几乎相同。下一步重点检查启动运动和夹爪闭合的时机，并用更多独立示教验证；详见详细档案第 16.15 节。
 
 “30 条够不够”没有固定答案。对当前任务，更重要的是每条示教的轨迹和夹爪标签可靠，以及关键动作阶段有足够多的**独立、动作明确**的例子。更多重复窗口不能代替独立示教。
 
