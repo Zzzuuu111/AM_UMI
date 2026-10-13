@@ -958,10 +958,10 @@ def main() -> None:
                 print(f"J7_FINAL_COMMAND: {args.gripper_final_width_m * 1000:.1f}mm", flush=True)
                 time.sleep(0.20)
             if args.do_return:
-                print("Returning to verified start joints ...")
-                robot.servoJ(start_q, duration=4.0)
-                time.sleep(4.2)
-                print("Returned.")
+                print("Returning to verified start joints with the reference speed cap ...")
+                preposition(robot, start_q, args.reference_duration,
+                            args.reference_speed_deg_s, args.reference_tolerance_deg)
+                print("Returned to verified start joints.")
 
     if args.plot_after_replay and trace_path is not None:
         generate_replay_plots(plan=plan, plan_path=plan_path,

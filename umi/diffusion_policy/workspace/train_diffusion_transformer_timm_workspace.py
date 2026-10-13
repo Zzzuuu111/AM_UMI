@@ -8,6 +8,7 @@ if __name__ == "__main__":
     os.chdir(ROOT_DIR)
 
 import os
+import math
 import hydra
 import torch
 from omegaconf import OmegaConf
@@ -18,6 +19,7 @@ import random
 import tqdm
 import numpy as np
 import pickle
+import dill
 
 from diffusion_policy.common.pytorch_util import dict_apply
 from diffusion_policy.workspace.base_workspace import BaseWorkspace
@@ -34,7 +36,11 @@ OmegaConf.register_new_resolver("eval", eval, replace=True)
 
 # %%
 class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
-    include_keys = ['global_step', 'epoch']
+    include_keys = [
+        'global_step', 'epoch', 'next_global_step', 'next_epoch',
+        'ema_optimization_step', 'scaler_state', 'torch_rng_state',
+        'cuda_rng_state', 'numpy_rng_state', 'python_rng_state'
+    ]
 
     def __init__(self, cfg: OmegaConf):
         super().__init__(cfg)
@@ -58,13 +64,23 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
 
         self.global_step = 0
         self.epoch = 0
+        self.next_global_step = 0
+        self.next_epoch = 0
+        self.ema_optimization_step = 0
+        self.scaler_state = None
+        self.torch_rng_state = None
+        self.cuda_rng_state = None
+        self.numpy_rng_state = None
+        self.python_rng_state = None
         
-        # do not save optimizer if resume=False
-        if not cfg.training.resume:
+        # Existing experiments keep their lightweight checkpoints. New runs
+        # opt into complete resume state before their first checkpoint.
+        if not cfg.training.get('save_resume_state', False):
             self.exclude_keys = ['optimizer']
 
     def run(self):
         cfg = copy.deepcopy(self.cfg)
+        init_checkpoint = cfg.training.get('init_checkpoint', None)
 
         # Keep the Transformer entrypoint safe on the same laptop GPUs as the
         # UNet entrypoint.  This is opt-in, so historical configurations retain
@@ -94,11 +110,76 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
         )
 
         # resume training
+        resume_payload = None
         if cfg.training.resume:
             lastest_ckpt_path = self.get_checkpoint_path()
-            if lastest_ckpt_path.is_file():
-                print(f"Resuming from checkpoint {lastest_ckpt_path}")
-                self.load_checkpoint(path=lastest_ckpt_path)
+            if not lastest_ckpt_path.is_file():
+                raise FileNotFoundError(f'Resume checkpoint not found: {lastest_ckpt_path}')
+            print(f"Resuming from checkpoint {lastest_ckpt_path}")
+            resume_payload = self.load_checkpoint(
+                path=lastest_ckpt_path, exclude_keys=('lr_scheduler',),
+                map_location='cpu')
+            if cfg.training.get('require_exact_resume', False):
+                state_keys = resume_payload['state_dicts']
+                pickle_keys = resume_payload['pickles']
+                missing = [
+                    key for key in ('optimizer', 'lr_scheduler')
+                    if key not in state_keys
+                ] + [
+                    key for key in (
+                        'next_epoch', 'next_global_step', 'ema_optimization_step',
+                        'scaler_state', 'torch_rng_state', 'numpy_rng_state',
+                        'python_rng_state'
+                    ) if key not in pickle_keys
+                ]
+                if missing:
+                    raise RuntimeError(
+                        'Checkpoint lacks exact resume state: '
+                        + ', '.join(missing)
+                    )
+                saved_cfg = OmegaConf.to_container(resume_payload['cfg'], resolve=True)
+                current_cfg = OmegaConf.to_container(cfg, resolve=True)
+                for section in (
+                    'task', 'shape_meta', 'policy', 'n_emb', 'dataloader',
+                    'val_dataloader', 'optimizer', 'ema'
+                ):
+                    if saved_cfg[section] != current_cfg[section]:
+                        raise ValueError(f'Resume config differs in {section}')
+                for training_cfg in (saved_cfg['training'], current_cfg['training']):
+                    training_cfg.pop('resume', None)
+                    training_cfg.pop('require_exact_resume', None)
+                if saved_cfg['training'] != current_cfg['training']:
+                    raise ValueError('Resume config differs in training')
+            if 'next_epoch' in resume_payload['pickles']:
+                self.epoch = self.next_epoch
+                self.global_step = self.next_global_step
+            else:
+                # Historical checkpoints were written before incrementing
+                # epoch and global_step at the end of each epoch.
+                self.epoch += 1
+                self.global_step += 1
+            if 'optimizer' not in resume_payload['state_dicts']:
+                print('WARNING: optimizer state absent; resuming weights '
+                      'with a fresh optimizer (warm restart)')
+
+        if init_checkpoint and not cfg.training.resume:
+            source_path = pathlib.Path(init_checkpoint).expanduser().resolve()
+            if not source_path.is_file():
+                raise FileNotFoundError(f'Initialization checkpoint not found: {source_path}')
+            source_key = cfg.training.get('init_weights', 'ema_model')
+            print(f'Initializing policy weights from {source_path} [{source_key}]')
+            payload = torch.load(source_path, map_location='cpu',
+                                 pickle_module=dill, mmap=True, weights_only=False)
+            if source_key not in payload['state_dicts']:
+                raise KeyError(f'{source_key} absent from {source_path}')
+            weights = payload['state_dicts'][source_key]
+            self.model.load_state_dict(weights, strict=True)
+            if self.ema_model is not None:
+                self.ema_model.load_state_dict(weights, strict=True)
+            if not self.model.normalizer.params_dict:
+                raise RuntimeError('Initialization checkpoint has no policy normalizer')
+            del weights, payload
+            print('Initialized model and EMA; optimizer, scheduler and counters start fresh')
 
         # configure dataset
         dataset: BaseImageDataset
@@ -109,7 +190,10 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
         # compute normalizer on the main process and save to disk
         normalizer_path = os.path.join(self.output_dir, 'normalizer.pkl')
         if accelerator.is_main_process:
-            normalizer = dataset.get_normalizer()
+            # Fine-tuned weights expect the action and observation scales used
+            # when they were learned. The new episodes still train normally.
+            normalizer = (copy.deepcopy(self.model.normalizer) if init_checkpoint
+                          else dataset.get_normalizer())
             pickle.dump(normalizer, open(normalizer_path, 'wb'))
 
         # load normalizer on all processes
@@ -124,18 +208,34 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
         if cfg.training.use_ema:
             self.ema_model.set_normalizer(normalizer)
 
-        # configure lr scheduler
+        # configure lr scheduler. Respect max_train_steps when the epoch loop
+        # is truncated below; otherwise the scheduler is sized for the full
+        # dataloader while training performs far fewer optimizer updates.
+        steps_per_epoch = len(train_dataloader)
+        if cfg.training.max_train_steps is not None:
+            steps_per_epoch = min(steps_per_epoch, int(cfg.training.max_train_steps))
+        accumulation_steps = int(cfg.training.gradient_accumulate_every)
+        if accumulation_steps < 1:
+            raise ValueError('training.gradient_accumulate_every must be >= 1')
+        total_optimizer_steps = (
+            math.ceil(steps_per_epoch / accumulation_steps)
+            * int(cfg.training.num_epochs)
+        )
         lr_scheduler = get_scheduler(
             cfg.training.lr_scheduler,
             optimizer=self.optimizer,
             num_warmup_steps=cfg.training.lr_warmup_steps,
-            num_training_steps=(
-                len(train_dataloader) * cfg.training.num_epochs) \
-                    // cfg.training.gradient_accumulate_every,
+            num_training_steps=total_optimizer_steps,
             # pytorch assumes stepping LRScheduler every epoch
             # however huggingface diffusers steps it every batch
-            last_epoch=self.global_step-1
+            last_epoch=-1 if resume_payload is not None else self.global_step-1
         )
+        if (resume_payload is not None
+                and 'lr_scheduler' not in resume_payload['state_dicts']):
+            # Warm restart from an older weights-only checkpoint. The exact
+            # optimizer history is unavailable, but retain its LR position.
+            completed_updates = self.epoch * math.ceil(steps_per_epoch / accumulation_steps)
+            lr_scheduler.step(completed_updates)
 
         # configure ema
         ema: EMAModel = None
@@ -143,6 +243,11 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
             ema = hydra.utils.instantiate(
                 cfg.ema,
                 model=self.ema_model)
+            if resume_payload is not None:
+                if 'ema_optimization_step' in resume_payload['pickles']:
+                    ema.optimization_step = self.ema_optimization_step
+                else:
+                    ema.optimization_step = self.epoch * math.ceil(steps_per_epoch / accumulation_steps)
 
         # configure env
         env_runner: BaseImageRunner
@@ -180,9 +285,25 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
         train_dataloader, val_dataloader, self.model, self.optimizer, lr_scheduler = accelerator.prepare(
             train_dataloader, val_dataloader, self.model, self.optimizer, lr_scheduler
         )
+        self.lr_scheduler = lr_scheduler
+        if resume_payload is not None:
+            scheduler_state = resume_payload['state_dicts'].get('lr_scheduler')
+            if scheduler_state is not None:
+                lr_scheduler.load_state_dict(scheduler_state)
+            if self.scaler_state is not None and accelerator.scaler is not None:
+                accelerator.scaler.load_state_dict(self.scaler_state)
         device = self.model.device
         if self.ema_model is not None:
             self.ema_model.to(device)
+
+        if resume_payload is not None and self.torch_rng_state is not None:
+            torch.set_rng_state(self.torch_rng_state)
+            if self.cuda_rng_state is not None and torch.cuda.is_available():
+                torch.cuda.set_rng_state_all(self.cuda_rng_state)
+            np.random.set_state(self.numpy_rng_state)
+            random.setstate(self.python_rng_state)
+        if resume_payload is not None:
+            del resume_payload
 
 
         # save batch for sampling
@@ -200,7 +321,7 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
         # training loop
         log_path = os.path.join(self.output_dir, 'logs.json.txt')
         with JsonLogger(log_path) as json_logger:
-            for local_epoch_idx in range(cfg.training.num_epochs):
+            for local_epoch_idx in range(self.epoch, cfg.training.num_epochs):
                 self.model.train()
 
                 step_log = dict()
@@ -223,18 +344,18 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
 
                         # compute loss
                         raw_loss = self.model(batch)
-                        loss = raw_loss / cfg.training.gradient_accumulate_every
+                        group_start = (batch_idx // accumulation_steps) * accumulation_steps
+                        group_size = min(accumulation_steps, steps_per_epoch - group_start)
+                        loss = raw_loss / group_size
                         accelerator.backward(loss)
 
                         # step optimizer
-                        if self.global_step % cfg.training.gradient_accumulate_every == 0:
+                        if (batch_idx - group_start + 1) == group_size:
                             self.optimizer.step()
                             self.optimizer.zero_grad()
                             lr_scheduler.step()
-                        
-                        # update ema
-                        if cfg.training.use_ema:
-                            ema.step(accelerator.unwrap_model(self.model))
+                            if cfg.training.use_ema:
+                                ema.step(accelerator.unwrap_model(self.model))
 
                         # logging
                         raw_loss_cpu = raw_loss.item()
@@ -322,7 +443,26 @@ class TrainDiffusionTransformerTimmWorkspace(BaseWorkspace):
                         del pred_action
                 
                 # checkpoint
-                if (self.epoch % cfg.training.checkpoint_every) == 0 and accelerator.is_main_process:
+                if accelerator.is_main_process and (
+                    (self.epoch % cfg.training.checkpoint_every) == 0
+                    or (self.epoch + 1) == cfg.training.num_epochs
+                ):
+                    self.next_epoch = self.epoch + 1
+                    self.next_global_step = self.global_step + 1
+                    if cfg.training.use_ema:
+                        self.ema_optimization_step = ema.optimization_step
+                    if cfg.training.get('save_resume_state', False):
+                        self.scaler_state = (
+                            accelerator.scaler.state_dict()
+                            if accelerator.scaler is not None else None
+                        )
+                        self.torch_rng_state = torch.get_rng_state()
+                        self.cuda_rng_state = (
+                            torch.cuda.get_rng_state_all()
+                            if torch.cuda.is_available() else None
+                        )
+                        self.numpy_rng_state = np.random.get_state()
+                        self.python_rng_state = random.getstate()
                     # unwrap the model to save ckpt
                     model_ddp = self.model
                     self.model = accelerator.unwrap_model(self.model)

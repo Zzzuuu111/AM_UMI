@@ -36,7 +36,7 @@
 | ②③ 数据处理与训练 | 电脑（conda `AM_UMI` 环境 + UMI 管线）| 演示数据 → replay buffer → 训练扩散策略 |
 | ④ 策略部署 | **单臂 AM2Pro**（USB 直连电脑）或 **双臂树莓派 AM2Pro**（LeRobot AlohaMini2/pro，Feetech 舵机）| 训练好的策略驱动机器人自主复现任务 |
 
-**迁移背景**：把 UMI（Universal Manipulation Interface）的数据采集和训练管线从原版 GoPro + UR5/Franka 适配到手持 EMEET + AM2Pro；JY901B 和 Osmo Action 4 的试验保留为历史记录。**当前阶段（2026-10-10）**：60 条示教的模型对照、受监督单臂实机推理诊断，以及夹爪合成标签训练；双臂部署留待后续。具体证据和边界见第 16.17–16.22 节。
+**迁移背景**：把 UMI（Universal Manipulation Interface）的数据采集和训练管线从原版 GoPro + UR5/Franka 适配到手持 EMEET + AM2Pro；JY901B 和 Osmo Action 4 的试验保留为历史记录。**当前阶段（2026-10-13）**：原 60 条模型对照、受监督单臂推理诊断，以及仅用新增 30 条黑圈示教的微调；双臂部署留待后续。具体证据和边界见第 16.17–16.23 节。
 
 ---
 
@@ -265,6 +265,7 @@ python scripts_slam_pipeline/05_run_calibrations.py <session>
 | 2026-10-08 | 第 16.15 节新增相同 32 个 train/val 窗口上的静止动作基线；模型整体优于静止，但少数验证窗口的启动与夹爪闭合选择明显错误。同步更新项目摘要。 |
 | 2026-10-08 | 第 16.16 节增加 epoch 140 的 CPU 离线分段评估：训练与验证各 32 窗口，分别比较未来 1–4、5–8、9–16 点及静止基线。 |
 | 2026-10-08--10 | 第 16.17--16.22 节记录新增 30 条并合并为 60 条、60 条模型离线评估、实机连续轨迹与坐标/延迟诊断、夹爪标签副本实验、随机初始化训练及放置阶段视频复查；同步更新项目摘要。 |
+| 2026-10-13 | 第 16.23 节记录黑圈场景新录 30 条的离线合并/严格检查、只用这 30 条从原 60 条 EMA 模型微调、70 轮约 16 小时训练及末轮保存修复；同步更新项目摘要。 |
 
 ## 13. DJI dbgi 逆向结论（2026-08-25，路径 A 定论）
 
@@ -982,6 +983,22 @@ shoulder_pan(ID1)/shoulder_lift(ID2)/elbow_flex(ID3)/wrist_flex(ID4)/wrist_yaw(I
 
 - 对照上述 60 秒实机视频与旧 demo 036/046、新 demo 067/090 的原视频。两侧可见右侧木板、边缘与黑白标记，不能说相机完全看不到放置区域；演示的**精确放下点**位于木板上没有独立标记的区域，接近时包装袋与夹爪占画面前景。抽看的四条示教各约 11–14 秒，明显短于 60 秒实机运行。此视觉对照提示局部目标线索弱、任务阶段和长时间闭环偏移都值得核对，不能仅凭视频证明唯一根因是“放置点不明显”。
 - 后续评估要分开报告：① 何时闭合、何时张开、机器人实际宽度；② TCP 是否接近示教放置区域；③ 跨轮预测和 readback 是否同向、是否限速或执行滞后；④ 是否具有明确任务完成条件。固定物体、木板、起点和相机视野做同场景对照，再判断是否应增强放置区视觉线索或补录该阶段的独立完整示教。离线 16 点误差与闭环成功率不得互相替代。
+
+### 16.23 2026-10-13：黑圈场景新增 30 条，仅用新数据微调原 60 条模型
+
+- 木板放置区域新增黑色圈标记，采集 demo 091–120。`data/handheld_demos_vjaw/v14_circle30_20261013/accepted_sessions.txt` 记录自动离线筛选通过的 30 个 `processed.zarr`；失败尝试仍保留在各 `__rejected_attempt_*` 目录，未纳入训练。此处的通过只指数据转换和只读离线筛选，不能代替逐条受监督空载 replay 或证明策略会完成任务。
+- 用 `scripts/merge_umi_training_sessions.py` 单独合并为 `data/handheld_demos_vjaw/v14_circle30_20261013/v14_circle_030.zarr.zip`，manifest 记录 **30 episodes、16,208 帧**；`scripts/validate_umi_dataset.py --strict` 返回 `AM_UMI_DATASET_QUALITY_PASS`。旧 60 条数据与另行生成的 90 条合并包均保持原样；**本轮训练的 dataset_path 仅指向新 30 条包**，不是 60+30 混合训练。
+- 新 demo 120 的受监督完整 replay 入口为 `scripts/start_vjaw_v14_circle_replay_demo120.sh`。已有 trace `data/outputs/vjaw_v14_circle_demo120_replay_full_20261013_153928.json` 标记 `interrupted`，`samples` 为 0；因此不能把它记作完成的实机 replay，也不能据此推断新 30 条的物理可执行性。
+- 入口：[start_vjaw_circle30_finetune.sh](https://github.com/Zzzuuu111/AM_UMI/blob/am-umi-vjaw-training/umi/scripts/start_vjaw_circle30_finetune.sh)。从 `data/outputs/vjaw_original60_finetune_20261008_181742/checkpoints/latest.ckpt` 加载 `ema_model` 权重，保留其训练所得归一化参数；优化器、学习率计划和计数重新开始。使用 CLIP 预训练图像归一化、batch size 1、梯度累积 64、FP16、EMA、W&B offline、训练/验证 seed 45；动作模型与视觉编码器学习率分别为 `1e-5` 和 `1e-6`。完整续训状态从本轮 checkpoint 保存，`--resume RUN_DIR` 用于相同配置下恢复。
+- 先运行一步 smoke：成功加载旧模型 EMA、读取新 30 条、完成训练/验证并写出日志。沙箱内 W&B 本地服务不能启动，允许本地服务运行后 smoke 通过；这不是联网训练。先前误设的 90 条启动脚本已删除。31 轮与 68 轮尝试在首个正式 checkpoint 前停止，其输出目录保留作诊断，不作为模型结果。
+- 最终训练配置为 **70 epochs**，按启动阶段的约 12 分钟/轮加验证和保存开销估计 **约 16 小时**，没有硬性 16 小时超时。由于 epoch 从 0 计数且原保存周期为每 5 轮，仅改成 70 轮会最后保存到 epoch 65；训练工作区现已增加**末轮强制保存**，因此训练正常完成时会保存 epoch 69。`latest.ckpt` 与 top-k checkpoint 只在达到保存点时出现；中断后的完整续训最多恢复到最近一次已保存轮，未保存的当前轮需要重跑。
+- 当前正式输出：`data/outputs/vjaw_circle30_finetune_20261013_163842/`，启动时 PID `1600716`（PID 仅对该次进程有效）。在 `~/AM_UMI/umi` 查看最近进度：
+
+  ```bash
+  tail -c 2000 data/handheld_demos_vjaw/v14_circle30_20261013/latest_circle30_finetune.log | tr '\r' '\n' | tail -12
+  ```
+
+  持续刷新：`watch -n 10 "tail -c 2000 data/handheld_demos_vjaw/v14_circle30_20261013/latest_circle30_finetune.log | tr '\r' '\n' | tail -12"`。截至本节记录时训练仍在进行，尚无新模型的离线评估或实机效果结论。完成后应与原 60 条模型在同口径离线集上分别比较 TCP 与夹爪，再做固定场景的受监督闭环检查。原视频、zarr、模型权重和日志均在本地 `umi/data/`，不随本次 Git 提交上传。
 
 
 <!-- CONSOLIDATED_PROJECT_DOCS_BEGIN -->

@@ -64,7 +64,8 @@ class TransformerObsEncoder(ModuleAttrMixin):
             # use single rgb model for all rgb inputs
             share_rgb_model: bool=False,
             feature_aggregation: str=None,
-            downsample_ratio: int=32
+            downsample_ratio: int=32,
+            pretrained_image_norm: bool=False
         ):
         """
         Assumes rgb input: B,T,C,H,W
@@ -87,6 +88,19 @@ class TransformerObsEncoder(ModuleAttrMixin):
             num_classes=0            # remove classification layer
         )
         self.model_name = model_name
+        self.pretrained_image_norm = pretrained_image_norm
+        if pretrained_image_norm:
+            if not pretrained:
+                raise ValueError('pretrained_image_norm requires pretrained=True')
+            data_config = timm.data.resolve_model_data_config(model)
+            self.register_buffer(
+                'image_mean',
+                torch.tensor(data_config['mean'], dtype=torch.float32).view(1, -1, 1, 1)
+            )
+            self.register_buffer(
+                'image_std',
+                torch.tensor(data_config['std'], dtype=torch.float32).view(1, -1, 1, 1)
+            )
 
         if frozen:
             assert pretrained
@@ -276,6 +290,8 @@ class TransformerObsEncoder(ModuleAttrMixin):
             # inference.
             if self.training:
                 img = self.key_transform_map[key](img)
+            if self.pretrained_image_norm:
+                img = (img - self.image_mean) / self.image_std
             raw_feature = self.key_model_map[key](img)
             feature = self.aggregate_feature(raw_feature)
             emb = self.key_projection_map[key](feature)
