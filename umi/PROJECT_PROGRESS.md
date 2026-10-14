@@ -1001,6 +1001,45 @@ shoulder_pan(ID1)/shoulder_lift(ID2)/elbow_flex(ID3)/wrist_flex(ID4)/wrist_yaw(I
   持续刷新：`watch -n 10 "tail -c 2000 data/handheld_demos_vjaw/v14_circle30_20261013/latest_circle30_finetune.log | tr '\r' '\n' | tail -12"`。截至本节记录时训练仍在进行，尚无新模型的离线评估或实机效果结论。完成后应与原 60 条模型在同口径离线集上分别比较 TCP 与夹爪，再做固定场景的受监督闭环检查。原视频、zarr、模型权重和日志均在本地 `umi/data/`，不随本次 Git 提交上传。
 
 
+### 16.24 2026-10-14：修正 90 条示教的夹爪闭合零点并重新训练
+
+- 旧算法只取两个夹爪 Tag 的相对旋转幅度。活动爪跨过中间姿态时角度会折返，标定视频开头实际闭合，却被映射为约 30 mm。新算法使用相对闭合姿态、沿标定转轴的有方向转角；标定张开角约 63.32°，最大物理开口 84 mm。
+- 每条示教从前 30 帧中取前最多 10 个有效双 Tag 角度的中位数作为闭合零点，至少需要 4 个有效帧。缺失帧插值，随后平滑。复制原 90 条数据，只重写 `robot0_gripper_width` 和 `action[:,6]`；图像、机械臂位姿和 episode 边界保留。
+- 新文件：`data/handheld_demos_vjaw/v14_train90_circle_20261013/v14_train_090_signed_gripper_zeroed_candidate.zarr.zip`。90 条、41,374 帧，质量检查 PASS。各条开头 30 帧的宽度中位数汇总从约 27.9 mm 降到 0.09 mm；这是闭合标签偏差改善，不能当作模型预测误差。
+- 该版本仍为候选标定：中间角度到毫米使用线性换算，尚未逐点实测；8 条旧示教双 Tag 可见率较低，较多帧依赖插值。
+- 新训练输出：`data/outputs/vjaw_signed90_pretrained_20261014_101005`。视觉编码器使用 CLIP 预训练权重，动作策略重新初始化；200 epochs、FP16、batch size 1、梯度积累 64、每 10 轮及最后一轮保存，启用完整续训状态。训练仍在进行，尚无新模型离线或实机效果结论。
+
+### 16.25 2026-10-14：GitHub 代码发布与私有 Hugging Face 数据迁移
+
+- 当前训练和推理代码已发布到 [GitHub 的 am-umi-vjaw-training 分支](https://github.com/Zzzuuu111/AM_UMI/tree/am-umi-vjaw-training)，代码提交 `eb942d3`。本地历史文档删除和 `nohup.out` 未包含在代码提交中。
+- 修正后的数据仓库：[Zzzuuu111/am-umi-vjaw-signed90](https://huggingface.co/datasets/Zzzuuu111/am-umi-vjaw-signed90)，设为私有。包含处理后的 zarr zip、质量报告和重标 manifest；原始录制视频未包含。数据上传状态应以仓库文件及下方 SHA-256 为准。
+- 数据 zip 大小 3,246,987,522 bytes，SHA-256：`c747a021c573b1a00dbd2c71f3e0147cf269317726bad7cdc331f9df92454d4f`。
+- 用户选择等这轮训练完成后再上传最终模型；当前 checkpoint 不作为最终模型发布。
+
+另一台 Linux 机器可按以下顺序准备训练（私有数据需要用有权限的账号登录）：
+
+```bash
+git clone --branch am-umi-vjaw-training https://github.com/Zzzuuu111/AM_UMI.git
+cd AM_UMI/umi
+conda env create -n AM_UMI -f environment_lerobot_alohamini.yml
+conda activate AM_UMI
+python -m pip install -r requirements-am-umi.txt
+hf auth login
+hf download Zzzuuu111/am-umi-vjaw-signed90 --repo-type dataset --local-dir data/handheld_demos_vjaw/v14_train90_circle_20261013
+sha256sum data/handheld_demos_vjaw/v14_train90_circle_20261013/v14_train_090_signed_gripper_zeroed_candidate.zarr.zip
+```
+
+训练脚本强制离线加载视觉预训练权重，新机器须先联网下载到自己的缓存，或完整迁移本机 Hugging Face 缓存中的 `models--timm--vit_base_patch16_clip_224.openai` 目录（约 571 MB，保留符号链接）。联网预缓存与启动命令：
+
+```bash
+HF_HUB_OFFLINE=0 python -c 'import timm; timm.create_model("vit_base_patch16_clip_224.openai", pretrained=True)'
+python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
+bash scripts/start_vjaw_signed90_pretrained.sh --smoke
+bash scripts/start_vjaw_signed90_pretrained.sh --no-time-limit
+```
+
+只有一步检查成功后才正式启动。驱动、显存和平台依赖仍须在新机器核对；以上未在另一台机器实测。从头训练使用新数据和视觉预训练缓存；跨机器完整续训还要迁移整个原训练输出目录，并保持兼容的软件版本。
+
 <!-- CONSOLIDATED_PROJECT_DOCS_BEGIN -->
 <a id="project-doc-index"></a>
 
