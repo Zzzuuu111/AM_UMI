@@ -1012,7 +1012,8 @@ shoulder_pan(ID1)/shoulder_lift(ID2)/elbow_flex(ID3)/wrist_flex(ID4)/wrist_yaw(I
 ### 16.25 2026-10-14：GitHub 代码发布与私有 Hugging Face 数据迁移
 
 - 当前训练和推理代码已发布到 [GitHub 的 am-umi-vjaw-training 分支](https://github.com/Zzzuuu111/AM_UMI/tree/am-umi-vjaw-training)，代码提交 `eb942d3`。本地历史文档删除和 `nohup.out` 未包含在代码提交中。
-- 修正后的数据仓库：[Zzzuuu111/am-umi-vjaw-signed90](https://huggingface.co/datasets/Zzzuuu111/am-umi-vjaw-signed90)，设为私有。包含处理后的 zarr zip、质量报告和重标 manifest；原始录制视频未包含。数据上传状态应以仓库文件及下方 SHA-256 为准。
+- 发布校验：19 个 Python 文件语法检查、启动脚本 Bash 语法检查和差异检查通过；轨迹衔接与 TCP 转换的 10 项已有测试通过。测试最初受隔离环境的桌面连接限制，随后在可访问桌面依赖的环境中通过；测试过程未运行实机策略。
+- 修正后的数据仓库：[Zzzuuu111/am-umi-vjaw-signed90](https://huggingface.co/datasets/Zzzuuu111/am-umi-vjaw-signed90)，设为私有。包含处理后的 zarr zip、质量报告和重标 manifest；原始录制视频未包含。上传已完成，远端提交 `ab580e15d12d6102422d59069411ffa0577732f8`；已核对私有状态、zip 字节数和 SHA-256，均与本机一致。
 - 数据 zip 大小 3,246,987,522 bytes，SHA-256：`c747a021c573b1a00dbd2c71f3e0147cf269317726bad7cdc331f9df92454d4f`。
 - 用户选择等这轮训练完成后再上传最终模型；当前 checkpoint 不作为最终模型发布。
 
