@@ -38,6 +38,10 @@ CMD_SERVOJ = 4
 # CMD_SERVOJ, this does not restart a finite-duration smoothstep on every
 # sample; the latest target is held by the controller loop until replaced.
 CMD_SERVOJ_STREAM = 5
+# Timed Cartesian policy waypoint. Consecutive commands form one trajectory;
+# the first waypoint of a newer horizon replaces the unexecuted old suffix.
+# target_gripper is scheduled at target_time instead of applied on receipt.
+CMD_SCHEDULE_POLICY_WAYPOINT = 6
 
 # ---- state payload layout (all float64, 23 total) ----
 #   ActualTCPPose (6), ActualQ (7), ActualQd (7),

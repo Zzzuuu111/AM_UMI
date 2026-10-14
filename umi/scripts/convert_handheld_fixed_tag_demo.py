@@ -33,6 +33,7 @@ from diffusion_policy.common.replay_buffer import ReplayBuffer  # noqa: E402
 from umi.common.cv_util import (  # noqa: E402
     get_dual_tag_gripper_width,
     get_relative_tag_rotation_deg,
+    get_signed_relative_tag_rotation_deg,
 )
 from umi.common.pose_util import mat_to_pose, pose_to_mat  # noqa: E402
 from umi.common.view_reference import preprocess_uvc_bgr  # noqa: E402
@@ -127,6 +128,55 @@ def interpolate_widths(detections: list, gripper_range: dict,
                        max_width_m: float, nominal_depth: float | None,
                        smooth_window_frames: int) -> tuple[np.ndarray, dict]:
     measurement = gripper_range.get("width_measurement", "dual_tag_abs_camera_x_m")
+    if measurement == "relative_tag_signed_hinge_rotation_deg":
+        fixed_id = int(gripper_range["fixed_jaw_tag_id"])
+        moving_id = int(gripper_range["moving_jaw_tag_id"])
+        closed_rotvec = gripper_range["closed_relative_rotvec"]
+        hinge_axis = gripper_range["hinge_axis_closed_frame"]
+        open_angle = float(gripper_range["open_angle_deg"])
+        if not np.isfinite(open_angle) or open_angle <= 0:
+            raise ValueError("signed V 型夹爪标定的 open_angle_deg 无效")
+        sample_indices, raw_values = [], []
+        for index, frame in enumerate(detections):
+            raw = get_signed_relative_tag_rotation_deg(
+                frame["tag_dict"], fixed_id, moving_id, closed_rotvec, hinge_axis)
+            if raw is not None and np.isfinite(raw):
+                sample_indices.append(index)
+                raw_values.append(float(raw))
+        if len(sample_indices) < 2:
+            raise ValueError("有效固定爪/活动爪双 Tag 帧不足 2，不能恢复 V 型夹爪开合")
+        start_frames = int(gripper_range.get("episode_start_closed_frames", 0))
+        zero_offset = 0.0
+        start_values = [value for index, value in zip(sample_indices, raw_values)
+                        if index < start_frames]
+        if start_frames:
+            min_valid = int(gripper_range.get("episode_start_min_valid_frames", 4))
+            if len(start_values) < min_valid:
+                raise ValueError(
+                    f"起始闭合段只有 {len(start_values)} 帧双 Tag，少于 {min_valid} 帧")
+            # The recording protocol starts every episode with the jaw closed.
+            # Re-zero each session because Tag mounting moved between batches.
+            zero_offset = float(np.median(start_values[:10]))
+        raw_full = np.interp(np.arange(len(detections), dtype=np.float64),
+                             np.asarray(sample_indices), np.asarray(raw_values))
+        unclipped = (raw_full - zero_offset) / open_angle * max_width_m
+        raw_widths = np.clip(unclipped, 0.0, max_width_m)
+        widths = smooth_gripper_widths(raw_widths, smooth_window_frames, max_width_m)
+        report = {
+            "measurement": measurement,
+            "fixed_jaw_tag_id": fixed_id,
+            "moving_jaw_tag_id": moving_id,
+            "dual_tag_frames": int(len(sample_indices)),
+            "dual_tag_ratio": float(len(sample_indices) / len(detections)),
+            "raw_measurement_range_deg": [float(np.min(raw_values)), float(np.max(raw_values))],
+            "raw_calibration_endpoints": [0.0, open_angle],
+            "episode_zero_offset_deg": zero_offset,
+            "episode_start_valid_frames": len(start_values),
+            "physical_gripper_range_m": [0.0, float(max_width_m)],
+            "endpoint_clipped_frames": int(np.count_nonzero(np.abs(unclipped - raw_widths) > 1e-8)),
+        }
+        return widths, add_width_smoothing_report(
+            report, raw_widths, widths, smooth_window_frames)
     if measurement == "relative_tag_rotation_deg":
         fixed_id = int(gripper_range["fixed_jaw_tag_id"])
         moving_id = int(gripper_range["moving_jaw_tag_id"])

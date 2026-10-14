@@ -37,6 +37,7 @@ from umi.common.precise_sleep import precise_wait
 from umi.real_world.am2pro_protocol import (
     CMD_SCHEDULE_GRIPPER,
     CMD_SCHEDULE_WAYPOINT,
+    CMD_SCHEDULE_POLICY_WAYPOINT,
     CMD_SERVOJ,
     CMD_SERVOJ_STREAM,
     CMD_SERVOL,
@@ -218,6 +219,21 @@ def restore_p_coefficients(bus, original_p_coefficients):
           original_p_coefficients, flush=True)
 
 
+def schedule_policy_waypoint(interpolator, last_nominal_time, pose,
+                             target_time, current_time, max_pos_speed,
+                             max_rot_speed):
+    """Append one policy point or replace an old horizon at continuous pose."""
+    if target_time <= current_time:
+        return interpolator, last_nominal_time, False, False
+    replaces_future = target_time <= last_nominal_time
+    updated = interpolator.schedule_waypoint(
+        pose=pose, time=target_time, curr_time=current_time,
+        last_waypoint_time=last_nominal_time,
+        max_pos_speed=max_pos_speed, max_rot_speed=max_rot_speed,
+    )
+    return updated, target_time, replaces_future, True
+
+
 def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
     dt = 1.0 / args.frequency
     all_motor_names = [name for name, _, _, _ in _MOTOR_SPEC]
@@ -239,6 +255,9 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
     # A streamed joint target is distinct from joint_move: it is already
     # interpolated client-side and must not restart a smoothstep every tick.
     joint_stream_target = None
+    timed_policy_gripper = []
+    policy_queue_active = False
+    last_policy_command_time = curr_t
 
     t_start = time.monotonic()
     prev_arm_joint_pos = to_model(arm_joint_pos)
@@ -266,6 +285,16 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
 
     while keep_running:
         t_now = time.monotonic()
+
+        if policy_queue_active and t_now - last_policy_command_time > 1.0:
+            # A stalled camera/inference must not execute the rest of a stale
+            # 16-point horizon. Hold the measured pose until a fresh horizon.
+            actual_now = mat_to_pose(
+                kinematics.forward_kinematics(to_model(arm_joint_pos)))
+            pose_interp = PoseTrajectoryInterpolator(
+                times=[t_now], poses=[actual_now])
+            timed_policy_gripper.clear()
+            policy_queue_active = False
 
         # 1. Either execute a short direct joint-space setup move, or
         # interpolate the ordinary Cartesian command and solve IK.
@@ -301,6 +330,12 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
                     q_target[3] = max(q_target[3], args.wrist_flex_min_deg)
                 if args.wrist_flex_max_deg is not None:
                     q_target[3] = min(q_target[3], args.wrist_flex_max_deg)
+
+        # Policy gripper targets share the arm's timeline.  Issue each one a
+        # control period early, matching the former 10 Hz streaming behavior.
+        while timed_policy_gripper and timed_policy_gripper[0][0] <= t_now + 0.1:
+            _, width = timed_policy_gripper.pop(0)
+            target_gripper_servo = map_width_to_servo(width, args)
 
         # 4. write model-space targets back in calibrated encoder convention.
         q_hw = to_hardware(q_target)
@@ -377,6 +412,8 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
                 # seeded from the actual pose reached by that move.
                 joint_move = None
                 joint_stream_target = None
+                timed_policy_gripper.clear()
+                policy_queue_active = False
                 actual_now = mat_to_pose(
                     kinematics.forward_kinematics(to_model(arm_joint_pos)))
                 pose_interp = PoseTrajectoryInterpolator(
@@ -395,6 +432,8 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
             elif code == CMD_SCHEDULE_WAYPOINT:
                 joint_move = None
                 joint_stream_target = None
+                timed_policy_gripper.clear()
+                policy_queue_active = False
                 actual_now = mat_to_pose(
                     kinematics.forward_kinematics(to_model(arm_joint_pos)))
                 pose_interp = PoseTrajectoryInterpolator(
@@ -409,10 +448,43 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
                 last_waypoint_time = target_time
                 if cmd["target_gripper"] >= 0:
                     target_gripper_servo = map_width_to_servo(cmd["target_gripper"], args)
+            elif code == CMD_SCHEDULE_POLICY_WAYPOINT:
+                if (not policy_queue_active or joint_move is not None or
+                        joint_stream_target is not None):
+                    # The first policy horizon follows the joint-space setup.
+                    actual_now = mat_to_pose(
+                        kinematics.forward_kinematics(to_model(arm_joint_pos)))
+                    pose_interp = PoseTrajectoryInterpolator(
+                        times=[t_now], poses=[actual_now])
+                    last_waypoint_time = t_now + dt
+                    timed_policy_gripper.clear()
+                joint_move = None
+                joint_stream_target = None
+                target_time = time.monotonic() - time.time() + cmd["target_time"]
+                (pose_interp, last_waypoint_time,
+                 replaces_future, accepted) = schedule_policy_waypoint(
+                    interpolator=pose_interp,
+                    last_nominal_time=last_waypoint_time,
+                    pose=cmd["target_pose"], target_time=target_time,
+                    current_time=t_now + dt,
+                    max_pos_speed=args.policy_max_pos_speed,
+                    max_rot_speed=args.policy_max_rot_speed)
+                if not accepted:
+                    continue
+                if replaces_future:
+                    timed_policy_gripper.clear()
+                policy_queue_active = True
+                last_policy_command_time = t_now
+                if cmd["target_gripper"] >= 0:
+                    timed_policy_gripper.append(
+                        (target_time, cmd["target_gripper"]))
             elif code == CMD_SCHEDULE_GRIPPER:
+                timed_policy_gripper.clear()
                 if cmd["target_gripper"] >= 0:
                     target_gripper_servo = map_width_to_servo(cmd["target_gripper"], args)
             elif code == CMD_SERVOJ:
+                timed_policy_gripper.clear()
+                policy_queue_active = False
                 joint_stream_target = None
                 duration = max(float(cmd["duration"]), dt)
                 joint_move = {
@@ -422,6 +494,8 @@ def run_loop(conn, bus, kinematics, arm_joint_pos, target_gripper_servo, args):
                     'end_time': t_now + dt + duration,
                 }
             elif code == CMD_SERVOJ_STREAM:
+                timed_policy_gripper.clear()
+                policy_queue_active = False
                 joint_move = None
                 joint_stream_target = np.asarray(cmd["target_pose"], dtype=np.float64)
 
@@ -444,6 +518,8 @@ def main():
     parser.add_argument("--ik-position-weight", type=float, default=1.0)
     parser.add_argument("--ik-orientation-weight", type=float, default=1.0)
     parser.add_argument("--ik-iterations", type=int, default=5)
+    parser.add_argument("--policy-max-pos-speed", type=float, default=0.03)
+    parser.add_argument("--policy-max-rot-speed", type=float, default=0.15)
     parser.add_argument("--wrist-flex-min-deg", default="none",
                         help="Optional positive lower bound for wrist_flex in model "
                              "degrees; keeps replay out of the wrist singularity.")
@@ -476,6 +552,8 @@ def main():
     parser.add_argument("--accept-timeout", type=float, default=30.0)
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
+    if args.policy_max_pos_speed <= 0 or args.policy_max_rot_speed <= 0:
+        parser.error('policy speed limits must be positive')
     def parse_p_mapping(raw_json, option_name):
         try:
             raw_mapping = json.loads(raw_json)

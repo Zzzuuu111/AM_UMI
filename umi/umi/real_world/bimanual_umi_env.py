@@ -330,6 +330,9 @@ class BimanualUmiEnv:
                     urdf_path=rc.get('urdf_path'),
                     flip_joints=rc.get('joint_flip', []),
                     joint_model_candidate=rc.get('joint_model_candidate'),
+                    position_p_coefficients=rc.get('position_p_coefficients'),
+                    policy_max_pos_speed=rc.get('policy_max_pos_speed', 0.03),
+                    policy_max_rot_speed=rc.get('policy_max_rot_speed', 0.15),
                     gripper_width_min=rc.get('gripper_width_min', 0.0),
                     gripper_width_max=rc.get('gripper_width_max', 0.09),
                     gripper_servo_closed=rc.get('gripper_servo_closed', 97.1),
@@ -647,6 +650,33 @@ class BimanualUmiEnv:
                 new_actions,
                 new_timestamps
             )
+
+    def exec_am2pro_policy_trajectory(self, actions, timestamps,
+                                      compensate_latency=True):
+        """Queue one replaceable, timed arm/gripper policy trajectory."""
+        if len(self.robots) != 1 or not self.robots_config[0]['robot_type'].startswith('am2pro'):
+            raise ValueError('policy trajectory queue requires one AM2Pro arm')
+        actions = np.asarray(actions, dtype=np.float64)
+        timestamps = np.asarray(timestamps, dtype=np.float64)
+        if (actions.ndim != 2 or actions.shape[1] != 7 or
+                timestamps.shape != (len(actions),) or
+                not np.all(np.isfinite(actions)) or
+                not np.all(np.isfinite(timestamps)) or
+                np.any(np.diff(timestamps) <= 0)):
+            raise ValueError('policy trajectory must be finite, ordered (N, 7) actions')
+        future = timestamps > time.time()
+        kept_indices = np.flatnonzero(future)
+        actions, timestamps = actions[future], timestamps[future]
+        latency = (self.robots_config[0].get('robot_action_latency', 0.0)
+                   if compensate_latency else 0.0)
+        for action, target_time in zip(actions, timestamps):
+            self.robots[0].schedule_policy_waypoint(
+                pose=action[:6], gripper_width=action[6],
+                target_time=float(target_time - latency))
+        if self.action_accumulator is not None and len(actions):
+            # Newer horizons overwrite the old, unexecuted action suffix.
+            self.action_accumulator.put(actions, timestamps)
+        return actions, timestamps, kept_indices
     
     def get_robot_state(self):
         return [robot.get_state() for robot in self.robots]

@@ -228,6 +228,7 @@ def solve_constrained_lookahead(backend, demonstrated_targets, q_start, limits, 
     ]
     for frame_index, demonstrated_target in enumerate(demonstrated_targets):
         children = []
+        rejected_metrics = []
         for state in states:
             # Keep conservative alternatives alive for the whole horizon.  A
             # branch may retain or reduce attitude following, but does not
@@ -244,6 +245,7 @@ def solve_constrained_lookahead(backend, demonstrated_targets, q_start, limits, 
                         backend, target, state["q"], q_start, limits, rng, args,
                         max_candidates=joint_branches):
                     step = float(np.max(np.abs(q - state["q"])))
+                    rejected_metrics.append((position_m, float(margins.min()), step))
                     if (position_m > args.position_tolerance_m or
                             float(margins.min()) < args.joint_margin_deg or
                             (frame_index and step > args.constrained_max_joint_step_deg)):
@@ -257,7 +259,24 @@ def solve_constrained_lookahead(backend, demonstrated_targets, q_start, limits, 
                             demonstrated_error_deg, margins.copy())
                     children.append({"q": q, "alpha": alpha, "cost": cost, "node": node})
         if not children:
-            raise RuntimeError(f"lookahead IK 在第 {frame_index} 帧没有连续安全分支")
+            within_position = [item for item in rejected_metrics
+                               if item[0] <= args.position_tolerance_m]
+            within_position_margin = [item for item in within_position
+                                      if item[1] >= args.joint_margin_deg]
+            summary = (
+                f"候选={len(rejected_metrics)}, 位置通过={len(within_position)}, "
+                f"位置与关节余量通过={len(within_position_margin)}, "
+                f"其中最小关节步长="
+                f"{min((item[2] for item in within_position_margin), default=float('nan')):.2f}° "
+                f"(上限 {args.constrained_max_joint_step_deg:.2f}°), "
+                f"全候选最小位置误差="
+                f"{min((item[0] for item in rejected_metrics), default=float('nan')) * 1000:.2f} mm, "
+                f"最大关节余量="
+                f"{max((item[1] for item in rejected_metrics), default=float('nan')):.2f}°"
+            )
+            raise RuntimeError(
+                f"lookahead IK 在第 {frame_index} 帧没有连续安全分支；{summary}"
+            )
 
         # Preserve both attitude and joint-branch diversity.  The old planner
         # kept at most one state per alpha bin, so a distinct shoulder/elbow

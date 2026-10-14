@@ -337,6 +337,30 @@ def get_relative_tag_rotation_deg(tag_dict, fixed_tag_id, moving_tag_id):
     return float(np.degrees(np.arccos(cosine)))
 
 
+def get_signed_relative_tag_rotation_deg(tag_dict, fixed_tag_id, moving_tag_id,
+                                         closed_relative_rotvec, hinge_axis):
+    """Return signed rotation from a calibrated closed pose about the jaw hinge."""
+    if fixed_tag_id not in tag_dict or moving_tag_id not in tag_dict:
+        return None
+    try:
+        fixed_rvec = np.asarray(tag_dict[fixed_tag_id]['rvec'], dtype=np.float64).reshape(3)
+        moving_rvec = np.asarray(tag_dict[moving_tag_id]['rvec'], dtype=np.float64).reshape(3)
+        closed_rvec = np.asarray(closed_relative_rotvec, dtype=np.float64).reshape(3)
+        axis = np.asarray(hinge_axis, dtype=np.float64).reshape(3)
+    except (KeyError, TypeError, ValueError):
+        return None
+    if not np.isfinite(np.r_[fixed_rvec, moving_rvec, closed_rvec, axis]).all():
+        return None
+    if not np.isclose(np.linalg.norm(axis), 1.0, atol=1e-3):
+        raise ValueError('hinge_axis must be a unit vector')
+    fixed_rot, _ = cv2.Rodrigues(fixed_rvec)
+    moving_rot, _ = cv2.Rodrigues(moving_rvec)
+    closed_rot, _ = cv2.Rodrigues(closed_rvec)
+    delta_rot = closed_rot.T @ fixed_rot.T @ moving_rot
+    delta_rotvec, _ = cv2.Rodrigues(delta_rot)
+    return float(np.rad2deg(delta_rotvec.reshape(3) @ axis))
+
+
 # =========== image mask ====================
 def canonical_to_pixel_coords(coords, img_shape=(2028, 2704)):
     pts = np.asarray(coords) * img_shape[0] + np.array(img_shape[::-1]) * 0.5

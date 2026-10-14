@@ -37,6 +37,10 @@ robots:
       wrist_roll: [-172.090, 177.909]
     robot_obs_latency: 0.005
     robot_action_latency: 0.02
+    # Server-side limits for continuous policy trajectories. Keep these in
+    # sync with the supervised task launcher's Cartesian speed limits.
+    policy_max_pos_speed: 0.03
+    policy_max_rot_speed: 0.15
     # Verified on 2026-09-11: J3 P=36 settles the replay-critical +44.3°
     # test to -0.83° with no pronounced vibration; P=24 stalled at -1.71°.
     # This is applied by V-jaw controller sessions, while the legacy config

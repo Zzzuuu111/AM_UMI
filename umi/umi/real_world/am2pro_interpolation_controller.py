@@ -34,6 +34,7 @@ import numpy as np
 from umi.real_world.am2pro_protocol import (
     CMD_SCHEDULE_GRIPPER,
     CMD_SCHEDULE_WAYPOINT,
+    CMD_SCHEDULE_POLICY_WAYPOINT,
     CMD_SERVOJ,
     CMD_SERVOJ_STREAM,
     CMD_SERVOL,
@@ -76,6 +77,8 @@ class AM2ProInterpolationController:
             ik_position_weight: float = 1.0,
             ik_orientation_weight: float = 1.0,
             ik_iterations: int = 5,
+            policy_max_pos_speed: float = 0.03,
+            policy_max_rot_speed: float = 0.15,
             wrist_flex_min_deg: Optional[float] = None,
             wrist_flex_max_deg: Optional[float] = None,
             ik_backend: str = "ros2_dh",
@@ -102,6 +105,8 @@ class AM2ProInterpolationController:
         self.ik_position_weight = ik_position_weight
         self.ik_orientation_weight = ik_orientation_weight
         self.ik_iterations = ik_iterations
+        self.policy_max_pos_speed = float(policy_max_pos_speed)
+        self.policy_max_rot_speed = float(policy_max_rot_speed)
         self.wrist_flex_min_deg = wrist_flex_min_deg
         self.wrist_flex_max_deg = wrist_flex_max_deg
         self.ik_backend = ik_backend
@@ -162,6 +167,8 @@ class AM2ProInterpolationController:
             "--ik-position-weight", str(self.ik_position_weight),
             "--ik-orientation-weight", str(self.ik_orientation_weight),
             "--ik-iterations", str(self.ik_iterations),
+            "--policy-max-pos-speed", str(self.policy_max_pos_speed),
+            "--policy-max-rot-speed", str(self.policy_max_rot_speed),
             "--wrist-flex-min-deg", str(self.wrist_flex_min_deg)
             if self.wrist_flex_min_deg is not None else "none",
             "--wrist-flex-max-deg", str(self.wrist_flex_max_deg)
@@ -306,6 +313,14 @@ class AM2ProInterpolationController:
         pose = np.array(pose, dtype=np.float64)
         assert pose.shape == (6,)
         self._send_command(CMD_SCHEDULE_WAYPOINT, pose, target_time, 0.0, -1.0)
+
+    def schedule_policy_waypoint(self, pose, gripper_width, target_time):
+        """Queue a timed arm/gripper point in the replaceable policy horizon."""
+        pose = np.asarray(pose, dtype=np.float64)
+        if pose.shape != (6,):
+            raise ValueError('policy waypoint pose must have six values')
+        self._send_command(CMD_SCHEDULE_POLICY_WAYPOINT, pose, target_time,
+                           0.0, float(gripper_width))
 
     def schedule_gripper(self, pos, target_time):
         """Schedule a gripper-width command at *target_time* (global time).

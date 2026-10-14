@@ -114,7 +114,13 @@ screen_saved_session() {
         --joint-margin-deg 5 \
         --ik-steps 30 \
         --random-restarts 0 >"$ik_log" 2>&1; then
-        echo "AUTO_SCREEN_REJECT: 离线 IK 运行异常；详见 $ik_log"
+        if rg -q '没有连续安全分支' "$ik_log"; then
+            echo "AUTO_SCREEN_REJECT: 离线 IK 没有连续安全分支；详见 $ik_log"
+            tail -n 1 "$ik_log"
+        else
+            echo "AUTO_SCREEN_REJECT: 离线 IK 运行异常；详见 $ik_log"
+            tail -n 1 "$ik_log"
+        fi
         return 1
     fi
     if ! python -u scripts/check_vjaw_training_episode.py \

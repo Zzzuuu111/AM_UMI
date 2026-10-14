@@ -53,10 +53,11 @@ tag_map="calibration/shared_tags/table_tag_map_v2_13_14.json"
 # inner-front tip. Robot IK later converts this named task point back to the
 # URDF right_tcp through an explicit right_tcp→task-TCP transform.
 camera_tcp="calibration/handheld_gripper_camera/gripper_geometry/emeet_handheld_vjaw_fixed_tcp_v1_accepted.json"
-# The hand-held and robot V-jaws share the same 84 mm physical maximum.  The
-# Tag-angle mapping is still candidate for intermediate widths, but never emit
-# the old impossible 100 mm endpoint into a formal zarr again.
-gripper_range="calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_gripper_range_v3_branch_fixed_84mm_candidate.json"
+# Use the closed-pose signed hinge angle.  The previous unsigned angle folded
+# across the closed pose and mislabeled a visibly closed jaw as about 30 mm.
+# The 84 mm endpoint is measured; intermediate-width accuracy remains a
+# calibration candidate until checked against physical jaw-gap measurements.
+gripper_range="calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_gripper_range_v4_signed_84mm_candidate.json"
 branch_fixed_detection="tag_detection_vjaw_branch_fixed.pkl"
 
 if [ -e "$session_dir/tag_detection.pkl" ]; then

@@ -55,6 +55,35 @@ def rotation_error_deg(pred_pose10d: np.ndarray, target_pose10d: np.ndarray) -> 
     return np.rad2deg(np.arccos(cosine))
 
 
+def horizon_group_errors(target: np.ndarray, prediction: np.ndarray) -> dict:
+    """Compare early and late action points with a stationary-action baseline."""
+    if target.shape != prediction.shape or target.ndim != 2 or target.shape[1] != 10:
+        raise ValueError("target and prediction must have matching (T, 10) shapes")
+    horizon = len(target)
+    spans = (("steps_1_4", 0, min(4, horizon)),
+             ("steps_5_8", 4, min(8, horizon)),
+             ("steps_9_16", 8, min(16, horizon)))
+    stationary_pos = np.zeros(3, dtype=np.float64)
+    stationary_width = float(target[0, 9])
+    result = {}
+    for name, start, stop in spans:
+        if start >= stop:
+            continue
+        target_group = target[start:stop]
+        prediction_group = prediction[start:stop]
+        model_pos_error = np.linalg.norm(prediction_group[:, :3] - target_group[:, :3], axis=1) * 1000.0
+        static_pos_error = np.linalg.norm(target_group[:, :3] - stationary_pos, axis=1) * 1000.0
+        model_width_error = (prediction_group[:, 9] - target_group[:, 9]) * 1000.0
+        static_width_error = (stationary_width - target_group[:, 9]) * 1000.0
+        result[name] = {
+            "position_rmse_mm": float(np.sqrt(np.mean(model_pos_error ** 2))),
+            "stationary_position_rmse_mm": float(np.sqrt(np.mean(static_pos_error ** 2))),
+            "gripper_rmse_mm": float(np.sqrt(np.mean(model_width_error ** 2))),
+            "stationary_gripper_rmse_mm": float(np.sqrt(np.mean(static_width_error ** 2))),
+        }
+    return result
+
+
 def set_equal_3d_axes(axis, points: np.ndarray) -> None:
     low = points.min(axis=0)
     high = points.max(axis=0)
@@ -134,6 +163,8 @@ def main() -> None:
                         help="逗号分隔的 dataset sample 索引；提供时覆盖 --samples")
     parser.add_argument("--seed", type=int, default=42,
                         help="每个扩散采样的可复现实验种子")
+    parser.add_argument("--dataset-seed", type=int,
+                        help="覆盖 checkpoint 的 episode 划分种子，便于不同模型比较同一验证集")
     parser.add_argument("--device", default="cuda:0",
                         help="cuda:0 或 cpu；默认使用 GPU")
     args = parser.parse_args()
@@ -157,6 +188,8 @@ def main() -> None:
     cfg = payload["cfg"]
     OmegaConf.update(cfg, "task.dataset_path", str(dataset_path), merge=False)
     OmegaConf.update(cfg, "task.dataset.dataset_path", str(dataset_path), merge=False)
+    if args.dataset_seed is not None:
+        OmegaConf.update(cfg, "task.dataset.seed", args.dataset_seed, merge=False)
 
     policy = hydra.utils.instantiate(cfg.policy)
     state_dicts = payload["state_dicts"]
@@ -206,6 +239,7 @@ def main() -> None:
             "rotation_mae_deg": float(np.mean(rotation_error)),
             "gripper_rmse_mm": float(np.sqrt(np.mean(gripper_error_mm ** 2))),
             "gripper_mae_mm": float(np.mean(gripper_error_mm)),
+            "horizon_groups": horizon_group_errors(target, prediction),
         }
         records.append(record)
         examples.append((target, prediction, record))
@@ -223,6 +257,7 @@ def main() -> None:
         "dataset": str(dataset_path),
         "device": str(device),
         "split": args.split,
+        "dataset_seed": int(cfg.task.dataset.seed),
         "episode_start_pose_noise_std": 0.0,
         "samples": records,
         "aggregate": {
@@ -233,6 +268,14 @@ def main() -> None:
         },
         "comparison_plot": str(plot_path),
         "plotted_sample": median_example[2]["sample_index"],
+    }
+    summary["aggregate"]["horizon_groups"] = {
+        name: {
+            key + "_median": float(np.median([r["horizon_groups"][name][key] for r in records]))
+            for key in ("position_rmse_mm", "stationary_position_rmse_mm",
+                        "gripper_rmse_mm", "stationary_gripper_rmse_mm")
+        }
+        for name in records[0]["horizon_groups"]
     }
     report_path = out_dir / "offline_policy_report.json"
     report_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

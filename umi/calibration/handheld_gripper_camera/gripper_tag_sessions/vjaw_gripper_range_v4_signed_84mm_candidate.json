@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "gripper_model": "v_jaw_one_moving_tag_pair",
+  "width_measurement": "relative_tag_signed_hinge_rotation_deg",
+  "fixed_jaw_tag_id": 0,
+  "moving_jaw_tag_id": 1,
+  "closed_relative_rotvec": [
+    0.08620886274246053,
+    -0.05756168932936182,
+    0.37088517341396077
+  ],
+  "hinge_axis_closed_frame": [
+    -0.006332333213896933,
+    -0.0009114909710525699,
+    -0.9999795351607341
+  ],
+  "open_angle_deg": 63.319720636282185,
+  "episode_start_closed_frames": 30,
+  "episode_start_min_valid_frames": 4,
+  "physical_gripper_range_m": [
+    0.0,
+    0.084
+  ],
+  "min_width": 0.0,
+  "max_width": 0.084,
+  "source_tag_detection": "/home/zzzjh/AM_UMI/umi/calibration/handheld_gripper_camera/gripper_tag_sessions/vjaw_range_v1_retry/tag_detection_vjaw_branch_fixed.pkl",
+  "labeled_frame_ranges": {
+    "closed_start": [
+      0,
+      60
+    ],
+    "open": [
+      700,
+      740
+    ],
+    "closed_end": [
+      800,
+      869
+    ]
+  },
+  "diagnostics": {
+    "valid_frames_per_segment": [
+      60,
+      37,
+      69
+    ],
+    "closed_end_orientation_error_deg": 0.18872849443943537,
+    "signed_angle_percentiles_deg": [
+      -0.29740779351615215,
+      -0.2569112118832421,
+      0.9696468309284318,
+      63.48946362336506,
+      63.569312226261665
+    ]
+  },
+  "notes": [
+    "Closed and open frame ranges must be visually checked against the raw video.",
+    "Physical intermediate widths assume a linear angle-to-width mapping and need ruler verification."
+  ]
+}
