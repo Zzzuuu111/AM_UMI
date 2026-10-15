@@ -1,0 +1,61 @@
+{
+  "schema": "am_umi_circle30_epoch60_assets_v1",
+  "assets": [
+    {
+      "repo_type": "model",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90-epoch60",
+      "filename": "epoch=0060-train_loss=0.019.ckpt",
+      "local_path": "data/pretrained/vjaw_signed90_epoch60/epoch=0060-train_loss=0.019.ckpt",
+      "bytes": 2437686348,
+      "sha256": "1158a7e1ef15fb55c4a0815e69eae2489d5d7af055348a294328ee34a3e5f96e"
+    },
+    {
+      "repo_type": "model",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90-epoch60",
+      "filename": "source_training_config.yaml",
+      "local_path": "data/pretrained/vjaw_signed90_epoch60/source_training_config.yaml",
+      "bytes": 8078,
+      "sha256": "f7c26809b99974bbe4ba8b79fbbfd86417fbbe3d6bd81f419c1b7d6d7bf93a89"
+    },
+    {
+      "repo_type": "model",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90-epoch60",
+      "filename": "normalizer.pkl",
+      "local_path": "data/pretrained/vjaw_signed90_epoch60/normalizer.pkl",
+      "bytes": 14117,
+      "sha256": "f0be4043582e5a2ac3d16bdd6330dccb7becbabb6d0f01d1570e6311050bc2ac"
+    },
+    {
+      "repo_type": "model",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90-epoch60",
+      "filename": "artifact_manifest.json",
+      "local_path": "data/pretrained/vjaw_signed90_epoch60/artifact_manifest.json",
+      "bytes": 772,
+      "sha256": "b7310c5dbb1dfaccf75a17e661a190f029d7cc8a986d6f159f606de518ac99b7"
+    },
+    {
+      "repo_type": "dataset",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90",
+      "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip",
+      "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip",
+      "bytes": 1263097495,
+      "sha256": "5cc5da806165042d6aa3200f2500c2082725d3db32e3921d15d36bfd92e578e4"
+    },
+    {
+      "repo_type": "dataset",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90",
+      "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip.manifest.json",
+      "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip.manifest.json",
+      "bytes": 14916,
+      "sha256": "aba7ba6e6f513d5d707ee827ddc8032ff959aaa4646775c07249b62ebd52404c"
+    },
+    {
+      "repo_type": "dataset",
+      "repo_id": "Zzzuuu111/am-umi-vjaw-signed90",
+      "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip.quality_report.json",
+      "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip.quality_report.json",
+      "bytes": 19664,
+      "sha256": "6b0bc339455c78e101f9fb796d0631708ebae3c9341f3d3d382d77e40f188e64"
+    }
+  ]
+}

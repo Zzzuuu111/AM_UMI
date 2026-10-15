@@ -1041,6 +1041,71 @@ bash scripts/start_vjaw_signed90_pretrained.sh --no-time-limit
 
 只有一步检查成功后才正式启动。驱动、显存和平台依赖仍须在新机器核对；以上未在另一台机器实测。从头训练使用新数据和视觉预训练缓存；跨机器完整续训还要迁移整个原训练输出目录，并保持兼容的软件版本。
 
+### 16.26 2026-10-15：确认下一保存点并准备修正 90 条模型的测试入口
+
+- 用户查看训练运行至 epoch 52。核对本轮 Hydra 配置为 `checkpoint_every: 10`，工作区在编号为 0、10、20……的 epoch 结束后保存；目前最新具名文件为 `epoch=0050-train_loss=0.020.ckpt`。下一个保存点是 epoch 60 结束后，epoch 55 不保存；最后一轮 epoch 199 也单独保存。
+- 新增 `scripts/start_vjaw_signed90_supervised_trial.sh`，默认选该训练目录中 epoch 60 的具名 checkpoint，避免 `latest.ckpt` 随训练继续更新。可用 `--epoch 50` 指定已有轮次，`--smoke` 为 5 秒，默认和 `--full` 为 120 秒，也支持 `--duration 秒数`。
+- 沿用现有受监督实机流程：低速回 v6 基准、夹爪闭合零点检查、自动开始、连续预测轨迹、固定采样种子、轨迹平滑及视频/trace/readback 记录。正常停止或超时后回基准并退出，终端 `s` 或 `x` 后回车可提前停止；Ctrl+C 或异常原地保持。
+- 检查结果：Bash 语法与帮助输出通过；epoch 60 尚未保存时，脚本在创建控制器之前拒绝启动。基准文件夹爪宽度为 0 m。尚未运行该入口的实机推理；本次未变更训练保存频率，也未执行暂停训练。测试前应先暂停训练，释放同一张 GPU 的显存。
+- 随后用户要求暂停训练并使用 epoch 60 测试。已核对 PID 1796716 的命令行确属本轮训练，再发送 TERM；确认进程退出、CUDA 计算进程列表为空，显卡可用显存约 7,145 MiB。停止前日志在 epoch 62，最后保存点为 epoch 60，未保存的后续进度不保留。
+- 已在 CPU/meta 设备读取 `epoch=0060-train_loss=0.019.ckpt`，确认文件可加载，包含 model、EMA、optimizer 和 lr_scheduler；保存的 `epoch=60`、`next_epoch=61`，启用完整续训状态。测试入口固定读取该具名文件。本次只停止训练并校验 checkpoint，未执行实机测试；最终模型仍待完整训练完成后再上传 Hugging Face。
+
+```bash
+cd ~/AM_UMI/umi
+conda activate AM_UMI
+bash scripts/start_vjaw_signed90_supervised_trial.sh --epoch 60
+```
+
+### 16.27 2026-10-15：epoch 60 抓取后未放下的录像与离线对照
+
+- 分析最近有完整记录的 `data/outputs/vjaw_signed90_epoch0060_live_120s_20261015_140949`。该次策略运行约 55 秒后人工停止，随后完成回基准；回程日志中的相机断开发生在策略停止之后，不能据此解释此前未放开的动作。
+- 录像显示开头接近并抓住包装袋，后半段未稳定接近示教的放置姿态，而是持续抬高、转动，包装袋仍在夹爪中。原始策略开始时最大预测开口约 53.6 mm；运行超过 10 秒后的所有 16 点预测中，开口范围仅约 3.1–10.2 mm，未出现明显的再次张开指令。机器人测得的夹爪也保持小开口。
+- 按实际生效的队列目标时间与测量值对齐：位置跟随误差中位数约 4.38 mm，旋转约 1.33°，夹爪约 0.46 mm。这些指标只描述对已提交目标的跟随，不能证明目标轨迹正确；当前主要证据是策略未预测出大幅张开，而非控制器漏执行已发出的放开指令。
+- 对修正 90 条标签做阶段统计：新 30 条全部在最后 40% 帧中有超过 20 mm 的开口，后段最大宽度中位数约 51.3 mm；旧 60 条为 20/60 条超过 20 mm，中位数约 16.7 mm。该阈值是宽度统计，并非每条实际释放成功的判定；两批场景、开口幅度和中间宽度标定的一致性仍需关注。
+- 使用同一 epoch 60 的 EMA 模型和固定扩散种子 42，对新示教后段宽度上升附近选取 8 个离线窗口（两条训练 episode、两条保留验证 episode，每条取张开前和张开中各一窗）。关闭起点位姿噪声，使用记录的图像与状态；未连接相机或机械臂。验证 episode 索引为 65、80，窗口预测最大宽度约 47.3–59.3 mm，目标约 31.3–50.7 mm，宽度 MAE 约 3.4–18.8 mm；训练窗口预测最大约 31.8–44.2 mm。因此模型能在这些记录条件下产生张开，但幅度/时机仍有偏差；8 个挑选窗口不能代表完整验证集或实机成功率。
+- 当前判断：问题集中在搬运到放置的闭环衔接，实机后段的姿态、图像与示教不同，未进入能触发正确放开动作的状态。尚不能认定放置特征不明显是主因，也不能排除训练未完成、两批数据差异、坐标/TCP 候选标定及执行限速的共同影响。下一步可用修正后新 30 条做放置阶段的对照微调，并在同场景下比较后段轨迹和放开时机；本次未启动新训练或实机运动。
+- 证据保存于该次运行的 `release_analysis/`：`live_contact_sheet.jpg`、`dataset_stage_contact_sheet.jpg`、`release_diagnostic.png`、`dataset_gripper_stage_stats.json`、`release_window_policy_report.json`、`release_window_policy_comparison.png`、`release_tracking_summary.json`。整段视频为 `videos/0/0.mp4`；另外生成 `policy_diagnostic_episode_000_release.json` 和轨迹图，保留原有运行文件。
+
+### 16.28 2026-10-15：为另一台机器准备 epoch 60 → 修正新 30 条微调
+
+- 用户授权发布当前异地微调所需代码、数据、模型和环境。GitHub 使用 `am-umi-vjaw-training` 分支；模型和数据继续为 Hugging Face 私有仓库。
+- 新数据为 `v14_circle_030_signed_zeroed_from90.zarr.zip`，从最终逐条零点修正的 90 条数据中取 episode 60..89（demo 091..120），共 30 条、16,208 帧。全量核对了所有数值和所有图像像素与源切片完全一致；只使用无损 Blosc 重压缩，没有重标夹爪或改变图像。质量检查 PASS。不要误用早于最终逐条零点修正的旧单独 30 条候选文件。
+- 保留原 90 条训练的划分：新子集索引 5、20（原全局 65、80）仍作验证，其余 28 条用于微调。`UmiDataset.val_episode_indices` 是新增可选参数，默认不改变原有随机划分。
+- 使用完整 epoch 60 checkpoint `epoch=0060-train_loss=0.019.ckpt`，SHA-256 为 `1158a7e1ef15fb55c4a0815e69eae2489d5d7af055348a294328ee34a3e5f96e`，大小 2,437,686,348 bytes。目标私有模型仓库为 [am-umi-vjaw-signed90-epoch60](https://huggingface.co/Zzzuuu111/am-umi-vjaw-signed90-epoch60)。它是中间模型，实机放置尚未成功，并非最终模型。
+- 新 30 条的 SHA-256 为 `5cc5da806165042d6aa3200f2500c2082725d3db32e3921d15d36bfd92e578e4`，放入[现有私有数据仓库](https://huggingface.co/datasets/Zzzuuu111/am-umi-vjaw-signed90)。下载脚本只取这次需要的文件，无须再下载完整 90 条或原始视频。
+- `scripts/start_vjaw_circle30_signed_finetune.sh` 从 epoch 60 的 EMA 权重和原 normalizer 初始化，优化器、学习率进度和轮次重新开始。默认 30 epochs、每 5 轮及最后一轮保存、无墙钟超时、FP16、batch size 1、梯度积累 64、动作学习率 `1e-5`、视觉编码器学习率 `1e-6`；模型结构不变，原有增强保留。可用 `--epochs` 调整长度；`--resume` 使用原运行 `.hydra/config.yaml` 和完整 checkpoint，不覆盖原模型或原训练目录。
+- 新增视觉编码器参数 `load_pretrained_weights`，默认 true 保留旧行为。本次微调设为 false：先创建同结构网络，随后完整加载 checkpoint 内的视觉权重和 CLIP 归一化缓冲区，因此无需额外下载原始 CLIP 权重。
+- 本机 GPU 单步试跑通过：`data/outputs/vjaw_circle30_signed_finetune_smoke_20261015_150311`。确认加载 EMA、训练一步、写出完整 checkpoint；正式 30-epoch 微调未启动。试跑排除了 checkpoint 文件名含 `=` 时的 Hydra 解析问题；启动脚本已为路径添加 Hydra 字符串引号。
+- 本机环境快照为 `environment_am_umi_training_snapshot.yml`，Python 3.12.13 / PyTorch 2.11.0+cu130；移除了机器 prefix 和环境变量。适用于 Linux x86_64，显卡驱动由系统准备。已在本机环境完成一步试跑，尚未在第二台机器完整重建环境。
+- `example/vjaw_circle30_epoch60_finetune_assets.json` 列出私有仓库、所需的 7 个文件、大小和 SHA-256；`scripts/fetch_vjaw_circle30_finetune_assets.py` 下载后逐个校验，拒绝覆盖校验不符的现有文件。Hugging Face 大文件上传与远端校验完成后更新固定 revision。
+
+另一台机器的操作：
+
+```bash
+git clone --branch am-umi-vjaw-training --single-branch https://github.com/Zzzuuu111/AM_UMI.git
+cd AM_UMI/umi
+conda env create -f environment_am_umi_training_snapshot.yml
+conda activate AM_UMI
+unset ALL_PROXY all_proxy
+HF_ENDPOINT=https://huggingface.co hf auth login
+python scripts/fetch_vjaw_circle30_finetune_assets.py
+python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
+bash scripts/start_vjaw_circle30_signed_finetune.sh --smoke
+bash scripts/start_vjaw_circle30_signed_finetune.sh
+```
+
+若项目已经克隆，先更新该分支再进入 `umi/`。只有 CUDA 可用和一步检查成功后才正式启动。查看进度：
+
+```bash
+tail -f data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/latest_circle30_signed_finetune.log
+```
+
+续训时将下面目录替换为新电脑实际打印的训练输出目录（续训到原计划总轮数）：
+
+```bash
+bash scripts/start_vjaw_circle30_signed_finetune.sh --resume data/outputs/你的微调输出目录
+```
+
 <!-- CONSOLIDATED_PROJECT_DOCS_BEGIN -->
 <a id="project-doc-index"></a>
 

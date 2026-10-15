@@ -65,7 +65,8 @@ class TransformerObsEncoder(ModuleAttrMixin):
             share_rgb_model: bool=False,
             feature_aggregation: str=None,
             downsample_ratio: int=32,
-            pretrained_image_norm: bool=False
+            pretrained_image_norm: bool=False,
+            load_pretrained_weights: bool=True
         ):
         """
         Assumes rgb input: B,T,C,H,W
@@ -83,7 +84,10 @@ class TransformerObsEncoder(ModuleAttrMixin):
         assert global_pool == ''
         model = timm.create_model(
             model_name=model_name,
-            pretrained=pretrained,
+            # Complete policy checkpoints already include the visual weights.
+            # Fine-tune launchers can skip a redundant Hub download while
+            # retaining the architecture and CLIP preprocessing metadata.
+            pretrained=pretrained and load_pretrained_weights,
             global_pool=global_pool, # '' means no pooling
             num_classes=0            # remove classification layer
         )

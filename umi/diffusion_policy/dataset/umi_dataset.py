@@ -39,6 +39,7 @@ class UmiDataset(BaseDataset):
         val_ratio: float=0.0,
         max_duration: Optional[float]=None,
         episode_start_pose_noise_std: float=0.05,
+        val_episode_indices: Optional[list[int]]=None,
     ):
         self.pose_repr = pose_repr
         self.obs_pose_repr = self.pose_repr.get('obs_pose_repr', 'rel')
@@ -129,6 +130,15 @@ class UmiDataset(BaseDataset):
             val_ratio=val_ratio,
             seed=seed
         )
+        if val_episode_indices is not None:
+            indices = list(val_episode_indices)
+            if (any(not isinstance(i, (int, np.integer)) for i in indices)
+                    or len(set(indices)) != len(indices)
+                    or any(i < 0 or i >= replay_buffer.n_episodes for i in indices)
+                    or len(indices) >= replay_buffer.n_episodes):
+                raise ValueError('val_episode_indices must be unique valid indices, leaving training episodes')
+            val_mask = np.zeros(replay_buffer.n_episodes, dtype=bool)
+            val_mask[indices] = True
         train_mask = ~val_mask
 
         self.sampler_lowdim_keys = list()
