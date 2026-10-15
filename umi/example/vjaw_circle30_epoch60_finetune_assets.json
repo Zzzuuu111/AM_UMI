@@ -39,7 +39,8 @@
       "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip",
       "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip",
       "bytes": 1263097495,
-      "sha256": "5cc5da806165042d6aa3200f2500c2082725d3db32e3921d15d36bfd92e578e4"
+      "sha256": "5cc5da806165042d6aa3200f2500c2082725d3db32e3921d15d36bfd92e578e4",
+      "revision": "97a636c6fddadc89ba3c5e166a7dd18959732a39"
     },
     {
       "repo_type": "dataset",
@@ -47,7 +48,8 @@
       "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip.manifest.json",
       "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip.manifest.json",
       "bytes": 14916,
-      "sha256": "aba7ba6e6f513d5d707ee827ddc8032ff959aaa4646775c07249b62ebd52404c"
+      "sha256": "aba7ba6e6f513d5d707ee827ddc8032ff959aaa4646775c07249b62ebd52404c",
+      "revision": "97a636c6fddadc89ba3c5e166a7dd18959732a39"
     },
     {
       "repo_type": "dataset",
@@ -55,7 +57,8 @@
       "filename": "v14_circle_030_signed_zeroed_from90.zarr.zip.quality_report.json",
       "local_path": "data/handheld_demos_vjaw/v14_circle30_signed_from90_20261015/v14_circle_030_signed_zeroed_from90.zarr.zip.quality_report.json",
       "bytes": 19664,
-      "sha256": "6b0bc339455c78e101f9fb796d0631708ebae3c9341f3d3d382d77e40f188e64"
+      "sha256": "6b0bc339455c78e101f9fb796d0631708ebae3c9341f3d3d382d77e40f188e64",
+      "revision": "97a636c6fddadc89ba3c5e166a7dd18959732a39"
     }
   ]
 }

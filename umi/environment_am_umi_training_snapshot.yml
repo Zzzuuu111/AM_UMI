@@ -1,6 +1,7 @@
 # Linux x86_64 snapshot of the tested AM_UMI environment, 2026-10-15.
 # Python 3.12.13, PyTorch 2.11.0+cu130 at runtime; GPU driver is installed separately.
 # Export excludes machine prefix and environment variables; fresh-machine rebuild is not yet tested.
+# Excludes the unused legacy decord CPython-3.6 wheel, which is incompatible with Python 3.12.
 name: AM_UMI
 channels:
 - defaults
@@ -209,7 +210,6 @@ dependencies:
   - dcor==0.7
   - debugpy==1.8.21
   - decorator==5.3.1
-  - decord==0.6.0
   - deepdiff==8.6.2
   - defusedxml==0.7.1
   - deprecated==1.3.1

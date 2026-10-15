@@ -1077,6 +1077,7 @@ bash scripts/start_vjaw_signed90_supervised_trial.sh --epoch 60
 - 新增视觉编码器参数 `load_pretrained_weights`，默认 true 保留旧行为。本次微调设为 false：先创建同结构网络，随后完整加载 checkpoint 内的视觉权重和 CLIP 归一化缓冲区，因此无需额外下载原始 CLIP 权重。
 - 本机 GPU 单步试跑通过：`data/outputs/vjaw_circle30_signed_finetune_smoke_20261015_150311`。确认加载 EMA、训练一步、写出完整 checkpoint；正式 30-epoch 微调未启动。试跑排除了 checkpoint 文件名含 `=` 时的 Hydra 解析问题；启动脚本已为路径添加 Hydra 字符串引号。
 - 本机环境快照为 `environment_am_umi_training_snapshot.yml`，Python 3.12.13 / PyTorch 2.11.0+cu130；移除了机器 prefix 和环境变量。适用于 Linux x86_64，显卡驱动由系统准备。已在本机环境完成一步试跑，尚未在第二台机器完整重建环境。
+- 依赖一致性检查发现本机遗留的 `decord 0.6.0` 是 CPython 3.6 wheel，与当前 Python 3.12 不符；本次 UMI 训练代码不导入它，只有其他框架的可选 extras 引用。环境文件已排除该遗留可选依赖，不修改本机已安装环境。用户提供目标驱动 `595.104.02`、`nvidia-smi` 显示 CUDA 13.2；该驱动在版本要求上支持本机 CUDA 13.0 运行时。`nvidia-smi` 显示的是驱动支持的 CUDA 上限，不要求 PyTorch 同版本（[NVIDIA 驱动兼容性矩阵](https://docs.nvidia.com/datacenter/tesla/drivers/latest/cuda-toolkit-driver-and-architecture-matrix.html)）。
 - `example/vjaw_circle30_epoch60_finetune_assets.json` 列出私有仓库、所需的 7 个文件、大小和 SHA-256；`scripts/fetch_vjaw_circle30_finetune_assets.py` 下载后逐个校验，拒绝覆盖校验不符的现有文件。Hugging Face 大文件上传与远端校验完成后更新固定 revision。
 
 另一台机器的操作：
