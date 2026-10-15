@@ -7,7 +7,8 @@
       "filename": "epoch=0060-train_loss=0.019.ckpt",
       "local_path": "data/pretrained/vjaw_signed90_epoch60/epoch=0060-train_loss=0.019.ckpt",
       "bytes": 2437686348,
-      "sha256": "1158a7e1ef15fb55c4a0815e69eae2489d5d7af055348a294328ee34a3e5f96e"
+      "sha256": "1158a7e1ef15fb55c4a0815e69eae2489d5d7af055348a294328ee34a3e5f96e",
+      "revision": "228628bea2a01e6c71e0432625fb1852c5fdc526"
     },
     {
       "repo_type": "model",
@@ -15,7 +16,8 @@
       "filename": "source_training_config.yaml",
       "local_path": "data/pretrained/vjaw_signed90_epoch60/source_training_config.yaml",
       "bytes": 8078,
-      "sha256": "f7c26809b99974bbe4ba8b79fbbfd86417fbbe3d6bd81f419c1b7d6d7bf93a89"
+      "sha256": "f7c26809b99974bbe4ba8b79fbbfd86417fbbe3d6bd81f419c1b7d6d7bf93a89",
+      "revision": "228628bea2a01e6c71e0432625fb1852c5fdc526"
     },
     {
       "repo_type": "model",
@@ -23,7 +25,8 @@
       "filename": "normalizer.pkl",
       "local_path": "data/pretrained/vjaw_signed90_epoch60/normalizer.pkl",
       "bytes": 14117,
-      "sha256": "f0be4043582e5a2ac3d16bdd6330dccb7becbabb6d0f01d1570e6311050bc2ac"
+      "sha256": "f0be4043582e5a2ac3d16bdd6330dccb7becbabb6d0f01d1570e6311050bc2ac",
+      "revision": "228628bea2a01e6c71e0432625fb1852c5fdc526"
     },
     {
       "repo_type": "model",
@@ -31,7 +34,8 @@
       "filename": "artifact_manifest.json",
       "local_path": "data/pretrained/vjaw_signed90_epoch60/artifact_manifest.json",
       "bytes": 772,
-      "sha256": "b7310c5dbb1dfaccf75a17e661a190f029d7cc8a986d6f159f606de518ac99b7"
+      "sha256": "b7310c5dbb1dfaccf75a17e661a190f029d7cc8a986d6f159f606de518ac99b7",
+      "revision": "228628bea2a01e6c71e0432625fb1852c5fdc526"
     },
     {
       "repo_type": "dataset",

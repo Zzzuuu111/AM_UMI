@@ -1075,10 +1075,10 @@ bash scripts/start_vjaw_signed90_supervised_trial.sh --epoch 60
 - 新 30 条的 SHA-256 为 `5cc5da806165042d6aa3200f2500c2082725d3db32e3921d15d36bfd92e578e4`，放入[现有私有数据仓库](https://huggingface.co/datasets/Zzzuuu111/am-umi-vjaw-signed90)。下载脚本只取这次需要的文件，无须再下载完整 90 条或原始视频。
 - `scripts/start_vjaw_circle30_signed_finetune.sh` 从 epoch 60 的 EMA 权重和原 normalizer 初始化，优化器、学习率进度和轮次重新开始。默认 30 epochs、每 5 轮及最后一轮保存、无墙钟超时、FP16、batch size 1、梯度积累 64、动作学习率 `1e-5`、视觉编码器学习率 `1e-6`；模型结构不变，原有增强保留。可用 `--epochs` 调整长度；`--resume` 使用原运行 `.hydra/config.yaml` 和完整 checkpoint，不覆盖原模型或原训练目录。
 - 新增视觉编码器参数 `load_pretrained_weights`，默认 true 保留旧行为。本次微调设为 false：先创建同结构网络，随后完整加载 checkpoint 内的视觉权重和 CLIP 归一化缓冲区，因此无需额外下载原始 CLIP 权重。
-- 本机 GPU 单步试跑通过：`data/outputs/vjaw_circle30_signed_finetune_smoke_20261015_150311`。确认加载 EMA、训练一步、写出完整 checkpoint；正式 30-epoch 微调未启动。试跑排除了 checkpoint 文件名含 `=` 时的 Hydra 解析问题；启动脚本已为路径添加 Hydra 字符串引号。
+- 本机 GPU 单步试跑通过：`data/outputs/vjaw_circle30_signed_finetune_smoke_20261015_150311`。确认加载 EMA、训练一步、写出完整 checkpoint；进一步核对 optimizer step 为 1、保留 `[5,20]` 验证索引、启用 CLIP 归一化并保存模型/EMA/优化器/调度器。正式 30-epoch 微调未启动。试跑排除了 checkpoint 文件名含 `=` 时的 Hydra 解析问题；启动脚本已为路径添加 Hydra 字符串引号。
 - 本机环境快照为 `environment_am_umi_training_snapshot.yml`，Python 3.12.13 / PyTorch 2.11.0+cu130；移除了机器 prefix 和环境变量。适用于 Linux x86_64，显卡驱动由系统准备。已在本机环境完成一步试跑，尚未在第二台机器完整重建环境。
 - 依赖一致性检查发现本机遗留的 `decord 0.6.0` 是 CPython 3.6 wheel，与当前 Python 3.12 不符；本次 UMI 训练代码不导入它，只有其他框架的可选 extras 引用。环境文件已排除该遗留可选依赖，不修改本机已安装环境。用户提供目标驱动 `595.104.02`、`nvidia-smi` 显示 CUDA 13.2；该驱动在版本要求上支持本机 CUDA 13.0 运行时。`nvidia-smi` 显示的是驱动支持的 CUDA 上限，不要求 PyTorch 同版本（[NVIDIA 驱动兼容性矩阵](https://docs.nvidia.com/datacenter/tesla/drivers/latest/cuda-toolkit-driver-and-architecture-matrix.html)）。
-- `example/vjaw_circle30_epoch60_finetune_assets.json` 列出私有仓库、所需的 7 个文件、大小和 SHA-256；`scripts/fetch_vjaw_circle30_finetune_assets.py` 下载后逐个校验，拒绝覆盖校验不符的现有文件。Hugging Face 大文件上传与远端校验完成后更新固定 revision。
+- `example/vjaw_circle30_epoch60_finetune_assets.json` 列出私有仓库、所需的 7 个文件、大小和 SHA-256；`scripts/fetch_vjaw_circle30_finetune_assets.py` 下载后逐个校验，拒绝覆盖校验不符的现有文件。Hugging Face 上传已完成，固定模型 revision 为 `228628bea2a01e6c71e0432625fb1852c5fdc526`，数据 revision 为 `97a636c6fddadc89ba3c5e166a7dd18959732a39`。已核对两个仓库均为私有、两个大文件远端大小和 SHA-256 一致，并实际下载其余 5 个小文件核对 SHA-256；全部 7 个远端文件检查通过。
 
 另一台机器的操作：
 
@@ -1091,8 +1091,7 @@ unset ALL_PROXY all_proxy
 HF_ENDPOINT=https://huggingface.co hf auth login
 python scripts/fetch_vjaw_circle30_finetune_assets.py
 python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
-bash scripts/start_vjaw_circle30_signed_finetune.sh --smoke
-bash scripts/start_vjaw_circle30_signed_finetune.sh
+bash scripts/start_vjaw_circle30_signed_finetune.sh --smoke && bash scripts/start_vjaw_circle30_signed_finetune.sh
 ```
 
 若项目已经克隆，先更新该分支再进入 `umi/`。只有 CUDA 可用和一步检查成功后才正式启动。查看进度：
